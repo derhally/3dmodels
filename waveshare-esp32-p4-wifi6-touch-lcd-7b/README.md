@@ -68,6 +68,38 @@ Both fit a 256 × 256 mm bed. PLA or PETG, 0.2 mm layers, 3+ walls.
 - Screen cutout: 0.25 mm clearance at the top and sides, 0.15 mm at the bottom.
 - The back has vertical vent slots near the top.
 
+## How these files were made
+
+The model is code, not hand-drawn CAD. It was written in
+[build123d](https://build123d.readthedocs.io/), a Python CAD library on the
+OpenCascade kernel, so every file here is an exact solid (B-rep) and imports
+into Shapr3D as editable bodies.
+
+1. **Dimensions.**
+   - Display outline, layer depths, mounting holes and edge connectors come from
+     Waveshare's dimension drawing (PDF, 2025-11-08). The values were read from
+     the PDF's vector data, not by eye.
+   - Port, mic and connector positions were cross-checked against Waveshare's
+     labelled board photos.
+   - Measured on the real hardware with calipers: standoff depth (15 mm), the
+     speaker (size, depth, ear holes and their height), and the right-angle USB-C
+     plug.
+2. **Modelling.** Claude Code wrote the build123d script and ran it through
+   [shapr3d-mcp](https://github.com/derhally/shapr3d-mcp), an MCP server that
+   runs build123d scripts and exports STEP/STL/3MF. All dimensions come from
+   `source/enclosure.yaml`; the script contains no measurements of its own.
+3. **Checking.**
+   - Each revision was clash-checked against stand-ins for the display, its
+     standoffs, the speaker and the USB plug, to confirm no overlaps.
+   - Each revision was reviewed by importing the STEP into Shapr3D.
+   - The screen cutout was confirmed with a printed test frame.
+4. **Exports.** The print files are the same solids, rotated into print
+   orientation.
+
+`source/build_enclosure.py` is that script as a standalone program. It
+regenerates every file in `step/` and `print/`, and its output has the same
+volumes as the committed files.
+
 ## Changing the design
 
 All dimensions, including the angle, bezels, clearances and speaker size, are in
