@@ -1,0 +1,10 @@
+# 45-degree desk enclosure, speaker in the chin under the screen.
+# Merged over ../common/common.yaml; only variant-specific values live here.
+
+enclosure:
+  border: 15.1           # plastic frame around the window, sides and top
+
+speaker:                 # how the speaker sits in the chin
+  fit: 0.3               # per side in the retaining ring
+  ring_height: 6.0
+  margin: 4.0            # chin space around the speaker

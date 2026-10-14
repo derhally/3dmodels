@@ -1,0 +1,26 @@
+# Compact 45-degree desk enclosure: speaker stands at the back of the base and a
+# printed duct carries its sound forward under the screen to a slot grille in the
+# front lip. Merged over ../common/common.yaml; only variant-specific values here.
+
+enclosure:
+  border: 16.3           # even frame on all four sides of the window
+
+clamps:
+  column_s: 6.0          # columns beside the pocket: 7 across x 6 along the slope,
+  column_shift: 0.5      # nudged away from the PCB's RESET button
+
+duct:
+  mouth_h: 14.0          # slot height in the front lip; sets the lip height
+  wall_t: 1.6
+  rim_inset: 1.0         # duct rim overlaps the speaker face edge by this much
+  ceiling_clear: 1.0     # duct roof to the underside of the display
+  roof_angle: 35         # roof rise from horizontal = wall lean when printed mouth-down
+                         # (45 hugs the display; lower prints cleaner, longer duct)
+  speaker_margin: 1.0    # extra room above the speaker face, along the slope
+  lug: [9.0, 2.5]        # screw lug size and thickness, either side of the duct
+  lug_height: 4.0        # lug underside above the floor (boss height)
+  lug_hole: 3.4          # M3 x 8 into a 2.5 mm pilot in the floor boss
+  lug_pilot: 2.5
+  lug_pilot_skin: 0.6    # floor left under the pilot: 5.8 mm deep for the 5.5 mm an M3 x 8 needs
+  grille_slot: 4.0       # vertical slots in the front lip
+  grille_bar: 1.6
