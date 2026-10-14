@@ -13,6 +13,11 @@ The chin version sounds best: the speaker points straight at you. The compact
 version is about a third smaller in depth and height; the duct narrows the sound
 path to a 14 mm slot, which trims a little treble.
 
+**Build guide:** [build-guide.md](build-guide.md) covers the hardware list, printing,
+step-by-step assembly for both variants, and USB-C wiring.
+[build-guide.html](build-guide.html) is the same guide with a variant switch, to-scale
+side sections and a step checklist. Download it and open it in a browser.
+
 ## Shared design
 
 - **Facade.** The display's black glass border is uneven (left 3.06, right

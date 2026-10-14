@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>P4 Desk Enclosure Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a workshop build sheet. One column of reading width, a sticky variant
+   switch, to-scale section drawings, then hardware -> print -> assemble -> wire. */
+:root {
+  --paper: #f5f7f6;
+  --sheet: #ffffff;
+  --ink: #1b2730;
+  --ink-soft: #4a5a66;
+  --rule: #d5dde1;
+  --accent: #0a6c86;        /* plate / primary */
+  --accent-soft: #d8edf2;
+  --amber: #a85a06;         /* cautions */
+  --amber-soft: #fbecd8;
+  --part-body: #b9c4ca;
+  --part-plate: #0a6c86;
+  --part-display: #26333c;
+  --part-speaker: #c46a1c;
+  --part-duct: #6d8a3a;
+  --part-port: #7b4fa0;
+  --part-tab: #0e9fb0;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12191e; --sheet: #182229; --ink: #e3eaee; --ink-soft: #a7b6bf; --rule: #2d3b44;
+    --accent: #4cc1dc; --accent-soft: #163640; --amber: #f0a453; --amber-soft: #3a2a18;
+    --part-body: #52626c; --part-plate: #4cc1dc; --part-display: #8a9ba6; --part-speaker: #e48a3c;
+    --part-duct: #93b45c; --part-port: #b58ad8; --part-tab: #6fe0ec;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12191e; --sheet: #182229; --ink: #e3eaee; --ink-soft: #a7b6bf; --rule: #2d3b44;
+  --accent: #4cc1dc; --accent-soft: #163640; --amber: #f0a453; --amber-soft: #3a2a18;
+  --part-body: #52626c; --part-plate: #4cc1dc; --part-display: #8a9ba6; --part-speaker: #e48a3c;
+  --part-duct: #93b45c; --part-port: #b58ad8; --part-tab: #6fe0ec;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.6 var(--font-body);
+  padding-inline: 16px;
+  padding-block: 0 64px;
+}
+.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; color: var(--ink); }
+h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); font-weight: 800; font-stretch: 78%; line-height: 1.02; letter-spacing: -0.01em; }
+h2 { font-size: 1.65rem; font-weight: 750; font-stretch: 85%; line-height: 1.15; }
+h3 { font-size: 1.1rem; font-weight: 700; font-stretch: 90%; }
+p { margin: 0; max-width: 66ch; }
+.mono, code { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+a { color: var(--accent); text-underline-offset: 3px; }
+.eyebrow { font: 600 0.74rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+section { display: grid; gap: 18px; min-width: 0; }
+.lede { font-size: 1.12rem; color: var(--ink-soft); }
+
+/* header + variant switch */
+header.hero { padding-block: 48px 8px; display: grid; gap: 16px; }
+.specline { display: flex; flex-wrap: wrap; gap: 8px 20px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.switchbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--paper); border-bottom: 1px solid var(--rule);
+  padding-block: 10px; margin-inline: -16px; padding-inline: 16px;
+}
+.switchbar .inner { max-width: 860px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.switch { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; padding: 3px; gap: 3px; }
+.switch button {
+  font: 700 0.92rem/1 var(--font-display); font-stretch: 90%; letter-spacing: 0.01em;
+  border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer;
+  background: transparent; color: var(--ink);
+}
+.switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.switch button:focus-visible, .step input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.switch-note { font-size: 0.88rem; color: var(--ink-soft); }
+
+/* variant visibility */
+[data-variant="chin"] .only-compact, [data-variant="compact"] .only-chin { display: none !important; }
+
+/* drawings */
+.drawings { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+figure { margin: 0; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; display: grid; gap: 8px; min-width: 0; transition: opacity .2s; }
+figure.dim { opacity: 0.45; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 0.88rem; }
+figcaption b { font-family: var(--font-display); font-stretch: 90%; }
+figcaption span { font-family: var(--font-mono); color: var(--ink-soft); font-size: 0.8rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.84rem; color: var(--ink-soft); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+
+/* tables */
+.table-scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--sheet); }
+table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 600 0.72rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); background: var(--paper); }
+td.qty { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; width: 3.5rem; }
+td .sub { display: block; color: var(--ink-soft); font-size: 0.86rem; }
+tr.group td { font: 700 0.95rem var(--font-display); font-stretch: 90%; background: var(--accent-soft); color: var(--ink); }
+.tag { display: inline-block; font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); margin-left: 6px; vertical-align: 1px; }
+
+/* notes */
+.note { border-left: 4px solid var(--amber); background: var(--amber-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; display: grid; gap: 6px; max-width: 72ch; }
+.note b { color: var(--amber); font-family: var(--font-display); font-stretch: 90%; }
+
+/* steps */
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: step; }
+.step { display: grid; grid-template-columns: auto 1fr; gap: 14px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; counter-increment: step; }
+.step .num { display: grid; gap: 8px; justify-items: center; }
+.step .num::before { content: counter(step); font: 800 1.6rem/1 var(--font-display); font-stretch: 80%; color: var(--accent); }
+.step input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+.step .body { display: grid; gap: 6px; min-width: 0; }
+.step.done { opacity: 0.6; }
+.step.done h3 { text-decoration: line-through; text-decoration-thickness: 2px; }
+.parts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.parts span { font: 600 0.76rem/1 var(--font-mono); padding: 5px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper); }
+.progress { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-soft); }
+
+/* wiring */
+.pads { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.pad { background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.pad b { font: 800 1.3rem/1.1 var(--font-display); font-stretch: 85%; }
+.pad span { font-size: 0.88rem; color: var(--ink-soft); }
+
+footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 18px; display: grid; gap: 6px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="app" data-variant="chin">
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">Build guide · Waveshare ESP32-P4-WIFI6-Touch-LCD-7B</div>
+      <h1>P4 desk enclosure build</h1>
+      <p class="lede">How to print and put together the 45° desk enclosure for the Waveshare 7" ESP32-P4 touch display: the parts to buy, the files to print, and the assembly order for each variant, including wiring the back-panel USB-C port.</p>
+      <div class="specline">
+        <span>Screen tilt 45°</span><span>Facade window: visible area + 0.5 mm</span><span>Printer: Bambu Lab H2C, 330 × 320 mm bed</span>
+      </div>
+    </header>
+  </div>
+
+  <div class="switchbar">
+    <div class="inner">
+      <div class="switch" role="group" aria-label="Enclosure variant">
+        <button type="button" id="btn-chin" data-set="chin" aria-pressed="true">Chin speaker</button>
+        <button type="button" id="btn-compact" data-set="compact" aria-pressed="false">Compact ducted</button>
+      </div>
+      <span class="switch-note only-chin">186 × 136 × 137 mm · speaker under the screen, aimed at you</span>
+      <span class="switch-note only-compact">188 × 95 × 111 mm · speaker at the back, duct to a front grille</span>
+    </div>
+  </div>
+
+  <div class="wrap" style="margin-top:40px">
+
+    <section id="variants" aria-labelledby="h-variants">
+      <div class="eyebrow">The two variants</div>
+      <h2 id="h-variants">Side sections, to scale</h2>
+      <p>Both share the same front facade, display mounting, clamp tabs and back-panel USB-C port. They differ in where the speaker goes. The chin speaker sounds best because it points at you. The compact one is about a third smaller in depth and height. Its duct carries the sound under the display to a slot grille in the front lip.</p>
+      <div class="drawings">
+        <figure id="fig-chin"><div id="svg-chin"></div><figcaption><b>Chin speaker</b><span>186 W × 136 D × 137 H mm</span></figcaption></figure>
+        <figure id="fig-compact"><div id="svg-compact"></div><figcaption><b>Compact ducted</b><span>188 W × 95 D × 111 H mm</span></figcaption></figure>
+      </div>
+      <div class="legend" aria-label="Drawing key">
+        <span><i style="background:var(--part-plate)"></i>Front plate + top cap</span>
+        <span><i style="background:var(--part-body)"></i>Body</span>
+        <span><i style="background:var(--part-display)"></i>Display</span>
+        <span><i style="background:var(--part-tab)"></i>Clamp tabs</span>
+        <span><i style="background:var(--part-speaker)"></i>Speaker</span>
+        <span class="only-compact"><i style="background:var(--part-duct)"></i>Duct</span>
+        <span><i style="background:var(--part-port)"></i>USB-C port</span>
+      </div>
+    </section>
+
+    <section id="before" aria-labelledby="h-before">
+      <div class="eyebrow">Before you start</div>
+      <h2 id="h-before">Check two things</h2>
+      <div class="note">
+        <b>Not yet confirmed by a print</b>
+        <p><b style="color:inherit">USB-C socket cutout.</b> It's a 14.1 × 5.75 mm rounded rectangle (R1.3) in the 2.4 mm back wall, from your measurements. The clips are rated for a 2.5 mm panel, and a slightly thinner wall is fine for snap clips.</p>
+        <p><b style="color:inherit">Speaker standoffs.</b> They're Ø7.5 mm and sit in the speaker's corner notches. The notches need to be at least 8 mm across.</p>
+      </div>
+      <p>The glass pocket and window are already confirmed with the facade test frame. If you're printing in a new material or on another printer, print <code>p4_7b_facade_test_frame</code> first. It takes a few minutes. Press the glass in from behind and check for an even sliver of black glass around the screen.</p>
+    </section>
+
+    <section id="hardware" aria-labelledby="h-hardware">
+      <div class="eyebrow">Hardware</div>
+      <h2 id="h-hardware">What you need</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Qty</th><th>Part</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr class="group"><td colspan="3">Electronics</td></tr>
+            <tr><td class="qty">1</td><td>Waveshare ESP32-P4-WIFI6-Touch-LCD-7B<span class="sub">7" 1024 × 600 touch display, glass 164.28 × 99.17 mm</span></td><td>The display</td></tr>
+            <tr><td class="qty">1</td><td>Box speaker, 100 × 45 × 20.75 mm<span class="sub">Two cones, four Ø6.2 mm corner ears 10 mm behind the cone face, centres 91.2 × 36.2 mm</span></td><td>Audio, into the board's PH2.0 <code>SPK</code> header</td></tr>
+            <tr><td class="qty">1</td><td>Snap-in panel USB-C socket<span class="sub">16.7 × 10.3 mm oval bezel, 14.1 × 5.75 mm panel cutout, 4 wires (V, D−, D+, G) to a PH2.0 plug</span></td><td>Power and data socket in the back wall, no screws</td></tr>
+            <tr><td class="qty">1</td><td>Right-angle USB-C cable with a flat ribbon<span class="sub">Head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm</span></td><td>Board's middle <code>USB</code> port, spliced to the socket's wires</td></tr>
+
+            <tr class="group"><td colspan="3">Screws</td></tr>
+            <tr><td class="qty">4</td><td>M2.5 × 6 screw</td><td>Clamp tabs into the display's threaded standoffs</td></tr>
+            <tr><td class="qty"><span class="only-chin">8</span><span class="only-compact">12</span></td><td>M3 × 8 pan-head screw<span class="sub">The only M3 pan-head length you need</span></td><td>4 for the clamp tabs into the plate's columns, 4 for the speaker ears<span class="only-compact"><span class="sub">+ 4 for the duct lugs into the floor bosses</span></span></td></tr>
+            <tr><td class="qty">4</td><td>M3 × 8 countersunk screw, 90° head</td><td>Front plate to body, through the side walls</td></tr>
+            <tr><td class="qty">4</td><td>M3 washer, 7 mm OD or larger<span class="sub">A 9 mm fender washer is better; it has to bridge the 6.2 mm ear hole</span></td><td>Clamping the speaker ears</td></tr>
+
+            <tr class="group"><td colspan="3">Optional</td></tr>
+            <tr><td class="qty">4</td><td>Rubber foot, 10 mm diameter</td><td>1 mm recesses under the base</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>All M3 screws self-tap into 2.5 mm pilot holes in the plastic. You'll also need a screwdriver to match, a soldering iron and heat-shrink for splicing the USB-C wires, and flush cutters.</p>
+    </section>
+
+    <section id="printing" aria-labelledby="h-printing">
+      <div class="eyebrow">Printing</div>
+      <h2 id="h-printing">Files and orientation</h2>
+      <p>The easiest route is the Bambu Studio project, which has each part on its own plate: <code class="only-chin">chin-speaker/print/p4_7b_bambu_project.3mf</code><code class="only-compact">compact-ducted/print/p4_7b_compact_bambu_project.3mf</code>. Every part is already in its print orientation, and none need supports.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Part</th><th>Orientation</th><th>Why it prints cleanly</th></tr></thead>
+          <tbody>
+            <tr><td>Front plate<span class="sub mono only-chin">p4_7b_front_plate_print</span><span class="sub mono only-compact">p4_7b_compact_front_plate_print</span></td><td>Facade on the bed</td><td>Smooth front face. The top cap rises at 45°, and the sideways pilot holes are teardrops.</td></tr>
+            <tr><td>Body<span class="sub mono only-chin">p4_7b_body_print</span><span class="sub mono only-compact">p4_7b_compact_body_print</span></td><td>Standing on its floor</td><td>Open-topped, so there's no roof to bridge. The side holes and countersinks are teardrops.</td></tr>
+            <tr class="only-compact"><td>Duct<span class="sub mono">p4_7b_compact_duct_print</span></td><td>Mouth on the bed</td><td>The roof leans 35°. The standoffs and lugs grow from the bed or the duct wall.</td></tr>
+            <tr><td>Clamp tabs ×4<span class="sub mono only-chin">p4_7b_clamp_tabs_print</span><span class="sub mono only-compact">p4_7b_compact_clamp_tabs_print</span></td><td>Flat</td><td>Small flat parts.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Use PLA or PETG, 0.2 mm layers and 3+ walls. Print the front plate in black: the 0.5 mm of black glass around the screen then blends into the frame.</p>
+    </section>
+
+    <section id="assembly" aria-labelledby="h-assembly">
+      <div class="eyebrow">Assembly</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px">
+        <h2 id="h-assembly">Put it together</h2>
+        <span class="progress" id="progress" aria-live="polite"></span>
+      </div>
+      <p>Work with the front plate lying face-down on a soft cloth. Tick each step off as you go; your progress is remembered in this browser.</p>
+
+      <ol class="steps only-chin" id="steps-chin">
+        <li class="step" data-step="chin-1"><div class="num"><input type="checkbox" id="chin-1" aria-label="Step done"></div><div class="body">
+          <h3>Mount the speaker on the plate</h3>
+          <p>Set the speaker into the ring on the back of the plate, cones toward the grille. Each corner ear drops over a standoff spigot. Fix each ear with an M3 × 8 and a washer.</p>
+          <div class="parts"><span>4 × M3 × 8 pan</span><span>4 × washer</span></div></div></li>
+        <li class="step" data-step="chin-2"><div class="num"><input type="checkbox" id="chin-2" aria-label="Step done"></div><div class="body">
+          <h3>Seat the display in the pocket</h3>
+          <p>Lower the display into the pocket from behind, glass first, until it rests against the facade. The wider black border goes to the bottom, toward the speaker chin.</p></div></li>
+        <li class="step" data-step="chin-3"><div class="num"><input type="checkbox" id="chin-3" aria-label="Step done"></div><div class="body">
+          <h3>Fit the four clamp tabs</h3>
+          <p>At each corner, lay a tab across the display's standoff and the column next to it. Drive an M2.5 × 6 into the standoff, then an M3 × 8 through the slot into the column. The tabs are identical, because the slot covers both column spacings. Snug them up evenly so the glass sits flat.</p>
+          <div class="parts"><span>4 × clamp tab</span><span>4 × M2.5 × 6</span><span>4 × M3 × 8 pan</span></div></div></li>
+        <li class="step" data-step="chin-4"><div class="num"><input type="checkbox" id="chin-4" aria-label="Step done"></div><div class="body">
+          <h3>Connect the speaker</h3>
+          <p>Plug the speaker lead into the PH2.0 <code>SPK</code> header at the top edge of the board. The lead needs about 12 cm to get there.</p></div></li>
+        <li class="step" data-step="chin-5"><div class="num"><input type="checkbox" id="chin-5" aria-label="Step done"></div><div class="body">
+          <h3>Install the USB-C socket</h3>
+          <p>Feed the socket's wires through the cutout in the back wall from outside, then push the socket in until its clips snap behind the wall. Splice its wires to the right-angle cable (see <a href="#wiring">Wiring the USB-C port</a>).</p>
+          <div class="parts"><span>USB-C socket</span></div></div></li>
+        <li class="step" data-step="chin-6"><div class="num"><input type="checkbox" id="chin-6" aria-label="Step done"></div><div class="body">
+          <h3>Plug in the right-angle cable</h3>
+          <p>Plug its head into the board's middle <code>USB</code> port, on the left edge seen from the front, with the ribbon pointing back toward the body.</p></div></li>
+        <li class="step" data-step="chin-7"><div class="num"><input type="checkbox" id="chin-7" aria-label="Step done"></div><div class="body">
+          <h3>Close the enclosure</h3>
+          <p>Lower the plate onto the body. The top cap lands on the back wall, with its rib just inside it. Fit the four countersunk M3 × 8 through the side walls into the plate's bosses.</p>
+          <div class="parts"><span>4 × M3 × 8 countersunk</span></div></div></li>
+        <li class="step" data-step="chin-8"><div class="num"><input type="checkbox" id="chin-8" aria-label="Step done"></div><div class="body">
+          <h3>Add the feet</h3>
+          <p>Press the rubber feet into the four recesses under the base.</p>
+          <div class="parts"><span>4 × rubber foot</span></div></div></li>
+      </ol>
+
+      <ol class="steps only-compact" id="steps-compact">
+        <li class="step" data-step="cmp-1"><div class="num"><input type="checkbox" id="cmp-1" aria-label="Step done"></div><div class="body">
+          <h3>Mount the speaker on the duct</h3>
+          <p>Hold the speaker's cones against the duct's rear rim. Each corner ear drops over a standoff spigot. Fix each ear from behind with an M3 × 8 and a washer.</p>
+          <div class="parts"><span>4 × M3 × 8 pan</span><span>4 × washer</span></div></div></li>
+        <li class="step" data-step="cmp-2"><div class="num"><input type="checkbox" id="cmp-2" aria-label="Step done"></div><div class="body">
+          <h3>Fix the duct in the body</h3>
+          <p>Set the duct on the floor with its mouth pressed against the inside of the front lip, behind the slot grille. Screw its four lugs to the floor bosses.</p>
+          <div class="parts"><span>4 × M3 × 8 pan</span></div></div></li>
+        <li class="step" data-step="cmp-3"><div class="num"><input type="checkbox" id="cmp-3" aria-label="Step done"></div><div class="body">
+          <h3>Install the USB-C socket</h3>
+          <p>Feed the socket's wires through the cutout in the back wall from outside, then push the socket in until its clips snap behind the wall.</p>
+          <div class="parts"><span>USB-C socket</span></div></div></li>
+        <li class="step" data-step="cmp-4"><div class="num"><input type="checkbox" id="cmp-4" aria-label="Step done"></div><div class="body">
+          <h3>Seat the display in the pocket</h3>
+          <p>Lay the plate face-down and lower the display into the pocket from behind, glass first, until it rests against the facade. The wider black border goes to the bottom.</p></div></li>
+        <li class="step" data-step="cmp-5"><div class="num"><input type="checkbox" id="cmp-5" aria-label="Step done"></div><div class="body">
+          <h3>Fit the four clamp tabs</h3>
+          <p>At each corner, lay a tab across the display's standoff and the column beside it. Drive an M2.5 × 6 into the standoff, then an M3 × 8 into the column. Snug them up evenly so the glass sits flat.</p>
+          <div class="parts"><span>4 × clamp tab</span><span>4 × M2.5 × 6</span><span>4 × M3 × 8 pan</span></div></div></li>
+        <li class="step" data-step="cmp-6"><div class="num"><input type="checkbox" id="cmp-6" aria-label="Step done"></div><div class="body">
+          <h3>Connect the speaker and USB</h3>
+          <p>Plug the speaker lead into the <code>SPK</code> header at the top edge of the board. Splice the USB-C socket's wires to the right-angle cable (see <a href="#wiring">Wiring the USB-C port</a>), then plug the cable into the board's middle <code>USB</code> port with the ribbon pointing back.</p></div></li>
+        <li class="step" data-step="cmp-7"><div class="num"><input type="checkbox" id="cmp-7" aria-label="Step done"></div><div class="body">
+          <h3>Close the enclosure</h3>
+          <p>Lower the plate onto the body. The top cap lands on the back wall, with its rib just inside it. Fit the four countersunk M3 × 8 through the side walls.</p>
+          <div class="parts"><span>4 × M3 × 8 countersunk</span></div></div></li>
+        <li class="step" data-step="cmp-8"><div class="num"><input type="checkbox" id="cmp-8" aria-label="Step done"></div><div class="body">
+          <h3>Add the feet</h3>
+          <p>Press the rubber feet into the four recesses under the base.</p>
+          <div class="parts"><span>4 × rubber foot</span></div></div></li>
+      </ol>
+    </section>
+
+    <section id="wiring" aria-labelledby="h-wiring">
+      <div class="eyebrow">Wiring</div>
+      <h2 id="h-wiring">Wiring the USB-C port</h2>
+      <p>The socket comes with four wires ending in a 2.0 mm-pitch PH2.0 plug, in the order V, D−, D+, G. The board's only USB input is its USB-C port, so splice the socket's wires to the right-angle cable that plugs into it. Cut that cable to length, leaving enough slack to reach the back wall. Join wire to matching wire, solder, and cover each joint with heat-shrink.</p>
+      <div class="pads">
+        <div class="pad"><b>V</b><span>5 V (VBUS)</span><span class="mono">red</span></div>
+        <div class="pad"><b>D−</b><span>Data −</span><span class="mono">white</span></div>
+        <div class="pad"><b>D+</b><span>Data +</span><span class="mono">blue or green</span></div>
+        <div class="pad"><b>G</b><span>Ground</span><span class="mono">black</span></div>
+      </div>
+      <div class="note">
+        <b>Don't plug the PH2.0 plug into the board</b>
+        <p>It looks exactly like the board's 4-pin I2C, UART, CAN and RS485 headers, but those carry signals, not USB. The socket's V wire would put 5 V where it doesn't belong.</p>
+      </div>
+      <div class="note">
+        <b>Check before you power it</b>
+        <p>Wire colours aren't standard across cables. Confirm each wire with a multimeter in continuity mode, against the plug pins, before soldering. With nothing connected, check there's no continuity between V and G.</p>
+      </div>
+      <p>The socket carries USB 2.0, which covers everything the board's middle port uses: power, flashing and serial logs. Some USB-C sockets with only four wires lack the 5.1 kΩ resistors a USB-C charger looks for. If a C-to-C cable doesn't power it, use a USB-A to USB-C cable.</p>
+    </section>
+
+    <section id="notes" aria-labelledby="h-notes">
+      <div class="eyebrow">Good to know</div>
+      <h2 id="h-notes">After it's closed</h2>
+      <div class="table-scroll">
+        <table>
+          <tbody>
+            <tr><td><b>Power switch</b></td><td>It ends up inside the case. Leave it on before closing up.</td></tr>
+            <tr><td><b>RESET / BOOT</b></td><td>These are inside too. Flashing over USB normally works without them.</td></tr>
+            <tr><td><b>Microphones</b></td><td>The two mics face into the case. A 7-hole cluster in the bezel under each one lets sound in.</td></tr>
+            <tr class="only-compact"><td><b>Duct</b></td><td>The speaker's sound stays inside the duct and comes out a 98 × 14 mm mouth, behind 17 slots in the front lip. That keeps the case from buzzing and keeps the speaker away from the mics.</td></tr>
+            <tr><td><b>Vents</b></td><td>Vertical slots near the top of the back wall let warm air out.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>Models, print files and the parametric generator: <a href="https://github.com/derhally/3dmodels" rel="noopener">github.com/derhally/3dmodels</a>, folder <span class="mono">waveshare-esp32-p4-wifi6-touch-lcd-7b</span>.</span>
+      <span>Every dimension lives in <span class="mono">common/common.yaml</span> and each variant's <span class="mono">params.yaml</span>.</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- to-scale side sections, built from the model's own dimensions (mm) ----
+  const c45 = Math.SQRT1_2;
+  const variants = {
+    chin: {
+      h0: 18.57, L: 167.8, D: 135.83, Zc: 137.22,
+      glass: [57.05, 156.22], pcb: [58.63, 155.65], holes: [62.63, 151.65],
+      speakerPlate: [5.9, 50.9],
+    },
+    compact: {
+      h0: 25.7, L: 120.02, D: 95.1, Zc: 110.6,
+      glass: [8.07, 107.24], pcb: [9.65, 106.67], holes: [13.65, 102.67],
+      duct: [[2.4, 2.4], [61.7, 2.4], [61.7, 49.6], [18.8, 19.6], [2.4, 19.6]],
+      speakerBack: { y: [61.7, 82.45], z: [3.0, 48.0] },
+      mouth: [4.0, 18.0],
+    },
+  };
+  const t = 5.6, f = 1.6, wall = 2.4;
+  const VB = { w: 150, h: 150, pad: 6 };
+
+  function build(v) {
+    const pw = (s, d) => [s * c45 + d * c45, v.h0 + s * c45 - d * c45];
+    const X = (y) => VB.pad + y;
+    const Y = (z) => VB.h - VB.pad - z;
+    const pts = (arr) => arr.map(([y, z]) => `${X(y).toFixed(2)},${Y(z).toFixed(2)}`).join(" ");
+    const slab = (s0, s1, d0, d1) => pts([pw(s0, d0), pw(s1, d0), pw(s1, d1), pw(s0, d1)]);
+    const poly = (p, fill, extra = "") => `<polygon points="${p}" fill="var(${fill})" ${extra}/>`;
+    const rect = (y0, y1, z0, z1, fill, extra = "") => poly(pts([[y0, z0], [y1, z0], [y1, z1], [y0, z1]]), fill, extra);
+    const Yc = v.L * c45;
+    let g = "";
+    // body: floor, front lip, back wall (section through the middle)
+    g += rect(0, v.D, 0, wall, "--part-body");
+    if (v.mouth) {
+      g += rect(0, wall, 0, v.mouth[0], "--part-body");
+      g += rect(0, wall, v.mouth[1], v.h0, "--part-body");
+    } else {
+      g += rect(0, wall, 0, v.h0, "--part-body");
+    }
+    g += rect(v.D - wall, v.D, 0, v.Zc - wall, "--part-body");
+    // front plate along the slope, plus its top cap
+    g += poly(slab(0, v.L, 0, t), "--part-plate", 'opacity="0.9"');
+    g += poly(pts([[Yc, v.Zc], [v.D, v.Zc], [v.D, v.Zc - wall], [Yc + wall, v.Zc - wall]]), "--part-plate", 'opacity="0.9"');
+    // display: glass+LCD, PCB, rear components
+    g += poly(slab(v.glass[0], v.glass[1], f, f + 5.7), "--part-display");
+    g += poly(slab(v.pcb[0], v.pcb[1], f + 7.2, f + 8.8), "--part-display");
+    g += poly(slab(v.pcb[0] + 9, v.pcb[1] - 9, f + 8.8, f + 15.3), "--part-display", 'opacity="0.55"');
+    // clamp tabs on the standoffs
+    for (const h of v.holes) g += poly(slab(h - 3.5, h + 3.5, f + 15, f + 18), "--part-tab");
+    // speaker
+    if (v.speakerPlate) g += poly(slab(v.speakerPlate[0], v.speakerPlate[1], t, t + 20.75), "--part-speaker");
+    if (v.duct) g += poly(pts(v.duct), "--part-duct", 'opacity="0.85"');
+    if (v.speakerBack) g += rect(v.speakerBack.y[0], v.speakerBack.y[1], v.speakerBack.z[0], v.speakerBack.z[1], "--part-speaker");
+    // snap-in USB-C socket: oval bezel outside the back wall, body through the cutout
+    g += rect(v.D, v.D + 2, 10.85, 21.15, "--part-port");
+    g += rect(v.D - 12, v.D, 13.35, 18.65, "--part-port");
+    // desk line
+    g += `<line x1="0" x2="${VB.w}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink-soft)" stroke-width="0.5" stroke-dasharray="2 2"/>`;
+    return `<svg viewBox="0 0 ${VB.w} ${VB.h}" role="img" aria-label="Side section of the enclosure, drawn to scale">${g}</svg>`;
+  }
+  document.getElementById("svg-chin").innerHTML = build(variants.chin);
+  document.getElementById("svg-compact").innerHTML = build(variants.compact);
+
+  // ---- variant switch ----
+  const app = document.getElementById("app");
+  const buttons = document.querySelectorAll(".switch button");
+  function store(op, key, val) {
+    try { return op === "get" ? localStorage.getItem(key) : localStorage.setItem(key, val); } catch (e) { return null; }
+  }
+  function setVariant(name) {
+    app.dataset.variant = name;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === name)));
+    document.getElementById("fig-chin").classList.toggle("dim", name !== "chin");
+    document.getElementById("fig-compact").classList.toggle("dim", name !== "compact");
+    store("set", "p4-variant", name);
+    updateProgress();
+  }
+  buttons.forEach((b) => b.addEventListener("click", () => setVariant(b.dataset.set)));
+
+  // ---- step checklist ----
+  const steps = document.querySelectorAll(".step");
+  function updateProgress() {
+    const list = document.getElementById(app.dataset.variant === "chin" ? "steps-chin" : "steps-compact");
+    const all = list.querySelectorAll("input[type=checkbox]");
+    const done = [...all].filter((i) => i.checked).length;
+    document.getElementById("progress").textContent = `${done} of ${all.length} steps done`;
+  }
+  steps.forEach((li) => {
+    const box = li.querySelector("input");
+    const key = "p4-step-" + li.dataset.step;
+    box.checked = store("get", key) === "1";
+    li.classList.toggle("done", box.checked);
+    box.addEventListener("change", () => {
+      li.classList.toggle("done", box.checked);
+      store("set", key, box.checked ? "1" : "0");
+      updateProgress();
+    });
+  });
+
+  const fromHash = location.hash.replace("#", "");
+  const start = fromHash === "compact" || fromHash === "chin" ? fromHash : (store("get", "p4-variant") || "chin");
+  setVariant(start === "compact" ? "compact" : "chin");
+})();
+</script>
+</body>
+</html>
