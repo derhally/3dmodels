@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 result.json
+
+# local-only MCP server config (machine-specific paths)
+.mcp.json
