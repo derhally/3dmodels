@@ -1,0 +1,9 @@
+# Cross-slot hook print files: the owner's hook (cross_slot_hook.step) plus crush
+# ribs on the tongue's flared face, exported as a left hook and a mirror-image
+# right hook, both lying on their straight side. Hook values are in ../panel.yaml.
+crush_ribs:
+  count: 3              # assumed: spread over the hook height
+  height: 0.25          # assumed: proud of the flare, 0.1 mm interference with the 0.15 pocket clearance
+  base: 1.0             # assumed: rib width on the flare face
+  length: 3.0           # assumed: flat top length along the hook height, plus 45 degree ramps at each end
+  lower_flank: 60       # assumed: degrees from horizontal of the rib's down-facing flank when printed

@@ -1,0 +1,202 @@
+# Omniwall panel
+
+Reference for the Omniwall wall panel that printed mounts attach to. It records
+the panel's slot and peg-hole geometry, the values that follow from it, and what
+is still unknown. Designs that mount to the panel should take their numbers from
+[panel.yaml](panel.yaml) rather than retyping them.
+
+## What the panel is
+
+A flat panel with a repeating 25.4 mm (1 inch) grid. Each grid cell is boxed in
+by four slots, two vertical and two horizontal, and has a round peg hole in its
+middle. Neighbouring cells share slots: the right-hand vertical slot of one cell
+is the left-hand slot of the next.
+
+![Omniwall panel: 4 × 4 cells to scale, and one cell enlarged with every dimension](panel-diagram.svg)
+
+[panel-diagram.svg](panel-diagram.svg) shows a 4 × 4 block of cells to scale and
+one cell enlarged with all the dimensions below. It's generated from
+[panel.yaml](panel.yaml) by [diagram.py](diagram.py) (`python diagram.py`, needs
+`pyyaml`), so rerun it after changing a value there.
+
+## Given dimensions
+
+These come from the project brief (stated by the panel's owner, not measured
+for this document).
+
+| Feature | Value |
+|---|---|
+| Slot width | 3.0 mm |
+| Slot length | 15.5 mm |
+| Vertical slot spacing (left edge to left edge) | 25.4 mm |
+| Horizontal slot spacing (top edge to top edge) | 25.4 mm |
+| Vertical and horizontal slots | Each set parallel to itself, the two sets at right angles |
+| Peg hole diameter | 6.2 mm |
+| Peg hole centre to inner edge of the slots | 11.2 mm |
+| Panel material | 18 gauge steel |
+| Panel thickness | 1.55 mm (measured with calipers) |
+
+## Derived geometry
+
+The enlarged cell in [the diagram](panel-diagram.svg) shows each of these.
+Coordinates below put the origin at one peg hole's centre, x to the right and y
+up. P = 25.4 mm (pitch), w = 3.0 mm (slot width), L = 15.5 mm (slot length).
+
+**Clear gap between two parallel slots.** Edge-to-edge spacing minus one slot
+width: P − w = 25.4 − 3.0 = **22.4 mm**.
+
+**The hole is centred in its cell.** Half that gap is 22.4 / 2 = 11.2 mm, which
+is exactly the stated hole-to-slot distance. So the two given numbers agree, and
+the hole sits midway between the slots on both axes.
+
+**Hole centre to slot centreline.** 11.2 + w/2 = 11.2 + 1.5 = **12.7 mm** = P/2.
+The slot centrelines therefore lie on the grid lines at x, y = ±12.7 mm (+ n·25.4),
+and the holes on a 25.4 mm grid offset by half a pitch from them.
+
+**Hole edge to slot inner edge.** 11.2 − 6.2/2 = 11.2 − 3.1 = **8.1 mm** of solid
+panel between the hole and each slot.
+
+**Slot positions around the hole at the origin** (slots assumed centred on the
+cell edge, see open questions):
+
+| Slot | x range | y range |
+|---|---|---|
+| Right vertical | 11.2 to 14.2 | −7.75 to +7.75 |
+| Left vertical | −14.2 to −11.2 | −7.75 to +7.75 |
+| Top horizontal | −7.75 to +7.75 | 11.2 to 14.2 |
+| Bottom horizontal | −7.75 to +7.75 | −14.2 to −11.2 |
+
+The ±7.75 is L/2 = 15.5 / 2. Every other cell is this pattern shifted by whole
+multiples of 25.4 mm in x and y.
+
+**Material at the grid corners** (same centring assumption):
+
+- A slot ends 7.75 mm from the cell's centreline, and the next slot along the
+  same grid line starts at 25.4 − 7.75 = 17.65 mm. That leaves
+  17.65 − 7.75 = **9.9 mm** of panel between the ends of two in-line slots.
+- The end of a vertical slot (y = 7.75) is 11.2 − 7.75 = **3.45 mm** short of the
+  near edge of the horizontal slot band (y = 11.2), and likewise the other way
+  round. Nearest corner to corner, a vertical and a horizontal slot are
+  √(3.45² + 3.45²) ≈ **4.88 mm** apart.
+
+## Open questions
+
+None of these were given, so no value has been assumed for them. Measure them
+(calipers) before a design depends on one.
+
+- **Space behind the panel.** How far it stands off the wall, which limits how
+  deep a hook can go.
+- **Slot ends.** Square, or rounded (full 1.5 mm radius or something smaller).
+  This changes how long a tab can be and still seat.
+- **Slot placement along the cell edge.** The derived table assumes each slot is
+  centred on its cell edge (in line with the hole). It is the natural reading but
+  wasn't stated.
+- **Peg hole depth.** Through hole or blind, and any chamfer or countersink on
+  the front.
+- **Edge chamfers or radii on the slots,** front or back.
+- **Manufacturing tolerance** on slot width, hole diameter and pitch, and whether
+  the pitch holds across a whole panel or between joined panels.
+- **Panel size and edge margin.** How many cells per panel and the distance from
+  the outermost slots to the panel edge.
+- **Load rating.**
+
+## Official hooks (print-tested 2026-10-17)
+
+The cross-slot and one-slot hooks below, as built by `hook/build_hooks.py` from
+[panel.yaml](panel.yaml), are the official design. Both were printed with the
+test plate (`pocket-test/`) and fit, snap and hold. Print files are in
+`hook/print/`, lying on their flat side with no supports, and in the Bambu Studio
+project `print/omniwall_test_parts.3mf`. Earlier versions are kept in
+`hook/old-finger-snap/` and `hook/old-offset-head/` for reference only. Objects
+take the pocket in `dovetail_mount.pocket`, built by `pocket_void()` in
+`hook_geometry.py`.
+
+## Cross-slot hook (print-tested)
+
+The hook in use on printed mounts. The owner's Shapr3D model is
+[hook/cross_slot_hook.step](hook/cross_slot_hook.step); its measured values are
+in `cross_slot_hook` in [panel.yaml](panel.yaml). The printed version keeps
+everything behind the panel and swaps the front for a symmetric dovetail (below);
+the print-ready file, lying on its flat side, is in `hook/print/`.
+
+It engages two vertical slots in the same column. The top bar goes through the
+upper slot and rests on its bottom edge, with a finger hanging behind the panel.
+The finger leaves a 1.5 mm gap for the 1.55 mm steel, so the hook clamps the
+panel and doesn't wobble. The foot goes through the slot below and sits under
+that slot's top edge, so a bump from underneath can't lift the mount off. Bar to
+foot is 10.2 mm against 9.9 mm of panel between the slots.
+
+The owner's model has a half-dovetail tongue on the front (a 2.95 mm stem
+flaring at 29° to a 7.35 mm face). Its bump snaps couldn't click: a bump on one
+face only pushes the object into its clearance. The printed hook replaces it with
+the dovetail and snap of the Kong 3D Skadis tray mount, measured from its 3MF:
+
+- A spine 2.5 mm deep in front of the panel, the same 2.95 mm width as the hook,
+  like the original hook's stem. The hook goes on by putting the finger
+  through the upper slot and swinging the foot into the lower one. That tilts
+  the top of the spine into the upper slot, so it has to fit the 3.0 mm slot.
+  A 4.7 mm spine (Kong's) stopped the foot reaching its slot. Objects have a
+  channel for the spine in their back, so they sit flush on the panel.
+- A symmetric 45° dovetail head centred on the hook: 2.95 mm head, as wide as
+  the hook, with a 1.45 mm neck (a 0.75 mm groove each side), 3.7 mm deep and a
+  45° lead-in chamfer at the top. The whole front is one 2.95 mm bar, so the
+  hook prints flat with no support. The head's flat sides run 2.0 mm front to
+  back (Kong uses 0.55) because the head's side is the strip on the bed:
+  0.55 mm lifted and printed blobby, and 1.5 mm still lifted sometimes.
+  Kong's head is 4.7 mm wide. A centred 4.7 mm head would overhang both sides
+  and need support under the whole hook.
+  Exposed edges have 0.5 mm chamfers like the original hook (0.2 mm on the
+  head's front corner, so the snap still has its flat to bear on). The bed side
+  and the bottom end have none, so the first layers keep their full footprint.
+- Snap: a rounded notch 0.23 mm deep across each side of the head, 2.75 mm below
+  the top. Each notch stops 0.5 mm short of the head's front, so it doesn't cut
+  the strip on the bed in two. The object's pocket is the spine channel and the
+  dovetail, with 0.25 mm per side clearance, open at the bottom and closed at
+  the top. It has a rounded ridge 0.333 mm tall on each side wall, also 2.75 mm
+  below the top, ending 0.2 mm behind the notch's end. The ridges squeeze the
+  head by 0.08 mm a side over the last 2 mm of travel and click into the
+  notches. Because they pinch from both sides, the clearance can't absorb them.
+  The pocket's lips grip 0.5 mm behind each side of the head (Kong 0.75).
+
+Both copies of a hook are the same part (no mirrored pair), and the head sits
+on the slot centre, so objects line up with the slot grid. The pockets sit a
+whole number of 25.4 mm cells apart. `pocket-test/` has a test plate for the
+fit; `hook_geometry.py` builds the hooks, the head and the pocket from the same
+numbers. `build_bambu_project.py` packs both hooks and the test plate into a
+Bambu Studio project (`print/omniwall_test_parts.3mf`), one part per plate.
+
+## One-slot hook (print-tested)
+
+The owner's 1u hook, [hook/one_slot_hook.step](hook/one_slot_hook.step),
+measured as `one_slot_hook` in [panel.yaml](panel.yaml). It mounts in a single
+slot, so an object can sit within one cell. A finger goes up behind the panel
+above the slot, and the body fills the slot's full 15.5 mm height. A cavity open
+to the back lets the foot flex as the body snaps into the slot.
+
+The printed version (`hook/print/one_slot_hook_dovetail`) carries the same
+dovetail front as the cross-slot hook, in the same place relative to the panel,
+so one pocket fits either hook. To make room for the spine, the cavity now ends
+6.45 mm from the back instead of 7.51. The foot is thinned from 4.0 to 3.44 mm
+so the shorter foot flexes about as easily as before. The finger and the top of the body have 0.5 mm
+chamfers on the side facing up when printing and on the finger's top corners.
+The foot also reaches 0.8 mm below the slot, with a 1.5 mm notch cut up into
+it for the slot's bottom rim; the dovetail front reaches down to the same
+bottom. The back of the foot's bottom is one 25° ramp from the top of its
+lead-in to the notch. Pushing the bottom of the hook in, the ramp rides over the
+rim, the foot flexes up into the cavity, and it drops with the rim in the notch.
+The notch's front edge has a 0.3 mm chamfer to guide the rim in.
+
+## Designing mounts for it
+
+- Size printed parts that go into the panel with a clearance and test-print the
+  fit first, as the repo's [AGENTS.md](../AGENTS.md) asks for critical fits.
+  The official hooks above are the print-tested reference; record new tested
+  fits here. Tested so far: the dovetail pocket (0.25 mm per side, 0.15 mm to
+  the spine and floor, 0.333 mm snap ridges), the 1.5 mm clamp on the 1.55 mm
+  steel, and the one-slot hook's 0.8 mm rim notch.
+- Tabs into slots must be narrower than 3.0 mm and shorter than 15.5 mm; how much
+  smaller depends on the slot ends and the fit test.
+- Pegs into the holes must be under Ø6.2 mm, again by an amount the fit test
+  sets.
+- Mount features repeat at 25.4 mm, so a mount can use several slots or holes on
+  the same grid for stiffness and to stop it rotating.
