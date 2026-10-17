@@ -37,7 +37,8 @@ drawer:
   wall: 2.0                # assumed: side and rear walls
   floor: 2.0               # assumed
   front_thickness: 6.0     # assumed: front plate (carries the lip and label holder; its bottom front edge pivots on the sill)
-  top_gap: 1.0             # assumed: plate top below the roof; its back top corner rises 0.4 while tilting (checked in build)
+  top_gap: 0.5              # given (Zeid, 2026-10-17: smaller gap above the face; was 1.0): plate top below the roof. Only matters while the plate is inside the housing (closed or sliding level); tilting and lifting happen with the plate outside
+  corner_radius: 4.0       # given (Zeid, 2026-10-17, approved in SolidCraft): front plate's top two corners, cut along the whole drawer so the side walls' outer top edge follows the curve
   headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or lifted are the lower shoulder)
   shoulder_length: 30      # derived: rear walls lowered over this length; >= the drawer inside the housing when lifted at the notch (26.0) + margin
   lift_clearance: 0.5      # assumed: lowered rear walls stay this far under the roof when lifted into the exit channel

@@ -305,6 +305,15 @@ def drawer():
     if LB["blend"] > 0:
         d, nl = blend_label(d, (x0 + x1) / 2)
         BLENDS.append(f"label holder blend r {LB['blend']}: {nl} outside edges at the face")
+    r = DR["corner_radius"]
+    if r > 0:
+        # Round the face's top corners: cut the square corner outside a radius-r arc along the whole drawer.
+        L = D - y_back + 2
+        for xc, sx in ((x0 + r, -1), (x1 - r, 1)):
+            block = Pos(xc + sx * (r + 1) / 2, y_back - 1 + L / 2, plate_top - r + (r + 1) / 2) * Box(r + 1, L, r + 1)
+            arc = Pos(xc, y_back - 1 + L / 2, plate_top - r) * Rot(90, 0, 0) * Cylinder(r, L + 2)
+            d = solid(d - (block - arc))
+        BLENDS.append(f"front top corners r {r}")
     d.label = "drawer"
     return d
 

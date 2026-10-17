@@ -11,7 +11,7 @@ Two sizes so far, which tile together (same height and depth):
 | | 3 cells × 2 rows (this folder) | 2 cells × 2 rows ([`2x2/`](2x2/)) |
 |---|---|---|
 | Housing W × D × H, mm | 75.9 × 84 × 50.5 | 50.5 × 84 × 50.5 |
-| Drawer, outside W × L × H | 73.1 × 80.5 × 44.5 | 47.7 × 80.5 × 44.5 |
+| Drawer, outside W × L × H | 73.1 × 80.5 × 45.0 | 47.7 × 80.5 × 45.0 |
 | Drawer inside | 66.5 wide × 65.5 long × 40 tall (walls 2, floor 2) | 41.1 wide, otherwise the same |
 | Hooks | 2 columns, 1 or 2 rows | 1 column on the centre line, 1 or 2 rows |
 | Files | `step/`, `print/arc_drawer_*` | `2x2/step/`, `2x2/print/arc_drawer_2x2_*` |
@@ -73,9 +73,11 @@ column of the back plate to check this pocket before printing the housing.
 - **Stop and tilt.** 56 mm out, the pins reach the end of the groove. The groove
   continues as an arc centred on the sill (the floor's front edge), so the
   drawer rocks forward on the sill and the pins ride up the arc until it ends at
-  30°. The arc is closed: the drawer cannot fall out. The front plate's top
-  back corner rises 0.4 mm while tilting and clears the roof by 0.6 mm; the
-  drawer of the unit above, tilted the same way, clears this drawer's scoop.
+  30°. The arc is closed: the drawer cannot fall out. The face is already out
+  of the housing when it tilts, so the 0.5 mm gap between the face and the roof
+  only has to clear the slide; a sweep through slide, tilt, lift and exit finds
+  no overlap. The drawer of the unit above, tilted the same way, clears this
+  drawer's scoop.
 - **Removing.** Level the drawer, push it back 8.5 mm, lift its back 12.5 mm, pull
   it out: a vertical notch there leads into an exit channel to the housing's
   front face. The rear 30 mm of the drawer's side walls are 6 mm lower so the
@@ -84,7 +86,10 @@ column of the back plate to check this pocket before printing the housing.
 - **Loading.** Hold the drawer level with its back 12.5 mm up, push it in until
   the pins stop at the end of the exit channel, let go: the pins drop down the
   notch onto the groove. Push home.
-- **Front.** Zeid's scoop (`E:\source\openscad\omniwall\drawers\scoop_prototype.scad`,
+- **Front.** The face's top two corners are rounded to 4 mm
+  (`drawer.corner_radius`); the cut runs the length of the drawer, so the side
+  walls' outer top edges follow the same curve. The face's top is 0.5 mm under
+  the housing roof (`drawer.top_gap`). Zeid's scoop (`E:\source\openscad\omniwall\drawers\scoop_prototype.scad`,
   values in `scoop:` in params.yaml) turned 180° so it opens downward: a tray
   40 mm wide at the face narrowing to 16 mm, tilted 45° out from the face, top
   2 mm below the plate top, standing 7.1 mm proud. Fingers go up into it from
