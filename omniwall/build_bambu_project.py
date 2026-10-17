@@ -1,4 +1,4 @@
-# Standalone script (run with E:\source\shapr3d-mcp\.venv\Scripts\python.exe):
+# Standalone script (run with uv run --no-project --python 3.12 --with build123d --with pyyaml python):
 # packs the printed test parts into one Bambu Studio project, one part per plate.
 # Reads the print-orientation STEP files that build_hooks.py and pocket_plate.py
 # export, so run those first.

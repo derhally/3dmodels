@@ -1,7 +1,7 @@
 # Pocket fit test for the arc drawer: three short pocket coupons that print on
 # their back like the housing, to choose the lip and ridge values before the
-# housing is printed again. Run from omniwall\arc-drawer with the server's Python:
-#     E:\source\shapr3d-mcp\.venv\Scripts\python.exe pocket_variants.py
+# housing is printed again. Run from omniwall\arc-drawer:
+#     uv run --no-project --python 3.12 --with build123d --with pyyaml python pocket_variants.py
 # Writes print/arc_drawer_pocket_variants.{step,stl,3mf}.
 #
 # Why: the first coupon (pocket_coupon_print) was loose and did not click. The

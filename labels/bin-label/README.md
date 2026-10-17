@@ -20,8 +20,8 @@ top or bottom edge.
 1. Add the text to `labels:` in [params.yaml](params.yaml), one entry per label:
    plain text for a bin label (`- WAGO 221-2`), or
    `- {text: M3 SCREWS, size: arc-drawer}` for the drawer.
-2. Run `python build.py` (on this machine:
-   `E:\source\shapr3d-mcp\.venv\Scripts\python.exe build.py`).
+2. Run `python build.py` with build123d and PyYAML installed, for example
+   `uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py`.
 
 The text is sized automatically: Arial Bold, as large as fits inside the
 size's margins and no taller than 6.5 mm, centred on the plate. Long text gets

@@ -1,9 +1,8 @@
 # Omniwall arc-pocket drawer: housing + drawer for one unit (cells x rows from
 # params.yaml). Hook pockets come from ../hook_geometry.py and ../panel.yaml, so
-# they match the print-tested hooks. Run it through the shapr3d MCP server
-# (create_model) with
-#     exec(open(r"E:\source\3dmodels\omniwall\arc-drawer\build.py").read())
-# or with the server's Python: E:\source\shapr3d-mcp\.venv\Scripts\python.exe build.py
+# they match the print-tested hooks. Run it from this folder with a plain build123d
+# Python (the build123d-mcp server's execute() blocks the os, pathlib and yaml imports):
+#     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 # It writes step/, print/ (STEP, STL and plain 3MF per part) and report.txt, and leaves the closed assembly in `result`.
 # Unit coordinates: x across from the left outer face, y out from the panel face
 # (housing back face at y = 0), z up from the unit's bottom edge.
@@ -21,6 +20,17 @@ P = yaml.safe_load((HERE / "params.yaml").read_text())
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
+
+_export_step = export_step
+
+
+def export_step(shape, path):
+    """build123d 0.13 refuses to write some labelled shapes to STEP; retry as a plain solid."""
+    try:
+        return _export_step(shape, path)
+    except RuntimeError:
+        return _export_step(Solid(shape.wrapped), path)
+
 
 pitch = panel["pitch"]
 hook = panel["cross_slot_hook"]

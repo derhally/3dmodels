@@ -122,14 +122,14 @@ geometry, so there is one file per part instead; arrange plates in Bambu Studio.
 
 ## Regenerating
 
-    E:\source\shapr3d-mcp\.venv\Scripts\python.exe build.py
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 
 (the build123d-mcp server's `execute()` sandbox blocks the os, pathlib and yaml imports, so the
-script runs in a plain build123d Python). It rewrites
+script runs in a plain build123d Python; `uv` fetches build123d and PyYAML the first time). It rewrites
 `step/` (housing, drawer, assemblies with hooks: closed, open, tilted, lifted),
 `print/` and `report.txt`.
 
-    E:\source\shapr3d-mcp\.venv\Scripts\python.exe check_islands.py print\arc_drawer_housing_print.step
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py print\arc_drawer_housing_print.step
 
 slices a print-orientation part into 0.2 mm layers and lists any region with
 nothing under it (the "floating regions" Bambu Studio warns about), which the

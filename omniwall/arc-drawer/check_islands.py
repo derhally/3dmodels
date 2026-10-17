@@ -2,7 +2,7 @@
 about): slice the solid into layers and report any layer region that touches
 nothing in the layer below.
 
-    E:\\source\\shapr3d-mcp\\.venv\\Scripts\\python.exe check_islands.py print\\arc_drawer_housing_print.step [layer=0.2]
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py print\\arc_drawer_housing_print.step [layer=0.2]
 
 Each slab overlaps the one below by 0.01 mm, so a region is attached when its
 intersection with any region of the previous layer has volume.
