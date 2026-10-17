@@ -1,0 +1,128 @@
+# Omniwall panel geometry, in mm.
+# Origin at a peg hole centre, x right, y up. See README.md for the derivations.
+# Source tags: given = project brief from the panel's owner; derived = computed
+# from given values; assumed = not stated, chosen as the natural reading.
+
+pitch: 25.4                 # given: slot spacing, left-to-left (vertical) and top-to-top (horizontal)
+
+slot:
+  width: 3.0                # given
+  length: 15.5              # given
+  centred_on_cell_edge: true  # assumed: slot midpoint in line with the hole centre
+  centreline_offset: 12.7   # derived: 11.2 + width/2 = pitch/2, hole centre to slot centreline
+  inner_edge_offset: 11.2   # given: hole centre to the slot's inner edge
+  end_shape: null           # unknown: square or rounded, measure
+  clear_gap: 22.4           # derived: pitch - width, between two parallel slots
+  inline_end_gap: 9.9       # derived (assumes centred): pitch - length, between ends of in-line slots
+
+peg_hole:
+  diameter: 6.2             # given
+  edge_to_slot: 8.1         # derived: 11.2 - diameter/2
+  depth: null               # unknown: through or blind, measure
+
+panel:
+  material: 18 ga steel     # given by the panel's owner
+  thickness: 1.55           # measured (calipers)
+  wall_standoff: null       # unknown: space behind the panel
+
+# Cross-slot hook: the owner's print-tested hook, measured from their Shapr3D
+# model (hook/cross_slot_hook.step, 2026-10-16). It engages two in-line vertical
+# slots: the top bar rests on the bottom edge of the upper slot with a finger
+# hanging behind the panel, and the foot sits under the top edge of the slot
+# below, so a bump from underneath can't lift it off. The front carries a
+# half-dovetail tongue that objects slide down onto.
+# Hook coordinates: x across (straight side x=0), y from the back of the hook
+# (0) to the tongue's flat front face, z up from the bottom of the foot.
+# All edges have 0.5 mm chamfers.
+cross_slot_hook:
+  step: hook/cross_slot_hook.step  # measured source
+  thickness: 2.95           # measured: across the 3.0 slot, 0.025 per side
+  height: 17.7              # measured: overall
+  depth: 10.9               # measured: back of finger/foot to tongue flat face
+  panel_front_y: 4.9        # measured: front of the panel (hook body wall); flat face is 6.0 in front of it
+  panel_gap: 1.5            # measured: finger to body wall, holds the 1.55 panel snugly
+  finger_back: 0.0          # measured: finger runs y 0-3.4, z 10.2-17.7
+  bar_bottom: 14.2          # measured: underside of the top bar, rests on the upper slot's bottom edge
+  foot_top: 4.0             # measured: top of the foot, sits under the lower slot's top edge
+  foot_back: 0.9            # measured: foot runs y 0.9-4.9, z 0-4.0
+  web_grip: 10.2            # measured: bar_bottom - foot_top, against the 9.9 inline_end_gap (0.3 play; 0.2 fillets in the corners)
+  tongue:                   # original half-dovetail tongue, plan profile, constant over the full height except the 0.5 chamfers (printed hooks use `dovetail_mount` instead)
+    stem_width: 2.95        # measured
+    depth: 10.9             # measured: y of the flat face
+    height: 17.7            # measured: full hook height
+    flare_angle: 29.08      # measured: degrees between the flared side and the flat face
+    tip_centre: [6.75, 10.3]  # measured: centre of the rounded tip
+    tip_radius: 0.6         # measured: overall tongue width 7.35
+    root_fillet: 0.5        # measured: inside corner between stem and flare
+    corner_radius: 0.5      # measured: outer corner at the straight side / flat face
+
+# Dovetail mount: the front every printed hook carries and the matching pocket in
+# objects, shared by all hooks so one pocket fits any of them. Copied from the
+# Kong 3D Skadis tray mount (measured from Zeid's 3MF). Positions are in hook
+# coordinates, measured from the panel's front face (each hook's panel_front_y).
+# Official design, print-tested 2026-10-17 (Zeid): values marked "assumed" below
+# were chosen, then confirmed by that print.
+dovetail_mount:
+  dovetail:
+    block_width: 2.95       # = hook thickness (Kong: 4.7). Spine in front of the panel, flush with both hook sides, so it fits the 3.0 slot: putting a hook on tilts its top into the upper slot, and a 4.7 spine stopped the foot reaching the lower slot (Zeid 2026-10-17)
+    block_depth: 2.5        # panel front to the neck (the spine), matching the original hook's 2.95 wide stem (2.5 deep before its flare), which goes on fine; objects have a channel for it so their backs sit on the panel
+    spine_min: 0.5          # assumed: least spine in front of a hook's own body, so the neck's bed-side groove prints as a bridge
+    head_width: 2.95        # = hook thickness, so the front is symmetric and the head sits on the slot centre (Zeid asked for a symmetric hook, 2026-10-17; Kong 4.7 flush with one side looked lopsided)
+    neck_width: 1.45        # 0.75 groove per side (Kong 1.0 on a 4.7 head); pocket lips grip 0.5 per side after the 0.25 clearance (Kong 0.75)
+    head_flat: 2.0          # assumed: full-width part of the head behind its front face (Kong 0.55). Printed on its side, this is the head's strip on the bed; 0.55 lifted and came out blobby, 1.5 still sometimes lifted (Zeid, 2026-10-17)
+    flank_angle: 45         # Kong measured: flank to front face
+    depth: 3.7              # block front face to head front face: Kong's 0.95 neck, 0.75 flank, head_flat (Kong 2.5)
+    end_chamfer: 0.75       # 45 deg chamfer on the head's sides down to the neck width, like Kong's 1.0 (lead-in); top end only, objects slide down from above
+    edge_chamfer: 0.5       # matches the measured hook's 0.5 chamfers (finger comfort): spine's front corner and end edges, head front's top edge; none on the bed side or the head's bottom end (they made printing hard, Zeid 2026-10-17)
+    head_front_chamfer: 0.2 # assumed: head's front corner on the top side only, kept small because the snap ridges bear on the flat sides behind it
+    notch:                  # rounded V groove across each side of the head; the pocket's ridges click into it
+      depth: 0.23           # Kong measured
+      flank_angle: 28       # Kong measured: degrees from the head's side face
+      bottom_radius: 0.52   # Kong measured (fit to the 1.15 mm long profile)
+      below_top: 2.75       # Kong measured: notch centre below the top of the head
+      front_land: 0.5       # assumed: notch stops this far behind the head's front, so it doesn't cut the bed strip in two (it left a 1.5 x 1.4 mm island at the top end)
+  pocket:                   # matching dovetail slot in the back of each object; open at the bottom, closed at the top
+    side_clearance: 0.25    # Kong measured: per side, head and neck
+    spine_clearance: 0.15   # assumed: channel for the spine is this much deeper than the spine, so the object's back sits on the panel
+    depth_clearance: 0.15   # assumed: head front to slot floor (Kong uses 0; here the object's back rests on the panel instead)
+    flank_gap: 0.4          # Kong measured: slot flanks sit this much further back than the head's (object can pull out ~0.65 before the flanks catch)
+    top_clearance: 0.0      # Kong measured: closed top rests on the top of the hook
+    ridge:                  # rounded ridge on each side wall of the slot, the half of the snap that squeezes
+      height: 0.333         # Kong measured: 0.083 interference per side against the 0.25 clearance
+      flank_angle: 28       # Kong measured
+      tip_radius: 0.42      # Kong measured (fit to the 1.4 mm long profile)
+      below_top: 2.75       # Kong measured: lines up with the notch when seated
+      front_gap: 0.2        # assumed: ridge ends this far behind the notch's front land
+    spacing: pitch multiple # pockets a whole number of 25.4 mm cells apart to line up with hooks
+    # Hooks are identical (symmetric dovetail), so no mirrored pair is needed.
+
+# One-slot hook: Zeid's 1u hook, measured from their Shapr3D model
+# (hook/one_slot_hook.step, "Omniwall Hook 1u", 2026-10-16). It fills one slot:
+# a finger goes up behind the panel above the slot, the body fills the slot's
+# full 15.5 mm height, and a cavity open to the back lets the foot flex so the
+# body can snap into the slot. Same hook coordinates as above; no edge chamfers
+# except the foot's back lead-in.
+one_slot_hook:
+  step: hook/one_slot_hook.step  # measured source
+  thickness: 2.95           # measured
+  height: 15.5              # measured: body, the full slot height (the finger reaches 19.5)
+  finger_top: 19.5          # measured: finger y 0-3.4, z 12-19.5, behind the panel above the slot
+  panel_back_y: 3.4         # measured: finger's front face, against the back of the panel
+  panel_front_y: 4.95       # panel_back_y + the measured 1.55 panel thickness
+  cavity:                   # measured: open to the back, y 0-7.51, z 4-12, 0.2 fillets at its front corners
+    front_y: 7.51
+    bottom: 4.0             # top of the foot (foot z 0-4)
+    top: 12.0
+    fillet: 0.2
+  foot_lead_in: 0.816       # measured: 45 deg chamfer on the foot's back bottom edge
+  tongue_front_y: 11.5      # measured: original half-dovetail tongue (45 deg flare from y 7.5), replaced on printed hooks
+  printed:                  # changes for the dovetail front (see dovetail_mount); official design, print-tested 2026-10-17
+    cavity_front_y: 6.45    # cavity stops inside the spine: panel_front_y + 2.0 - spine_min (set when block_depth was 2.0; kept)
+    foot_top: 3.44          # foot thinned so the shorter foot flexes like the original (stiffness ~ t^3 / L^3: 4.0 x 6.45 / 7.51)
+    top_chamfer: 0.5        # finger and body-top edges on the top side and the finger's top corners (Zeid asked 2026-10-17), like the cross-slot hook's 0.5
+    rim_notch:              # the foot reaches below the slot with a notch cut up into it; pushing the bottom in, the foot flexes and snaps over the slot's bottom rim (Zeid asked 2026-10-17)
+      depth: 0.8            # assumed: how far the foot reaches below the rim; about the foot's measured 0.816 lead-in, which it already flexes past going on
+      width: 1.5            # the cross-slot hook's measured 1.5 clamp on the 1.55 steel
+      mouth_chamfer: 0.3    # assumed: 45 deg chamfer on the front edge of the notch's mouth, to guide the rim in
+                            # in front of the panel the foot and the dovetail front reach down to the same bottom (Zeid asked, 2026-10-17)
+                            # the back lip's bottom is one ramp from the top of the foot's lead-in to the notch's back edge (about 25 deg), so it rides over the rim and drops straight in (Zeid, 2026-10-17)
