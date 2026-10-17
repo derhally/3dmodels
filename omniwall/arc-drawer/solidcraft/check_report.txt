@@ -1,0 +1,7 @@
+housing: SolidCraft 75.900 x 84.000 x 50.500 mm, volume 79536.796 mm3, solids 1, valid True; build123d volume 79536.703 mm3
+    only in SolidCraft 79536.8030 mm3, only in build123d 79536.7068 mm3
+drawer: SolidCraft 73.100 x 81.425 x 44.500 mm, volume 46323.459 mm3, solids 1, valid True; build123d volume 46323.459 mm3
+    only in SolidCraft 0.0000 mm3, only in build123d 0.0000 mm3
+hooks vs SolidCraft housing: 0.0000 mm3 over 4 hooks (0.083 mm ridge interference per side is expected but sits in the hooks' notches)
+arc_drawer_housing_print: 75.90 x 50.50 x 84.00, z from -0.000, faces 369, faces flatter than 45 deg: 46
+arc_drawer_drawer_print: 73.10 x 81.43 x 44.50, z from -0.000, faces 39, faces flatter than 45 deg: 0

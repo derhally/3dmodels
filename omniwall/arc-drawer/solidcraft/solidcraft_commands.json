@@ -1,0 +1,3055 @@
+{
+ "derived": {
+  "W": 75.9,
+  "H": 50.5,
+  "D": 84.0,
+  "plate_t": 10.075,
+  "y_back": 10.575,
+  "y_pin": 12.575,
+  "z_pin": 14.0,
+  "travel": 55.925,
+  "R": 19.006578,
+  "a0": 144.637538,
+  "a1": 114.637538,
+  "arc_top": 22.026279,
+  "exit_z": 26.501153,
+  "lift": 12.501153,
+  "notch_y": 60.0,
+  "notch_back": 8.5,
+  "body_top": 45.0,
+  "plate_top": 47.5,
+  "shoulder_z": 35.498847,
+  "seat_z": 46.4,
+  "piv_y": 84.0,
+  "piv_z": 3.0,
+  "tilt": 30.0,
+  "hook_cols": [
+   25.25,
+   50.65
+  ],
+  "hook_rows": [
+   3.3,
+   28.7
+  ]
+ },
+ "commands": [
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 75.9,
+    "width": 84.0,
+    "height": 50.5,
+    "corner": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "operation": "new",
+    "name": "Housing block",
+    "body_name": "housing"
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 71.1,
+    "width": 84.0,
+    "height": 45.5,
+    "corner": [
+     2.4,
+     10.075,
+     3.0
+    ],
+    "operation": "cut",
+    "name": "Housing bay",
+    "targets": [
+     "housing"
+    ]
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": "XY",
+    "name": "Pocket 1 slot"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      24.275,
+      2.4
+     ],
+     [
+      26.225,
+      2.4
+     ],
+     [
+      26.225,
+      3.2
+     ],
+     [
+      26.975,
+      3.95
+     ],
+     [
+      26.975,
+      6.35
+     ],
+     [
+      23.525,
+      6.35
+     ],
+     [
+      23.525,
+      3.95
+     ],
+     [
+      24.275,
+      3.2
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.rectangle.two_point",
+   "params": {
+    "p0": [
+     23.525,
+     -1.0
+    ],
+    "p1": [
+     26.975,
+     2.65
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 47.4,
+    "start_offset": -1.0,
+    "operation": "cut",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 slot"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      23.525,
+      2.65,
+      43.65
+     ],
+     "x_dir": [
+      0,
+      0,
+      1
+     ],
+     "y_dir": [
+      1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 1 ridge 1L"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 ridge 1L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      26.975,
+      2.65,
+      43.65
+     ],
+     "x_dir": [
+      0,
+      0,
+      -1
+     ],
+     "y_dir": [
+      -1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 1 ridge 1R"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 ridge 1R"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      23.525,
+      2.65,
+      18.25
+     ],
+     "x_dir": [
+      0,
+      0,
+      1
+     ],
+     "y_dir": [
+      1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 1 ridge 2L"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 ridge 2L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      26.975,
+      2.65,
+      18.25
+     ],
+     "x_dir": [
+      0,
+      0,
+      -1
+     ],
+     "y_dir": [
+      -1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 1 ridge 2R"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 ridge 2R"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": "XY",
+    "name": "Pocket 1 gables"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      23.505,
+      2.65
+     ],
+     [
+      26.995,
+      2.65
+     ],
+     [
+      25.25,
+      4.395
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      23.505,
+      6.35
+     ],
+     [
+      26.995,
+      6.35
+     ],
+     [
+      25.25,
+      8.095
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 47.4,
+    "start_offset": -1.0,
+    "operation": "cut",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 1 gables"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": "XY",
+    "name": "Pocket 2 slot"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      49.675,
+      2.4
+     ],
+     [
+      51.625,
+      2.4
+     ],
+     [
+      51.625,
+      3.2
+     ],
+     [
+      52.375,
+      3.95
+     ],
+     [
+      52.375,
+      6.35
+     ],
+     [
+      48.925,
+      6.35
+     ],
+     [
+      48.925,
+      3.95
+     ],
+     [
+      49.675,
+      3.2
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.rectangle.two_point",
+   "params": {
+    "p0": [
+     48.925,
+     -1.0
+    ],
+    "p1": [
+     52.375,
+     2.65
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 47.4,
+    "start_offset": -1.0,
+    "operation": "cut",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 slot"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      48.925,
+      2.65,
+      43.65
+     ],
+     "x_dir": [
+      0,
+      0,
+      1
+     ],
+     "y_dir": [
+      1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 2 ridge 1L"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 ridge 1L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      52.375,
+      2.65,
+      43.65
+     ],
+     "x_dir": [
+      0,
+      0,
+      -1
+     ],
+     "y_dir": [
+      -1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 2 ridge 1R"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 ridge 1R"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      48.925,
+      2.65,
+      18.25
+     ],
+     "x_dir": [
+      0,
+      0,
+      1
+     ],
+     "y_dir": [
+      1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 2 ridge 2L"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 ridge 2L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      52.375,
+      2.65,
+      18.25
+     ],
+     "x_dir": [
+      0,
+      0,
+      -1
+     ],
+     "y_dir": [
+      -1,
+      0,
+      0
+     ]
+    },
+    "name": "Pocket 2 ridge 2R"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      -1.107145,
+      -0.2
+     ],
+     [
+      1.107145,
+      -0.2
+     ],
+     [
+      0.0,
+      0.388679
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.fillet",
+   "params": {
+    "point": "l2.end",
+    "radius": 0.42
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 2.85,
+    "operation": "join",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 ridge 2R"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": "XY",
+    "name": "Pocket 2 gables"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      48.905,
+      2.65
+     ],
+     [
+      52.395,
+      2.65
+     ],
+     [
+      50.65,
+      4.395
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      48.905,
+      6.35
+     ],
+     [
+      52.395,
+      6.35
+     ],
+     [
+      50.65,
+      8.095
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 47.4,
+    "start_offset": -1.0,
+    "operation": "cut",
+    "targets": [
+     "housing"
+    ],
+    "name": "Pocket 2 gables"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      1.2,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Track"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      69.737437,
+      12.762563
+     ],
+     [
+      68.5,
+      11.525126
+     ],
+     [
+      10.075,
+      11.525126
+     ],
+     [
+      10.075,
+      15.75
+     ],
+     [
+      68.5,
+      15.75
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      69.737437,
+      12.762563
+     ],
+     [
+      69.868205,
+      12.908893
+     ],
+     [
+      69.981767,
+      13.068944
+     ],
+     [
+      70.076696,
+      13.240703
+     ],
+     [
+      70.151796,
+      13.422012
+     ],
+     [
+      70.206124,
+      13.610588
+     ],
+     [
+      70.238996,
+      13.804062
+     ],
+     [
+      70.25,
+      14.0
+     ],
+     [
+      70.238996,
+      14.195938
+     ],
+     [
+      70.206124,
+      14.389412
+     ],
+     [
+      70.151796,
+      14.577988
+     ],
+     [
+      70.076696,
+      14.759297
+     ],
+     [
+      69.981767,
+      14.931056
+     ],
+     [
+      69.868205,
+      15.091107
+     ],
+     [
+      69.737437,
+      15.237437
+     ],
+     [
+      69.591107,
+      15.368205
+     ],
+     [
+      69.431056,
+      15.481767
+     ],
+     [
+      69.259297,
+      15.576696
+     ],
+     [
+      69.077988,
+      15.651796
+     ],
+     [
+      68.889412,
+      15.706124
+     ],
+     [
+      68.695938,
+      15.738996
+     ],
+     [
+      68.5,
+      15.75
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      75.347073,
+      21.866965
+     ],
+     [
+      74.734396,
+      21.573748
+     ],
+     [
+      74.131641,
+      21.260641
+     ],
+     [
+      73.539453,
+      20.92798
+     ],
+     [
+      72.958466,
+      20.576122
+     ],
+     [
+      72.389304,
+      20.205443
+     ],
+     [
+      71.832574,
+      19.816339
+     ],
+     [
+      71.288873,
+      19.409228
+     ],
+     [
+      70.758784,
+      18.984546
+     ],
+     [
+      70.242874,
+      18.542748
+     ],
+     [
+      69.741695,
+      18.084305
+     ],
+     [
+      69.255785,
+      17.60971
+     ],
+     [
+      68.785662,
+      17.119471
+     ],
+     [
+      68.331832,
+      16.614112
+     ],
+     [
+      67.89478,
+      16.094175
+     ],
+     [
+      67.474974,
+      15.560216
+     ],
+     [
+      67.072862,
+      15.012807
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      67.072862,
+      15.012807
+     ],
+     [
+      69.927138,
+      12.987193
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      69.927138,
+      12.987193
+     ],
+     [
+      70.284258,
+      13.472245
+     ],
+     [
+      70.65809,
+      13.944538
+     ],
+     [
+      71.048176,
+      14.403497
+     ],
+     [
+      71.454042,
+      14.848562
+     ],
+     [
+      71.875194,
+      15.279192
+     ],
+     [
+      72.311117,
+      15.694861
+     ],
+     [
+      72.761282,
+      16.095064
+     ],
+     [
+      73.22514,
+      16.479312
+     ],
+     [
+      73.702125,
+      16.847138
+     ],
+     [
+      74.191656,
+      17.198094
+     ],
+     [
+      74.693137,
+      17.531751
+     ],
+     [
+      75.205958,
+      17.847703
+     ],
+     [
+      75.729492,
+      18.145566
+     ],
+     [
+      76.263103,
+      18.424977
+     ],
+     [
+      76.80614,
+      18.685594
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      76.80614,
+      18.685594
+     ],
+     [
+      75.347073,
+      21.866965
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      76.52954,
+      18.585909
+     ],
+     [
+      76.720409,
+      18.649006
+     ],
+     [
+      76.902782,
+      18.733576
+     ],
+     [
+      77.074254,
+      18.838503
+     ],
+     [
+      77.23256,
+      18.962403
+     ],
+     [
+      77.375613,
+      19.103641
+     ],
+     [
+      77.501525,
+      19.260353
+     ],
+     [
+      77.608633,
+      19.43047
+     ],
+     [
+      77.695525,
+      19.611749
+     ],
+     [
+      77.761054,
+      19.801796
+     ],
+     [
+      77.804356,
+      19.998105
+     ],
+     [
+      77.824858,
+      20.198085
+     ],
+     [
+      77.822291,
+      20.399096
+     ],
+     [
+      77.796688,
+      20.598487
+     ],
+     [
+      77.748387,
+      20.793626
+     ],
+     [
+      77.678026,
+      20.981938
+     ],
+     [
+      77.586533,
+      21.160939
+     ],
+     [
+      77.475115,
+      21.328265
+     ],
+     [
+      77.345242,
+      21.48171
+     ],
+     [
+      77.198629,
+      21.619248
+     ],
+     [
+      77.037209,
+      21.739065
+     ],
+     [
+      76.863114,
+      21.839579
+     ],
+     [
+      76.67864,
+      21.919464
+     ],
+     [
+      76.486222,
+      21.977666
+     ],
+     [
+      76.288399,
+      22.013416
+     ],
+     [
+      76.087781,
+      22.026244
+     ],
+     [
+      75.887015,
+      22.015979
+     ],
+     [
+      75.688751,
+      21.982758
+     ],
+     [
+      75.495605,
+      21.927018
+     ],
+     [
+      75.310126,
+      21.849495
+     ],
+     [
+      75.134762,
+      21.751213
+     ],
+     [
+      74.971826,
+      21.633468
+     ],
+     [
+      74.823468,
+      21.497813
+     ],
+     [
+      74.691646,
+      21.346039
+     ],
+     [
+      74.5781,
+      21.180149
+     ],
+     [
+      74.484329,
+      21.002332
+     ],
+     [
+      74.411568,
+      20.814933
+     ],
+     [
+      74.360779,
+      20.620427
+     ],
+     [
+      74.332632,
+      20.421379
+     ],
+     [
+      74.327498,
+      20.220417
+     ],
+     [
+      74.345445,
+      20.020192
+     ],
+     [
+      74.386236,
+      19.823346
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      74.386236,
+      19.823346
+     ],
+     [
+      74.839169,
+      18.132976
+     ],
+     [
+      76.52954,
+      18.585909
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      60.0,
+      28.251153
+     ],
+     [
+      85.0,
+      28.251153
+     ],
+     [
+      85.0,
+      24.026279
+     ],
+     [
+      61.75,
+      24.026279
+     ],
+     [
+      61.75,
+      14.0
+     ],
+     [
+      58.25,
+      14.0
+     ],
+     [
+      58.25,
+      26.501153
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      58.25,
+      26.501153
+     ],
+     [
+      58.261004,
+      26.697091
+     ],
+     [
+      58.293876,
+      26.890565
+     ],
+     [
+      58.348204,
+      27.079142
+     ],
+     [
+      58.423304,
+      27.26045
+     ],
+     [
+      58.518233,
+      27.432209
+     ],
+     [
+      58.631795,
+      27.59226
+     ],
+     [
+      58.762563,
+      27.73859
+     ],
+     [
+      58.908893,
+      27.869358
+     ],
+     [
+      59.068944,
+      27.982921
+     ],
+     [
+      59.240703,
+      28.077849
+     ],
+     [
+      59.422012,
+      28.152949
+     ],
+     [
+      59.610588,
+      28.207277
+     ],
+     [
+      59.804062,
+      28.24015
+     ],
+     [
+      60.0,
+      28.251153
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 1.3,
+    "operation": "new",
+    "name": "Track groove",
+    "body_name": "track_L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      0,
+      0,
+      14.0
+     ],
+     "x_dir": [
+      1,
+      0,
+      0
+     ],
+     "y_dir": [
+      0,
+      1,
+      0
+     ]
+    },
+    "name": "Track ramp path"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      2.45,
+      11.325
+     ],
+     [
+      1.205,
+      10.08
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      2.45,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Track ramp groove"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      70.987437,
+      12.762563
+     ],
+     [
+      69.75,
+      11.525126
+     ],
+     [
+      11.325,
+      11.525126
+     ],
+     [
+      11.325,
+      15.75
+     ],
+     [
+      69.75,
+      15.75
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      70.987437,
+      12.762563
+     ],
+     [
+      71.118205,
+      12.908893
+     ],
+     [
+      71.231767,
+      13.068944
+     ],
+     [
+      71.326696,
+      13.240703
+     ],
+     [
+      71.401796,
+      13.422012
+     ],
+     [
+      71.456124,
+      13.610588
+     ],
+     [
+      71.488996,
+      13.804062
+     ],
+     [
+      71.5,
+      14.0
+     ],
+     [
+      71.488996,
+      14.195938
+     ],
+     [
+      71.456124,
+      14.389412
+     ],
+     [
+      71.401796,
+      14.577988
+     ],
+     [
+      71.326696,
+      14.759297
+     ],
+     [
+      71.231767,
+      14.931056
+     ],
+     [
+      71.118205,
+      15.091107
+     ],
+     [
+      70.987437,
+      15.237437
+     ],
+     [
+      70.841107,
+      15.368205
+     ],
+     [
+      70.681056,
+      15.481767
+     ],
+     [
+      70.509297,
+      15.576696
+     ],
+     [
+      70.327988,
+      15.651796
+     ],
+     [
+      70.139412,
+      15.706124
+     ],
+     [
+      69.945938,
+      15.738996
+     ],
+     [
+      69.75,
+      15.75
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.sweep",
+   "params": {
+    "sketch": "Track ramp groove",
+    "profiles": "all",
+    "path_sketch": "Track ramp path",
+    "path": [
+     "l1"
+    ],
+    "orientation": "parallel",
+    "operation": "new",
+    "name": "Track ramp groove",
+    "body_name": "ramp_0_L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      2.45,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Track ramp arc"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      76.597073,
+      21.866965
+     ],
+     [
+      75.984396,
+      21.573748
+     ],
+     [
+      75.381641,
+      21.260641
+     ],
+     [
+      74.789453,
+      20.92798
+     ],
+     [
+      74.208466,
+      20.576122
+     ],
+     [
+      73.639304,
+      20.205443
+     ],
+     [
+      73.082574,
+      19.816339
+     ],
+     [
+      72.538873,
+      19.409228
+     ],
+     [
+      72.008784,
+      18.984546
+     ],
+     [
+      71.492874,
+      18.542748
+     ],
+     [
+      70.991695,
+      18.084305
+     ],
+     [
+      70.505785,
+      17.60971
+     ],
+     [
+      70.035662,
+      17.119471
+     ],
+     [
+      69.581832,
+      16.614112
+     ],
+     [
+      69.14478,
+      16.094175
+     ],
+     [
+      68.724974,
+      15.560216
+     ],
+     [
+      68.322862,
+      15.012807
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      68.322862,
+      15.012807
+     ],
+     [
+      71.177138,
+      12.987193
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      71.177138,
+      12.987193
+     ],
+     [
+      71.534258,
+      13.472245
+     ],
+     [
+      71.90809,
+      13.944538
+     ],
+     [
+      72.298176,
+      14.403497
+     ],
+     [
+      72.704042,
+      14.848562
+     ],
+     [
+      73.125194,
+      15.279192
+     ],
+     [
+      73.561117,
+      15.694861
+     ],
+     [
+      74.011282,
+      16.095064
+     ],
+     [
+      74.47514,
+      16.479312
+     ],
+     [
+      74.952125,
+      16.847138
+     ],
+     [
+      75.441656,
+      17.198094
+     ],
+     [
+      75.943137,
+      17.531751
+     ],
+     [
+      76.455958,
+      17.847703
+     ],
+     [
+      76.979492,
+      18.145566
+     ],
+     [
+      77.513103,
+      18.424977
+     ],
+     [
+      78.05614,
+      18.685594
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      78.05614,
+      18.685594
+     ],
+     [
+      76.597073,
+      21.866965
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.sweep",
+   "params": {
+    "sketch": "Track ramp arc",
+    "profiles": "all",
+    "path_sketch": "Track ramp path",
+    "path": [
+     "l1"
+    ],
+    "orientation": "parallel",
+    "operation": "new",
+    "name": "Track ramp arc",
+    "body_name": "ramp_1_L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      2.45,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Track ramp arc end"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      77.77954,
+      18.585909
+     ],
+     [
+      77.970409,
+      18.649006
+     ],
+     [
+      78.152782,
+      18.733576
+     ],
+     [
+      78.324254,
+      18.838503
+     ],
+     [
+      78.48256,
+      18.962403
+     ],
+     [
+      78.625613,
+      19.103641
+     ],
+     [
+      78.751525,
+      19.260353
+     ],
+     [
+      78.858633,
+      19.43047
+     ],
+     [
+      78.945525,
+      19.611749
+     ],
+     [
+      79.011054,
+      19.801796
+     ],
+     [
+      79.054356,
+      19.998105
+     ],
+     [
+      79.074858,
+      20.198085
+     ],
+     [
+      79.072291,
+      20.399096
+     ],
+     [
+      79.046688,
+      20.598487
+     ],
+     [
+      78.998387,
+      20.793626
+     ],
+     [
+      78.928026,
+      20.981938
+     ],
+     [
+      78.836533,
+      21.160939
+     ],
+     [
+      78.725115,
+      21.328265
+     ],
+     [
+      78.595242,
+      21.48171
+     ],
+     [
+      78.448629,
+      21.619248
+     ],
+     [
+      78.287209,
+      21.739065
+     ],
+     [
+      78.113114,
+      21.839579
+     ],
+     [
+      77.92864,
+      21.919464
+     ],
+     [
+      77.736222,
+      21.977666
+     ],
+     [
+      77.538399,
+      22.013416
+     ],
+     [
+      77.337781,
+      22.026244
+     ],
+     [
+      77.137015,
+      22.015979
+     ],
+     [
+      76.938751,
+      21.982758
+     ],
+     [
+      76.745605,
+      21.927018
+     ],
+     [
+      76.560126,
+      21.849495
+     ],
+     [
+      76.384762,
+      21.751213
+     ],
+     [
+      76.221826,
+      21.633468
+     ],
+     [
+      76.073468,
+      21.497813
+     ],
+     [
+      75.941646,
+      21.346039
+     ],
+     [
+      75.8281,
+      21.180149
+     ],
+     [
+      75.734329,
+      21.002332
+     ],
+     [
+      75.661568,
+      20.814933
+     ],
+     [
+      75.610779,
+      20.620427
+     ],
+     [
+      75.582632,
+      20.421379
+     ],
+     [
+      75.577498,
+      20.220417
+     ],
+     [
+      75.595445,
+      20.020192
+     ],
+     [
+      75.636236,
+      19.823346
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      75.636236,
+      19.823346
+     ],
+     [
+      76.089169,
+      18.132976
+     ],
+     [
+      77.77954,
+      18.585909
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.sweep",
+   "params": {
+    "sketch": "Track ramp arc end",
+    "profiles": "all",
+    "path_sketch": "Track ramp path",
+    "path": [
+     "l1"
+    ],
+    "orientation": "parallel",
+    "operation": "new",
+    "name": "Track ramp arc end",
+    "body_name": "ramp_2_L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      2.45,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Track ramp notch"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      61.25,
+      28.251153
+     ],
+     [
+      86.25,
+      28.251153
+     ],
+     [
+      86.25,
+      24.026279
+     ],
+     [
+      63.0,
+      24.026279
+     ],
+     [
+      63.0,
+      14.0
+     ],
+     [
+      59.5,
+      14.0
+     ],
+     [
+      59.5,
+      26.501153
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      59.5,
+      26.501153
+     ],
+     [
+      59.511004,
+      26.697091
+     ],
+     [
+      59.543876,
+      26.890565
+     ],
+     [
+      59.598204,
+      27.079142
+     ],
+     [
+      59.673304,
+      27.26045
+     ],
+     [
+      59.768233,
+      27.432209
+     ],
+     [
+      59.881795,
+      27.59226
+     ],
+     [
+      60.012563,
+      27.73859
+     ],
+     [
+      60.158893,
+      27.869358
+     ],
+     [
+      60.318944,
+      27.982921
+     ],
+     [
+      60.490703,
+      28.077849
+     ],
+     [
+      60.672012,
+      28.152949
+     ],
+     [
+      60.860588,
+      28.207277
+     ],
+     [
+      61.054062,
+      28.24015
+     ],
+     [
+      61.25,
+      28.251153
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.sweep",
+   "params": {
+    "sketch": "Track ramp notch",
+    "profiles": "all",
+    "path_sketch": "Track ramp path",
+    "path": [
+     "l1"
+    ],
+    "orientation": "parallel",
+    "operation": "new",
+    "name": "Track ramp notch",
+    "body_name": "ramp_3_L"
+   }
+  },
+  {
+   "command": "solid.mirror",
+   "params": {
+    "bodies": [
+     "track_L",
+     "ramp_0_L",
+     "ramp_1_L",
+     "ramp_2_L",
+     "ramp_3_L"
+    ],
+    "plane": {
+     "origin": [
+      37.95,
+      0,
+      0
+     ],
+     "normal": [
+      1,
+      0,
+      0
+     ]
+    }
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "track_L"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_0_L"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_1_L"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_2_L"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_3_L"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "track_L (2)"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_0_L (2)"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_1_L (2)"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_2_L (2)"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.combine",
+   "params": {
+    "target": "housing",
+    "tools": [
+     "ramp_3_L (2)"
+    ],
+    "operation": "cut"
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 70.5,
+    "width": 67.425,
+    "height": 42.0,
+    "corner": [
+     2.7,
+     10.575,
+     3.0
+    ],
+    "operation": "new",
+    "name": "Drawer body",
+    "body_name": "drawer"
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 72.5,
+    "width": 31.0,
+    "height": 45.0,
+    "corner": [
+     1.7,
+     9.575,
+     35.498847
+    ],
+    "operation": "cut",
+    "name": "Drawer shoulder",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 66.5,
+    "width": 65.425,
+    "height": 45.0,
+    "corner": [
+     4.7,
+     12.575,
+     5.0
+    ],
+    "operation": "cut",
+    "name": "Drawer bin",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 70.5,
+    "width": 6.0,
+    "height": 44.5,
+    "corner": [
+     2.7,
+     78.0,
+     3.0
+    ],
+    "operation": "join",
+    "name": "Drawer front",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      2.7,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Lip"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      83.0,
+      35.5
+     ],
+     [
+      84.0,
+      36.5
+     ],
+     [
+      92.0,
+      44.5
+     ],
+     [
+      92.0,
+      47.5
+     ],
+     [
+      83.0,
+      47.5
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 70.5,
+    "operation": "join",
+    "targets": [
+     "drawer"
+    ],
+    "name": "Lip"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      19.25,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Label rail"
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      83.0,
+      3.5
+     ],
+     [
+      84.0,
+      3.5
+     ],
+     [
+      86.4,
+      5.9
+     ],
+     [
+      86.4,
+      7.1
+     ],
+     [
+      83.0,
+      7.1
+     ]
+    ],
+    "closed": true
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 37.4,
+    "operation": "join",
+    "targets": [
+     "drawer"
+    ],
+    "name": "Label rail"
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 1.2,
+    "width": 3.4,
+    "height": 11.4,
+    "corner": [
+     19.25,
+     83.0,
+     7.0
+    ],
+    "operation": "join",
+    "name": "Label post L",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 1.51,
+    "width": 1.2,
+    "height": 11.4,
+    "corner": [
+     20.44,
+     85.2,
+     7.0
+    ],
+    "operation": "join",
+    "name": "Label wrap L",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 1.2,
+    "width": 3.4,
+    "height": 11.4,
+    "corner": [
+     55.45,
+     83.0,
+     7.0
+    ],
+    "operation": "join",
+    "name": "Label post R",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "solid.box",
+   "params": {
+    "length": 1.51,
+    "width": 1.2,
+    "height": 11.4,
+    "corner": [
+     53.95,
+     85.2,
+     7.0
+    ],
+    "operation": "join",
+    "name": "Label wrap R",
+    "targets": [
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      1.4,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Pin L"
+   }
+  },
+  {
+   "command": "sketch.arc.center_point",
+   "params": {
+    "center": [
+     12.575,
+     14.0
+    ],
+    "start": [
+     13.63566,
+     12.93934
+    ],
+    "sweep": 270.0
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      11.51434,
+      12.93934
+     ],
+     [
+      12.575,
+      11.87868
+     ],
+     [
+      13.63566,
+      12.93934
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 1.8,
+    "operation": "join",
+    "targets": [
+     "drawer"
+    ],
+    "name": "Pin L"
+   }
+  },
+  {
+   "command": "sketch.create",
+   "params": {
+    "plane": {
+     "origin": [
+      72.7,
+      0,
+      0
+     ],
+     "x_dir": [
+      0,
+      1,
+      0
+     ],
+     "y_dir": [
+      0,
+      0,
+      1
+     ]
+    },
+    "name": "Pin R"
+   }
+  },
+  {
+   "command": "sketch.arc.center_point",
+   "params": {
+    "center": [
+     12.575,
+     14.0
+    ],
+    "start": [
+     13.63566,
+     12.93934
+    ],
+    "sweep": 270.0
+   }
+  },
+  {
+   "command": "sketch.line",
+   "params": {
+    "points": [
+     [
+      11.51434,
+      12.93934
+     ],
+     [
+      12.575,
+      11.87868
+     ],
+     [
+      13.63566,
+      12.93934
+     ]
+    ]
+   }
+  },
+  {
+   "command": "sketch.finish",
+   "params": {}
+  },
+  {
+   "command": "solid.extrude",
+   "params": {
+    "profiles": "all",
+    "distance": 1.8,
+    "operation": "join",
+    "targets": [
+     "drawer"
+    ],
+    "name": "Pin R"
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer"
+    ],
+    "translate": [
+     0,
+     55.925,
+     0
+    ],
+    "copy": true
+   }
+  },
+  {
+   "command": "body.rename",
+   "params": {
+    "body": "drawer (2)",
+    "name": "drawer_open"
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer_open"
+    ],
+    "translate": [
+     0,
+     -84.0,
+     -3.0
+    ],
+    "copy": true
+   }
+  },
+  {
+   "command": "body.rename",
+   "params": {
+    "body": "drawer_open (2)",
+    "name": "drawer_tilted"
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer_tilted"
+    ],
+    "axis": [
+     1,
+     0,
+     0
+    ],
+    "angle": "-30.0 deg"
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer_tilted"
+    ],
+    "translate": [
+     0,
+     84.0,
+     3.0
+    ]
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer"
+    ],
+    "translate": [
+     0,
+     47.425,
+     12.501153
+    ],
+    "copy": true
+   }
+  },
+  {
+   "command": "body.rename",
+   "params": {
+    "body": "drawer (2)",
+    "name": "drawer_lifted"
+   }
+  },
+  {
+   "command": "inspect.interference",
+   "params": {
+    "bodies": [
+     "housing",
+     "drawer"
+    ]
+   }
+  },
+  {
+   "command": "inspect.interference",
+   "params": {
+    "bodies": [
+     "housing",
+     "drawer_open"
+    ]
+   }
+  },
+  {
+   "command": "inspect.interference",
+   "params": {
+    "bodies": [
+     "housing",
+     "drawer_tilted"
+    ]
+   }
+  },
+  {
+   "command": "inspect.interference",
+   "params": {
+    "bodies": [
+     "housing",
+     "drawer_lifted"
+    ]
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "housing"
+    ],
+    "axis": [
+     1,
+     0,
+     0
+    ],
+    "angle": "90 deg",
+    "copy": true
+   }
+  },
+  {
+   "command": "body.rename",
+   "params": {
+    "body": "housing (2)",
+    "name": "housing_print"
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "housing_print"
+    ],
+    "translate": [
+     -37.95,
+     25.25,
+     0
+    ]
+   }
+  },
+  {
+   "command": "solid.move",
+   "params": {
+    "bodies": [
+     "drawer"
+    ],
+    "translate": [
+     -37.95,
+     -51.2875,
+     -3.0
+    ],
+    "copy": true
+   }
+  },
+  {
+   "command": "body.rename",
+   "params": {
+    "body": "drawer (2)",
+    "name": "drawer_print"
+   }
+  },
+  {
+   "command": "browser.visibility",
+   "params": {
+    "visible": false,
+    "items": [
+     "drawer_open",
+     "drawer_tilted",
+     "drawer_lifted",
+     "housing_print",
+     "drawer_print"
+    ]
+   }
+  }
+ ]
+}
