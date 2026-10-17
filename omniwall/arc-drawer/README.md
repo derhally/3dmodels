@@ -112,6 +112,12 @@ writes the same kind of file with `../core_3mf.py`). Bambu Studio 2.x rejects th
 `../bambu_project.py` as "created by an old version" and keeps only their
 geometry, so there is one file per part instead; arrange plates in Bambu Studio.
 
+**Everything in one file:** `print/arc_drawer_all_parts.3mf` (and
+`2x2/print/arc_drawer_2x2_all_parts.3mf`) holds the housing and the drawer side
+by side on one plate, already in print orientation, 10 mm apart. Open it in
+Bambu Studio and slice. The drawer label is a separate two-colour print in
+[labels/bin-label](../../labels/bin-label/README.md).
+
 - **Housing: on its back,** panel side on the bed, open front up. Floor, roof,
   walls and back plate all stand vertical, so no roof is bridged. The pockets
   are trenches in the bed face with 45° gables; in the track groove, arc, notch

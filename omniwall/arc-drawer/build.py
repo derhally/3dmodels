@@ -438,5 +438,13 @@ for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
            ("pocket coupon", *shape_mesh(cpp, 0, 60))], HERE / "print" / f"{NAME}_fit_test_plate.3mf")
+# Housing and drawer side by side on one plate, 10 mm apart, centred on the origin.
+gap = 10.0
+hb, db = hp.bounding_box(), dp.bounding_box()
+hx = -(hb.size.X + gap + db.size.X) / 2 - hb.min.X
+dx = hx + hb.max.X + gap - db.min.X
+write_3mf([("housing", *shape_mesh(hp, hx, -hb.center().Y)), ("drawer", *shape_mesh(dp, dx, -db.center().Y))],
+          HERE / "print" / f"{NAME}_all_parts.3mf")
+log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[h, d, *hks])

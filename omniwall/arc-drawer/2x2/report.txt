@@ -18,3 +18,4 @@ arc_drawer_2x2_drawer_print: 47.7 x 80.5 x 44.5, faces 53, overhangs flatter tha
 arc_drawer_2x2_fit_test_housing_print: 50.5 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_2x2_fit_test_drawer_print: 47.7 x 40.0 x 42.0, faces 22, overhangs flatter than 45 deg: 0
 arc_drawer_2x2_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0
+arc_drawer_2x2_all_parts: housing and drawer on one plate, 108.2 x 80.5

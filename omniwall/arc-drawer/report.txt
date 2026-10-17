@@ -18,3 +18,4 @@ arc_drawer_drawer_print: 73.1 x 80.5 x 44.5, faces 53, overhangs flatter than 45
 arc_drawer_fit_test_housing_print: 75.9 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_fit_test_drawer_print: 73.1 x 40.0 x 42.0, faces 22, overhangs flatter than 45 deg: 0
 arc_drawer_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0
+arc_drawer_all_parts: housing and drawer on one plate, 159.0 x 80.5
