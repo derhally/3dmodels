@@ -2,21 +2,32 @@
 # params.yaml). Hook pockets come from ../hook_geometry.py and ../panel.yaml, so
 # they match the print-tested hooks. Run it from this folder with a plain build123d
 # Python (the build123d-mcp server's execute() blocks the os, pathlib and yaml imports):
-#     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
-# It writes step/, print/ (STEP, STL and plain 3MF per part) and report.txt, and leaves the closed assembly in `result`.
+#     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py [unit folder]
+# With no argument it builds the 3 x 2 unit from params.yaml here. A unit folder
+# (such as 2x2) holds a params.yaml whose sections override this one's key by key.
+# It writes the unit folder's step/, print/ (STEP, STL and plain 3MF per part) and
+# report.txt, and leaves the closed assembly in `result`.
 # Unit coordinates: x across from the left outer face, y out from the panel face
 # (housing back face at y = 0), z up from the unit's bottom edge.
 import copy
 import math
 import os
+import sys
 from pathlib import Path
 
 import yaml
 from build123d import *  # noqa: F403
 
-HERE = Path(os.environ.get("ARC_DRAWER_DIR", r"E:\source\3dmodels\omniwall\arc-drawer"))
-ROOT = HERE.parent
-P = yaml.safe_load((HERE / "params.yaml").read_text())
+SRC = Path(os.environ.get("ARC_DRAWER_DIR", Path(__file__).resolve().parent))   # this folder: base params.yaml
+ROOT = SRC.parent
+HERE = SRC / sys.argv[1] if len(sys.argv) > 1 else SRC                          # unit folder: its params and outputs
+P = yaml.safe_load((SRC / "params.yaml").read_text())
+if HERE != SRC:
+    for k, v in yaml.safe_load((HERE / "params.yaml").read_text()).items():
+        if isinstance(v, dict) and isinstance(P.get(k), dict):
+            P[k].update(v)
+        else:
+            P[k] = v
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
@@ -41,6 +52,7 @@ pk["spine_clearance"] = HS["pocket"]["spine_clearance"]   # housing pocket from 
 pk["flank_gap"] = HS["pocket"]["flank_gap"]
 pk["ridge"]["height"] = HS["pocket"]["ridge_height"]
 SC = P["scoop"]
+NAME = U.get("file_prefix", "arc_drawer")             # start of every output file name
 K = math.sqrt(2)
 
 W = U["cells"] * pitch - U["gap"]
@@ -387,8 +399,8 @@ pin_faces = sorted({round(f.center().X, 3) for f in d.faces() if abs(abs(f.norma
 log(f"measured: drawer x faces at {pin_faces} (pin tips expect {HS['side'] - PN['reach']:.1f} and {W - HS['side'] + PN['reach']:.1f})")
 for b_ in BLENDS:
     log(b_)
-export_step(h, str(HERE / "step" / "arc_drawer_housing.step"))
-export_step(d, str(HERE / "step" / "arc_drawer_drawer.step"))
+export_step(h, str(HERE / "step" / f"{NAME}_housing.step"))
+export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
 log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
@@ -396,7 +408,7 @@ for state in ("closed", "open", "tilted", "lifted"):
     moved = drawer_at(d, state)
     moved.label = f"drawer {state}"
     log(f"{state}: drawer vs housing {overlap(h, moved):.3f} mm3, vs hooks {sum(overlap(moved, k) for k in hks):.3f} mm3")
-    export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"arc_drawer_assembly_{state}.step"))
+    export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"{NAME}_assembly_{state}.step"))
 log("tilt sweep (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
 log("lifted, pulled out from the notch by (mm: mm3): " + ", ".join(
     f"{y}: {overlap(h, drawer_at(d, 'lifted', y=y)):.3f}" for y in (0, 5, 10, 15, 20, 24)))
@@ -412,9 +424,9 @@ cp = solid(h & Pos(xc0 - FT["coupon_half_width"], 0, FT["coupon_bottom"]) * Box(
 ht.label, dt.label, cp.label = "fit test housing front", "fit test drawer rear", "pocket coupon"
 htp, dtp, cpp = print_housing(ht), to_bed(dt), print_housing(cp)
 plates = []
-for part, stem in ((hp, "arc_drawer_housing_print"), (dp, "arc_drawer_drawer_print"),
-                   (htp, "arc_drawer_fit_test_housing_print"), (dtp, "arc_drawer_fit_test_drawer_print"),
-                   (cpp, "arc_drawer_pocket_coupon_print")):
+for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
+                   (htp, f"{NAME}_fit_test_housing_print"), (dtp, f"{NAME}_fit_test_drawer_print"),
+                   (cpp, f"{NAME}_pocket_coupon_print")):
     export_step(part, str(HERE / "print" / f"{stem}.step"))
     export_stl(part, str(HERE / "print" / f"{stem}.stl"))
     write_3mf([(stem, *shape_mesh(part))], HERE / "print" / f"{stem}.3mf")
@@ -425,6 +437,6 @@ for part, stem in ((hp, "arc_drawer_housing_print"), (dp, "arc_drawer_drawer_pri
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
-           ("pocket coupon", *shape_mesh(cpp, 0, 60))], HERE / "print" / "arc_drawer_fit_test_plate.3mf")
+           ("pocket coupon", *shape_mesh(cpp, 0, 60))], HERE / "print" / f"{NAME}_fit_test_plate.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[h, d, *hks])

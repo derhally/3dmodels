@@ -3,16 +3,23 @@
 A drawer unit that hangs on the printed cross-slot hooks (`../hook/`): a housing
 with a floor, roof and side walls, and a drawer that slides out on two rear pins,
 tilts down 30° at the end of its travel and stays captive. Units tile edge to
-edge in any grid of widths and heights with 0.3 mm between them. This folder
-builds the 3-cell × 2-row unit; `params.yaml` holds every dimension with its
-source, and `build.py` makes all the files from it.
+edge in any grid of widths and heights with 0.3 mm between them. `params.yaml`
+holds every dimension with its source, and `build.py` makes all the files from it.
 
-| | mm |
-|---|---|
-| Housing W × D × H | 75.9 × 84 × 50.5 (3 × 25.4 − 0.3, 2 × 25.4 − 0.3) |
-| Drawer inside | 66.5 wide × 65.5 long × 40 tall (walls 2, floor 2) |
-| Travel | 55.9 (76 % of the drawer), then tilts to 30° |
-| Hooks | 2 columns, 1 or 2 rows |
+Two sizes so far, which tile together (same height and depth):
+
+| | 3 cells × 2 rows (this folder) | 2 cells × 2 rows ([`2x2/`](2x2/)) |
+|---|---|---|
+| Housing W × D × H, mm | 75.9 × 84 × 50.5 | 50.5 × 84 × 50.5 |
+| Drawer, outside W × L × H | 73.1 × 80.5 × 44.5 | 47.7 × 80.5 × 44.5 |
+| Drawer inside | 66.5 wide × 65.5 long × 40 tall (walls 2, floor 2) | 41.1 wide, otherwise the same |
+| Hooks | 2 columns, 1 or 2 rows | 1 column on the centre line, 1 or 2 rows |
+| Files | `step/`, `print/arc_drawer_*` | `2x2/step/`, `2x2/print/arc_drawer_2x2_*` |
+
+Both have 55.9 mm of travel, then tilt to 30°, and the same scoop and label
+holder. A size is a folder with a `params.yaml` that sets only what differs
+(`2x2/params.yaml` sets `cells: 2`); everything else comes from this folder's
+`params.yaml`.
 
 ## Where it sits on the panel
 
@@ -121,6 +128,9 @@ geometry, so there is one file per part instead; arrange plates in Bambu Studio.
   than 45° from vertical on each print part: none.
 
 ## Regenerating
+
+`build.py` with no argument builds the 3 × 2 unit; `build.py 2x2` builds the
+2 × 2 into `2x2/`. Any new size is a new folder with its own `params.yaml`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 
