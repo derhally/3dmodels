@@ -14,7 +14,7 @@ After the build the commands also place drawer copies open, tilted and lifted,
 run SolidCraft's interference check on each against the housing, and make the
 print-orientation copies housing_print and drawer_print.
 
-    E:\source\shapr3d-mcp\.venv\Scripts\python.exe build_solidcraft.py   (any Python 3 with PyYAML)
+    uv run --no-project --with pyyaml python build_solidcraft.py   (any Python 3 with PyYAML)
 """
 import json
 import math

@@ -1,6 +1,6 @@
 r"""Check the SolidCraft build of the arc drawer against the build123d one.
 
-    E:\source\shapr3d-mcp\.venv\Scripts\python.exe solidcraft\check_solidcraft.py
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python solidcraft\check_solidcraft.py
 
 Run from omniwall\arc-drawer after build.py. Compares the SolidCraft housing
 and drawer with step/ (volumes and the volume each has that the other lacks),

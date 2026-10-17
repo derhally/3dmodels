@@ -2,34 +2,41 @@
 
 Models in this repo are designed in code for 3D printing: Python
 [build123d](https://build123d.readthedocs.io/) scripts on the OpenCascade kernel,
-run through the `shapr3d` MCP server (`E:\source\shapr3d-mcp`). Shapr3D is used to
-review them visually. Everything is exact B-rep geometry, exported as STEP for CAD
-and STL/3MF for printing.
+built and checked with the **build123d-mcp** MCP server. Everything is exact
+B-rep geometry, exported as STEP for CAD and STL/3MF for printing.
 
-## The shapr3d MCP tools
+## The build123d-mcp tools
+
+The server keeps a live build123d session, so build in small steps and check
+each one. All dimensions are in mm.
 
 | Tool | Use it to |
 |---|---|
-| `build123d_guide` | Recall build123d syntax before writing a script |
-| `create_model` | Run a build123d script (assigns `result`) and export STEP/STL/3MF/glTF/BREP. Pass `params_file` to feed it a YAML/JSON of dimensions as `params` |
-| `modify_model` | Import a file as `imported`, change it in code, re-export. Also used to pull single solids out of an assembly or rotate parts into print orientation |
-| `inspect_model` | Size, volume, solids, faces of a STEP/STL/3MF/BREP/IGES file |
-| `detect_clash` | Pairwise overlap check between all solids in one or more files |
-| `render_preview` | Rough shaded PNG, for a quick sanity check only |
-| `convert_model` | Convert between formats |
-| `open_in_shapr3d` | Hand a file to Shapr3D for review (see Windows note below) |
-| `shapr3d_status`, `activate_shapr3d`, `screenshot_shapr3d` | Check, launch and capture the Shapr3D window |
+| `session_state`, `reset` | See what's loaded; start a fresh part |
+| `execute` | Run build123d code in the session, one feature or boolean per call; `show(part, "name")` registers a part |
+| `measure` | Size, volume and face inventory: the source of truth after every boolean (an unchanged face count means it silently failed) |
+| `find_holes`, `find_hole_patterns`, `find_bosses`, `find_countersinks` | Confirm features exist where they should |
+| `cross_sections`, `render_view` | Look inside (cavities, wall thickness); render only after the numbers agree |
+| `compare` | `kind="fit"` for clearance or interference between two parts, `kind="align"` for flush/centred checks, `kind="shape"` to confirm an edit changed only what it should |
+| `save_snapshot`, `restore_snapshot` | Undo point before anything risky |
+| `validate` | Must pass (one watertight, manifold solid) before export |
+| `bank_candidate`, `export` | Write the final STEP (only if it passes the gate); other formats |
+| `analyze_printability` | Overhangs, thin walls and bed fit for anything printed |
+| `script`, `design_audit` | The session's code as a starting point for the repo script; brittle parameters |
 
-Scripts run inside the server: never `print()` from a `create_model` or
-`modify_model` script (stdout is the MCP transport). Generated files land in
-`E:\source\shapr3d-mcp\models`, which is scratch space. Finished designs are
-copied into this repo.
+Read the server's `build123d://quickref` resource before writing build code (and
+`build123d://skill/modeling` for a new part, `build123d://skill/edit` to change
+one). Use `bd_warehouse` for fasteners, threads, gears and bearings.
 
-**Windows + Shapr3D:** Shapr3D on Windows is a Store app and won't accept STEP
-files from other programs. `open_in_shapr3d` brings Shapr3D to the front and
-puts the file's path on the clipboard; the user imports it by hand (Import,
-Ctrl+V, Enter). Don't try to automate the Import dialog. After they import,
-`screenshot_shapr3d` can confirm what they see.
+`execute()` refuses imports of `os`, `sys`, `pathlib` and `yaml`, `open()`, and
+any dunder name, so repo `build.py` scripts that read a `params.yaml` don't run
+inside it: run them with a plain Python (see "Working on this machine"). Inside
+`execute()`, build123d's own `import_step`, `export_stl` and `Mesher` read and
+write repo paths. The server's `import_cad_file` and `export` tools have failed
+on repo paths; import with `import_step` inside `execute()` instead.
+
+To have the user review a model, give them the full path of the STEP file to
+open in their CAD program.
 
 ## How to work
 
@@ -44,12 +51,13 @@ Ctrl+V, Enter). Don't try to automate the Import dialog. After they import,
 3. **Model the hardware too.** Build stand-ins for every bought part the design
    has to clear: boards, their tallest components, connectors, cables, speakers,
    screw heads, and clips in their opened position. Put them in an assembly
-   file with the printed parts and run `detect_clash` after every change.
+   file with the printed parts and check every pair for overlap after every
+   change (`compare(kind="fit")`, or a loop of intersections in the build script).
 4. **Verify by measuring the output.** After a change, slice or inspect the
    generated part to confirm the dimension you changed: hole sizes, wall
    thickness, positions. Don't rely on reading the code.
-5. **Review in Shapr3D.** Send the assembly with `open_in_shapr3d` and let the
-   user check it before calling a design done.
+5. **Let the user review it.** Give them the assembly STEP's full path to open
+   in CAD, and let them check it before calling a design done.
 6. **Test-print critical fits.** For press fits and windows, export a small,
    quick test print of just that feature before the full part.
 
@@ -96,8 +104,9 @@ Ctrl+V, Enter). Don't try to automate the Import dialog. After they import,
 
 ## Working on this machine (Claude Code)
 
-- Run standalone build scripts with the server's Python:
-  `E:\source\shapr3d-mcp\.venv\Scripts\python.exe`. `python3` here is the
+- Run standalone build scripts with a plain build123d Python:
+  `uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py`
+  (tested on this machine; build123d 0.13 on Python 3.12). `python3` here is the
   Microsoft Store stub and hangs.
 - Put multi-line Python in a script file rather than a shell heredoc.
 - Extra tools for one-off jobs: `uv run --no-project --with <package> python ...`

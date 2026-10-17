@@ -68,7 +68,7 @@ A variant's `params.yaml` overrides `common/common.yaml` section by section.
 The models are code, not hand-drawn CAD. They were written in
 [build123d](https://build123d.readthedocs.io/), a Python CAD library on the
 OpenCascade kernel, so every file is an exact solid (B-rep) and imports into
-Shapr3D as editable bodies.
+CAD as editable bodies.
 
 1. **Dimensions.**
    - Display outline, layer depths, mounting holes and edge connectors come from
@@ -80,14 +80,14 @@ Shapr3D as editable bodies.
      glass border widths, the speaker (size, depth, ear holes and their height),
      the right-angle USB-C plug, and the USB-C socket's panel cutout and panel
      thickness. The socket's other dimensions are from its drawing.
-2. **Modelling.** Claude Code wrote the build123d scripts and ran them through
-   [shapr3d-mcp](https://github.com/derhally/shapr3d-mcp), an MCP server that
-   runs build123d scripts and exports STEP/STL/3MF. All dimensions come from the
-   YAML files; the scripts contain no measurements of their own.
+2. **Modelling.** Claude Code wrote the build123d scripts, using a build123d
+   MCP server to run and check them; new work uses build123d-mcp. All
+   dimensions come from the YAML files; the scripts contain no measurements of
+   their own.
 3. **Checking.**
    - Every revision was clash-checked against stand-ins for the display, its
      standoffs, the speaker, the USB plug and the port, to confirm no overlaps.
-   - Every revision was reviewed by importing the STEP into Shapr3D.
+   - Every revision was reviewed by opening the STEP in CAD.
    - The glass pocket was confirmed with a printed test frame. `print/p4_7b_facade_test_frame` checks the facade window the same way.
    - Bambu Studio projects were checked for watertight, outward-facing meshes.
 4. **Exports.** The print files are the same solids, rotated into print
