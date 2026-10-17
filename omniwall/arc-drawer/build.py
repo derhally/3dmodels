@@ -7,6 +7,7 @@
 # It writes step/, print/ (STEP, STL and plain 3MF per part) and report.txt, and leaves the closed assembly in `result`.
 # Unit coordinates: x across from the left outer face, y out from the panel face
 # (housing back face at y = 0), z up from the unit's bottom edge.
+import copy
 import math
 import os
 from pathlib import Path
@@ -23,9 +24,12 @@ exec((ROOT / "core_3mf.py").read_text())
 
 pitch = panel["pitch"]
 hook = panel["cross_slot_hook"]
-dm = panel["dovetail_mount"]
-dv, pk = dm["dovetail"], dm["pocket"]
 U, HS, DR, PN, TR, LP, LB, FT = (P[k] for k in ("unit", "housing", "drawer", "pins", "track", "lip", "label", "fit_test"))
+dm = copy.deepcopy(panel["dovetail_mount"])
+dv, pk = dm["dovetail"], dm["pocket"]
+pk["spine_clearance"] = HS["pocket"]["spine_clearance"]   # housing pocket from the print-tested coupon 3
+pk["flank_gap"] = HS["pocket"]["flank_gap"]
+pk["ridge"]["height"] = HS["pocket"]["ridge_height"]
 SC = P["scoop"]
 K = math.sqrt(2)
 
@@ -377,7 +381,7 @@ export_step(h, str(HERE / "step" / "arc_drawer_housing.step"))
 export_step(d, str(HERE / "step" / "arc_drawer_drawer.step"))
 
 hks = hooks()
-log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges in notches: 0.083 mm interference per side is expected)")
+log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
 for state in ("closed", "open", "tilted", "lifted"):
     moved = drawer_at(d, state)
     moved.label = f"drawer {state}"

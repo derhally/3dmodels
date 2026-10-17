@@ -26,6 +26,10 @@ housing:
   floor: 3.0               # assumed: the drawer slides on it; its front edge is the tilt pivot (sill)
   back_front_wall: 2.0     # assumed: solid in front of the pocket floor gable (back plate = 6.5 + 1.725 + 2.0 = 10.225)
   second_ridges: true      # assumed: a second ridge pair one pitch below the seat, so a lower row of hooks also clicks in
+  pocket:                  # print-tested 2026-10-17: pocket_variants coupon 3 clicked best (Zeid). Overrides panel.yaml dovetail_mount.pocket for the housing only
+    spine_clearance: -0.1  # lips' 45 deg back starts 0.1 below the spine's front (pocket_variants.gable_drop), so the print gable no longer thins them
+    flank_gap: 0.1         # lip flank 0.1 behind the hook's flank (was 0.4)
+    ridge_height: 0.53     # snap ridges: 0.28 interference per side with the 0.25 side clearance (was 0.333)
 
 drawer:
   side_clearance: 0.3      # assumed: per side to the housing walls
