@@ -27,10 +27,17 @@ units with +3.0 mm cannot sit next to each other.
 ## One pocket channel per column, one or two rows of hooks
 
 Each column has one dovetail channel from the unit's bottom edge up to a closed
-seat at the top row's hook top. The channel is the print-tested pocket
+seat at the top row's hook top. The channel is the shared pocket
 (`dovetail_mount` in `../panel.yaml`, built by `pocket_void()` in
 `../hook_geometry.py`): spine channel, 45° dovetail slot, 0.25 mm clearance,
 snap ridges 2.75 mm below the seat. A second ridge pair sits one pitch lower.
+Three of its values are replaced by `housing.pocket` in params.yaml, from the
+pocket coupon that clicked best when printed on its back (coupon 3 of
+`pocket_variants.py`, tested 2026-10-17): the lips' back starts 0.1 mm lower
+(`spine_clearance -0.1`), the lip flank sits 0.1 mm behind the hook's
+(`flank_gap`, was 0.4) and the ridges are 0.53 mm (was 0.333). They reach 0.28 mm past
+the hook's flank, 0.05 mm deeper than its 0.23 mm notches, so a seated hook is
+held lightly squeezed.
 
 - With hooks in the top row only, the unit hangs from them and the lower part of
   each channel is empty.
@@ -46,7 +53,9 @@ seat; it only adds grip.
 The housing prints on its back (see Printing), so two faces of the pocket that
 would hang flat over the bed got 45° gables: the back of the lips (the lip is
 now a 90° wedge, its 45° bearing flank unchanged) and the pocket floor (the back
-plate grows from 8.35 to 10.1 mm). `print/arc_drawer_pocket_coupon_print.*` is one
+plate grows from 8.35 to 10.1 mm). The first coupon printed this way was loose:
+the lips' gable started at their back face and cut them to a knife edge, which
+`housing.pocket` fixes. `print/arc_drawer_pocket_coupon_print.*` is one
 column of the back plate to check this pocket before printing the housing.
 
 ## How the drawer works
@@ -79,12 +88,14 @@ column of the back plate to check this pocket before printing the housing.
   lip. The label holder
   is a U at the bottom of the face, open at the top: the 34.7 × 10.85 × 0.9 mm
   bin label (`../../labels/bin-label`) drops in from above and sits behind
-  1.5 mm returns.
+  1.5 mm returns. Make its labels with the `arc-drawer` size in
+  `../../labels/bin-label`, which keeps the text clear of the returns.
 
 `build.py` checks the drawer against the housing in every position (closed,
 sliding, at the stop, every 5° of the tilt, lifted and pulled out along the
 exit channel) and the hooks against the housing; all overlaps are 0 mm³
-(`report.txt`).
+(`report.txt`), apart from the hooks' intended 0.56 mm³ in total where the
+snap ridges squeeze the seated hooks.
 
 ## Printing
 
@@ -153,7 +164,6 @@ bounding boxes and centroids, no hook clash.
 ## Untested
 
 - Pin and groove fit (0.25 mm clearance) and the drop-in load.
-- The pocket in this print orientation (gabled lips and floor).
 - Lift of 12.5 mm to remove: whether that feels deliberate enough.
 - The scoop's grip from below; the label fit (0.15 mm per side).
 - The drawer drops to 30° whenever it is pulled to the stop.

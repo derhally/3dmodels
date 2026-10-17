@@ -1,0 +1,36 @@
+# Front labels: white plate with black text inlaid flush with the face.
+# All sizes in mm.
+
+# Label sizes, one per holder. Each label below picks one (bin if it names none).
+sizes:
+  bin:                 # the bins' front label pocket
+    width: 34.7        # measured: the bins' front label pocket (given by Zeid)
+    height: 10.85      # measured: the bins' front label pocket (given by Zeid)
+    thickness: 0.9     # measured: the bins' front label pocket depth (given by Zeid)
+    corner_radius: 0   # assumed: square corners, same as the pocket outline we were given
+    margin_x: 1.2      # assumed: clear border between the text and the left and right edges
+    margin_y: 1.2      # assumed: clear border between the text and the top and bottom edges
+  arc-drawer:          # the U label holder on the Omniwall arc drawer's face (omniwall/arc-drawer, params.yaml label:)
+    width: 34.7        # arc-drawer label.width: the holder was sized for the bin plate
+    height: 10.85      # arc-drawer label.height
+    thickness: 0.9     # arc-drawer label.thickness (the holder's groove is 1.2)
+    corner_radius: 0   # square, like the holder's corners
+    margin_x: 2.2      # the holder's side rails wrap 1.5 over each edge (label.return) and the label can sit 0.15 to one side (label.side_clearance); 0.55 clear of the rail beyond that
+    margin_y: 1.2      # top is open and the label rests on the bottom rail, so nothing covers the top or bottom edge
+
+text:
+  inlay_depth: 0.4   # assumed: 2 layers at 0.2 mm, leaves 0.5 mm of white behind the text
+  max_height: 6.5    # assumed: tallest the glyphs may get, so short words do not fill the plate edge to edge
+  font_path: C:/Windows/Fonts/arialbd.ttf   # Arial Bold, ships with Windows
+
+# Bambu Studio filament slots: match these to where white and black sit in the AMS.
+filament:
+  plate: 2   # white
+  text: 1    # black
+
+# One label per entry: plain text for a bin label, or {text: ..., size: arc-drawer}.
+# Each gets its own STEP/STL/3MF, and all of them share one Bambu Studio plate.
+# File names come from the text (plus the size, for sizes other than bin).
+labels:
+  - WAGO 221-2
+  - {text: M3 SCREWS, size: arc-drawer}
