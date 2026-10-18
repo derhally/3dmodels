@@ -197,5 +197,25 @@ hb, cb, tb = hp.bounding_box(), cpp.bounding_box(), tp.bounding_box()
 write_3mf([("slot hook 2", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp)),
            ("tall bridge hook", *shape_mesh(tp, -(cb.size.X / 2 + 8 + hb.size.X / 2), hb.size.Y / 2 + 6 + tb.size.Y / 2))],
           OUT / "slot_hook_2_test_plate.3mf")
+
+# Comparison print (Zeid, 2026-10-18): the same hook with the bed side chamfered
+# like the top side, by keeping only what it shares with its mirror image across
+# its mid-plane. Printed next to the plain one to see whether the bed side grips.
+hkc = hk & mirror(hk, Plane.YZ.offset(hk.bounding_box().center().X))
+hkc = hkc.solids()[0] if len(hkc.solids()) == 1 else hkc
+hkc.label = "slot hook 2, bed side chamfered"
+log(f"bed-side chamfered hook: volume {hkc.volume:.1f} mm3 ({hk.volume - hkc.volume:.1f} less), solids {len(hkc.solids())}, valid {hkc.is_valid}; "
+    f"vs panel {overlap(hkc, pnl):.3f}, vs coupon {overlap(hkc, cp):.3f} mm3 (same as the plain hook means the fit is unchanged)")
+hcp = to_bed(Rot(0, -90, 0) * hkc)
+stem = "slot_hook_2_bed_chamfer_print"
+export_step(hcp, str(OUT / f"{stem}.step"))
+export_stl(hcp, str(OUT / f"{stem}.stl"))
+write_3mf([(stem, *shape_mesh(hcp))], OUT / f"{stem}.3mf")
+first = hcp & Pos(0, 0, 0.1) * Box(200, 200, 0.2)
+log(f"{stem}: first layer {first.volume / 0.2:.1f} mm2 against {(hp & Pos(0, 0, 0.1) * Box(200, 200, 0.2)).volume / 0.2:.1f} mm2 plain; "
+    f"overhangs flatter than 45 deg: {len(bad_faces(hcp))} (plain: {len(bad_faces(hp))})")
+write_3mf([("slot hook 2 plain", *shape_mesh(hp, 0, -(hb.size.Y / 2 + 4))),
+           ("slot hook 2 bed side chamfered", *shape_mesh(hcp, 0, hb.size.Y / 2 + 4))],
+          OUT / "slot_hook_2_chamfer_compare.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[pnl, hk, cp])

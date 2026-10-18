@@ -7,7 +7,7 @@ swing in, 14 deg out: 0.18 mm3 0.18 at z -0.2..0.0
 swing in, 10 deg out: 0.45 mm3 0.45 at z -0.2..0.0
 swing in,  8 deg out: 0.24 mm3 0.24 at z -0.2..0.0
 swing in,  6 deg out: 0.10 mm3 0.10 at z -0.1..0.0
-swing in,  4 deg out: 0.12 mm3 0.03 at z -0.0..0.0, 0.09 at z -25.6..-25.4
+swing in,  4 deg out: 0.12 mm3 0.09 at z -25.6..-25.4, 0.03 at z -0.0..0.0
 swing in,  3 deg out: 0.79 mm3 0.01 at z -0.0..0.0, 0.78 at z -25.9..-25.4
 swing in,  2 deg out: 1.98 mm3 1.98 at z -26.2..-25.4
 swing in,  1 deg out: 1.40 mm3 1.40 at z -26.2..-25.4
@@ -35,3 +35,5 @@ bridge_hook_tall_print: 29.7 x 11.1 x 3.0, overhangs flatter than 45 deg: 7
     62.0 deg from vertical, area 0.57 mm2, at (-11.8, 4.9, 0.2)
     62.0 deg from vertical, area 0.57 mm2, at (-12.5, 4.9, 0.1)
 slot_hook_2_coupon_print: 25.1 x 50.5 x 10.1, overhangs flatter than 45 deg: 0
+bed-side chamfered hook: volume 984.4 mm3 (4.6 less), solids 1, valid True; vs panel 0.116, vs coupon 0.279 mm3 (same as the plain hook means the fit is unchanged)
+slot_hook_2_bed_chamfer_print: first layer 279.1 mm2 against 295.3 mm2 plain; overhangs flatter than 45 deg: 7 (plain: 7)
