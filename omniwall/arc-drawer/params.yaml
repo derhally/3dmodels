@@ -55,7 +55,7 @@ track:                     # channel in each housing side wall that the drawer's
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
   tilt: 30                 # assumed: the arc about the sill ends here; the drawer hangs open at this tilt
-  gate: 6.0                # assumed: the tipped drawer is pushed this far back along its bottom before the hook (lifts it 3.4 mm, so let go it slides back to the arc's end)
+  gate: 6.0                # assumed: the tipped drawer is pushed this far back before the hook, along a curve with the arc's radius (Zeid, 2026-10-18: the gate curves like the arc); it lifts the drawer, so let go it slides back to the arc's end
   hook_radius: 3.4         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.03)
   stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc
   nub_round: 1.0           # given (Zeid, 2026-10-18: no sharp turns): the nub of wall between the arc and the gate

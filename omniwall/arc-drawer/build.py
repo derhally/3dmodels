@@ -89,19 +89,24 @@ a1 = a0 - tilt                                       # nose-down: the pin swings
 pin_end = (piv[0] + R * math.cos(math.radians(a1)), piv[1] + R * math.sin(math.radians(a1)))
 hw = K * PN["diameter"] / 2 + TR["clearance"]        # channel half width: the teardrop pin's point + clearance, so it fits however the drawer turns
 # Way out: from the arc's end (the apex, where the drawer hangs at full tilt) the
-# drawer is pushed straight back along its own bottom, still on the sill (the gate),
-# which lifts it, so let go there it slides back down to the apex. The gate runs into
-# the hook, which curves up round the tongue of wall and forward into the exit channel.
+# drawer is pushed back along its own bottom, still on the sill (the gate), which lifts
+# it, so let go there it slides back down to the apex. The gate curves up with the
+# arc's radius, the arc mirrored at the apex, and runs into the hook, which curves up
+# round the tongue of wall and forward into the exit channel.
 Lh = lambda h: (-math.sin(math.radians(h)), math.cos(math.radians(h)))   # left of heading h (deg, 0 = forward)
 ta = math.radians(tilt)
 gate = TR["gate"]
-gate_top = (pin_end[0] - gate * math.cos(ta), pin_end[1] + gate * math.sin(ta))
+gate_c = (pin_end[0] - R * Lh(180 - tilt)[0], pin_end[1] - R * Lh(180 - tilt)[1])   # leaves the apex heading back along the tilted bottom, turning up
+g0 = 270 - tilt                                      # pin_end's angle about gate_c; the gate runs clockwise from it
+g1 = g0 - math.degrees(gate / R)
+hg = 180 - tilt - math.degrees(gate / R)             # heading at the gate's top
+gate_top = (gate_c[0] + R * math.cos(math.radians(g1)), gate_c[1] + R * math.sin(math.radians(g1)))
 r_h = TR["hook_radius"]
-hook_c = (gate_top[0] - r_h * Lh(180 - tilt)[0], gate_top[1] - r_h * Lh(180 - tilt)[1])
+hook_c = (gate_top[0] - r_h * Lh(hg)[0], gate_top[1] - r_h * Lh(hg)[1])
 exit_z = hook_c[1] + r_h
 lift = exit_z - z_pin
 branch_top = (hook_c[0], exit_z)                     # the exit channel starts here
-arc_len, hook_len = R * ta, r_h * math.radians(180 - tilt)
+arc_len, hook_len = R * ta, r_h * math.radians(hg)
 path_len = arc_len + gate + hook_len
 
 
@@ -111,8 +116,9 @@ def path_point(s):
         a = math.radians(a0) - s / R
         return (piv[0] + R * math.cos(a), piv[1] + R * math.sin(a))
     if s <= arc_len + gate:
-        return (pin_end[0] - (s - arc_len) * math.cos(ta), pin_end[1] + (s - arc_len) * math.sin(ta))
-    h = (180 - tilt) - math.degrees((s - arc_len - gate) / r_h)
+        g = math.radians(g0) - (s - arc_len) / R
+        return (gate_c[0] + R * math.cos(g), gate_c[1] + R * math.sin(g))
+    h = hg - math.degrees((s - arc_len - gate) / r_h)
     return (hook_c[0] + r_h * Lh(h)[0], hook_c[1] + r_h * Lh(h)[1])
 
 
@@ -184,6 +190,27 @@ def fillet_line_circle(V, p0, d, side, c0, Rc, r):
     return V + (Polygon(corner, t1, c, t2, align=None) - Pos(*c) * Circle(r))
 
 
+def circles_meet(c1, r1, c2, r2, near):
+    """The crossing point of two circles nearer `near`."""
+    dx, dy = c2[0] - c1[0], c2[1] - c1[1]
+    dd = math.hypot(dx, dy)
+    a = (r1 * r1 - r2 * r2 + dd * dd) / (2 * dd)
+    h = math.sqrt(r1 * r1 - a * a)
+    m = (c1[0] + a * dx / dd, c1[1] + a * dy / dd)
+    ps = [(m[0] + s_ * h * dy / dd, m[1] - s_ * h * dx / dd) for s_ in (1, -1)]
+    return min(ps, key=lambda p: math.hypot(p[0] - near[0], p[1] - near[1]))
+
+
+def fillet_circles(V, c1, r1, c2, r2, r, near):
+    """Round the point of wall where two arc walls of the track meet (circles r1 about
+    c1 and r2 about c2, the wall outside both) to radius r: cut away the point."""
+    corner = circles_meet(c1, r1, c2, r2, near)
+    c = circles_meet(c1, r1 + r, c2, r2 + r, near)
+    ts = [(o[0] + (c[0] - o[0]) * rr / math.hypot(c[0] - o[0], c[1] - o[1]),
+           o[1] + (c[1] - o[1]) * rr / math.hypot(c[0] - o[0], c[1] - o[1])) for o, rr in ((c1, r1), (c2, r2))]
+    return V + (Polygon(corner, ts[0], c, ts[1], align=None) - Pos(*c) * Circle(r))
+
+
 def track_region():
     """The track as a 2D region in the y-z plane: the pin centre's path (the straight
     groove to the stop, the arc it sweeps while the drawer tilts about the sill, the
@@ -193,14 +220,13 @@ def track_region():
     of wall where it forks are rounded."""
     V = slot((y_pin, z_pin), (y_stop, z_pin), hw)
     V = V + band(piv, R, a1, a0, hw) + Pos(*pin_end) * Circle(hw)
-    V = V + slot(pin_end, gate_top, hw)
-    V = V + band(hook_c, r_h, 90, 270 - tilt, hw)
+    V = V + band(gate_c, R, g1, g0, hw)
+    V = V + band(hook_c, r_h, 90, 90 + hg, hw)
     V = V + slot(branch_top, (D + hw + 1, exit_z), hw)
     # Where the groove's ceiling meets the arc's outer wall, across from the stop, and
     # the nub between the arc's outer wall and the gate's lower wall.
     V = fillet_line_circle(V, (y_stop, z_pin + hw), (-1, 0), -1, piv, R + hw, TR["stop_round"])
-    n = (math.sin(ta), math.cos(ta))
-    V = fillet_line_circle(V, (pin_end[0] - hw * n[0], pin_end[1] - hw * n[1]), (-math.cos(ta), math.sin(ta)), 1, piv, R + hw, TR["nub_round"])
+    V = fillet_circles(V, piv, R + hw, gate_c, R + hw, TR["nub_round"], (pin_end[0] - 3 * hw, pin_end[1]))
     return V
 
 
