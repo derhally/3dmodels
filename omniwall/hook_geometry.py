@@ -245,6 +245,19 @@ def slot_hook_2(panel, root):
     # between the slots): a fillet would push into the steel, so a round groove
     # is cut into the hook instead, which takes the sharp corner out of it.
     out = slot_hook_body(panel, root, ts["fill_top_gap"]) + foot + fill + coves + Pos(0, 0, zl - d) * front
+    # Chamfer the lower foot's free edges on the top side (its back, and its top
+    # round to the spine), like the top body's, and on up the spine's back to
+    # the top body, so the chamfer ends in a corner rather than a step. The
+    # ramp and the rim notch, which ride over and hold the rim, stay square.
+    if ts["lower_foot_chamfer"] > 0:
+        eps, z0, z1 = 1e-3, zl + hook["foot_lead_in"], zl + ft + fl["lower_foot_root"]
+        def foot_edge(e):
+            bb = e.bounding_box()
+            if bb.min.X < t - eps or bb.max.Y > yp + eps or bb.min.Z < z0 - eps:
+                return False
+            spine_back = bb.min.Y > yp - eps and bb.min.Z > z1 - eps and bb.max.Z < eps
+            return bb.max.Z < z1 + eps or spine_back
+        out = chamfer([e for e in out.edges() if foot_edge(e)], ts["lower_foot_chamfer"])
     for r, y, z in ((fl["d_relief"], hook["panel_back_y"], H), (fl["f_relief"], yp, 0.0)):
         if r > 0:
             out = out - extrude(Plane.YZ * Pos(y, z) * Circle(r), t)

@@ -144,6 +144,7 @@ slot_hook_1:
 slot_hook_2:
   lower_rim_below: 25.4     # derived: pitch, the upper slot's bottom edge to the lower slot's (in-line slots)
   fill_top_gap: true        # Zeid, 2026-10-18: the top body's gap (between A and C) filled solid; the top has no snap, so it needn't flex. false = the fillets below
+  lower_foot_chamfer: 0.5   # Zeid asked, 2026-10-18: the lower foot's back and top edges on the top side, like the top body's; not the ramp or rim notch (the snap's working faces). 0 = none, as on slot hook 1
   fillets:                  # inside corners where the bars meet the front, for strength (Zeid, 2026-10-18; A, C, E on the side-profile diagram)
     under_top_bar: 3.0      # assumed (A): under the top bar with the finger; was slot hook 1's 0.2
     top_foot: 3.0           # assumed (C): on the top body's foot (no snap up there); was 0.2

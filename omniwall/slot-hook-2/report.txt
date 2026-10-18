@@ -1,4 +1,4 @@
-hook: 2.95 x 11.15 x 45.70 mm (z -26.20 to 19.50), volume 989.0 mm3, solids 1, valid True
+hook: 2.95 x 11.15 x 45.70 mm (z -26.20 to 19.50), volume 985.4 mm3, solids 1, valid True
 coupon: 25.10 x 10.07 x 50.50 mm, volume 11707.9 mm3, solids 1, valid True
 slot rows (horizontal slots) at z 20.45 and -30.35; coupon edges at 20.30 and -30.20; seat (pocket top) at 15.50, 4.95 below the slot row; roof above the seat 4.80
 hook vs panel: 0.116 mm3 (the rim notch is 1.5 wide on the 1.55 steel, a 0.05 clamp like the bridge hook's; slot hook 1 has the same)
@@ -20,8 +20,8 @@ tall bridge hook vs coupon: 0.279 mm3 (both ridge pairs in notches, as on the sl
 tall bridge hook stacked one row below another: 67.4 mm3, over a slot hook 1 in the slot below: 99.9 mm3 (one per column)
 slot_hook_2_print: 45.7 x 11.2 x 3.0, overhangs flatter than 45 deg: 7
     90.0 deg from vertical, area 39.62 mm2, at (-14.7, 2.7, 0.8)
-    90.0 deg from vertical, area 0.87 mm2, at (9.3, 4.9, 0.2)
     90.0 deg from vertical, area 0.87 mm2, at (-16.1, 4.9, 0.2)
+    90.0 deg from vertical, area 0.87 mm2, at (9.3, 4.9, 0.2)
     62.0 deg from vertical, area 0.57 mm2, at (9.6, 4.9, 0.2)
     62.0 deg from vertical, area 0.57 mm2, at (8.9, 4.9, 0.1)
     62.0 deg from vertical, area 0.57 mm2, at (-15.8, 4.9, 0.2)
@@ -35,5 +35,5 @@ bridge_hook_tall_print: 29.7 x 11.1 x 3.0, overhangs flatter than 45 deg: 7
     62.0 deg from vertical, area 0.57 mm2, at (-11.8, 4.9, 0.2)
     62.0 deg from vertical, area 0.57 mm2, at (-12.5, 4.9, 0.1)
 slot_hook_2_coupon_print: 25.1 x 50.5 x 10.1, overhangs flatter than 45 deg: 0
-bed-side chamfered hook: volume 984.4 mm3 (4.6 less), solids 1, valid True; vs panel 0.116, vs coupon 0.279 mm3 (same as the plain hook means the fit is unchanged)
-slot_hook_2_bed_chamfer_print: first layer 279.1 mm2 against 295.3 mm2 plain; overhangs flatter than 45 deg: 7 (plain: 7)
+bed-side chamfered hook: volume 977.2 mm3 (8.2 less), solids 1, valid True; vs panel 0.116, vs coupon 0.279 mm3 (same as the plain hook means the fit is unchanged)
+slot_hook_2_bed_chamfer_print: first layer 267.5 mm2 against 295.3 mm2 plain; overhangs flatter than 45 deg: 7 (plain: 7)
