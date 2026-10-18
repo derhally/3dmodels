@@ -31,7 +31,7 @@ exec((ROOT / "core_3mf.py").read_text())
 
 dm0 = panel["dovetail_mount"]
 dv = dm0["dovetail"]
-hook = panel["cross_slot_hook"]
+hook = panel["bridge_hook"]
 PV = P["pocket_variants"]
 HH = hook["height"]
 

@@ -27,7 +27,7 @@ P = yaml.safe_load((HERE / "params.yaml").read_text())
 panel = yaml.safe_load((HERE.parent / "panel.yaml").read_text())
 
 pitch = panel["pitch"]
-hook = panel["cross_slot_hook"]
+hook = panel["bridge_hook"]
 dm = panel["dovetail_mount"]
 dv, pk = dm["dovetail"], dm["pocket"]
 U, HS, DR, PN, TR, LP, LB = (P[k] for k in ("unit", "housing", "drawer", "pins", "track", "lip", "label"))

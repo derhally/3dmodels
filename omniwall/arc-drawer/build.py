@@ -44,7 +44,7 @@ def export_step(shape, path):
 
 
 pitch = panel["pitch"]
-hook = panel["cross_slot_hook"]
+hook = panel["bridge_hook"]
 U, HS, DR, PN, TR, LP, LB, FT = (P[k] for k in ("unit", "housing", "drawer", "pins", "track", "lip", "label", "fit_test"))
 dm = copy.deepcopy(panel["dovetail_mount"])
 dv, pk = dm["dovetail"], dm["pocket"]
@@ -343,7 +343,7 @@ def drawer_at(d, state, angle=None, y=None):
 
 
 def hooks(rows=None):
-    hk = cross_slot_hook(panel, ROOT)
+    hk = bridge_hook(panel, ROOT)
     out = []
     for xc in hook_cols:
         for z in (hook_rows if rows is None else rows):

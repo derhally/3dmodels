@@ -1,5 +1,5 @@
-# Two-slot hook test print (Zeid asked 2026-10-18). The hook itself is in
-# ../panel.yaml (two_slot_hook) and ../hook_geometry.py. This builds it with a
+# Slot hook 2 test print (Zeid asked 2026-10-18). The hook itself is in
+# ../panel.yaml (slot_hook_2) and ../hook_geometry.py. This builds it with a
 # housing coupon: a one-cell-wide slice of a 2-row housing back whose pocket seat
 # sits under the hook's top, so its top and bottom edges line up with horizontal
 # slot rows. The pocket's fit values come from ../arc-drawer/params.yaml

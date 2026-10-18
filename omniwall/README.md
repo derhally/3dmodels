@@ -100,9 +100,25 @@ None of these were given, so no value has been assumed for them. Measure them
   the outermost slots to the panel edge.
 - **Load rating.**
 
+## Hook names (Zeid, 2026-10-18)
+
+- **Bridge hook** (was "cross-slot hook"): grips the steel bridge between two
+  in-line slots, its top bar resting on the upper slot's bottom edge.
+- **Slot hook 1** (was "one-slot hook", the 1u hook): fills one slot and hooks a
+  finger over its top edge, with a rim-notch snap at the bottom.
+- **Slot hook 2** (was "two-slot hook"): slot hook 1 carried down into the next
+  slot in line. Test print in `slot-hook-2/`.
+
+All of them carry the same dovetail front, so one pocket fits any of them. For
+one housing to take every hook, the snaps must sit in the same places: slot hook
+2 has a second notch pair one cell lower, and the bridge hook needs its front
+raised 12.0 mm (`bridge_hook(tall=True)`, tested in `slot-hook-2/`). In a 2-row
+housing each hook column then takes two slot hook 1s, one slot hook 2, or one
+tall bridge hook.
+
 ## Official hooks (print-tested 2026-10-17)
 
-The cross-slot and one-slot hooks below, as built by `hook/build_hooks.py` from
+The bridge hook and slot hook 1 below, as built by `hook/build_hooks.py` from
 [panel.yaml](panel.yaml), are the official design. Both were printed with the
 test plate (`pocket-test/`) and fit, snap and hold. Print files are in
 `hook/print/`, lying on their flat side with no supports, and in the Bambu Studio
@@ -111,11 +127,11 @@ project `test-prints/omniwall_test_parts.3mf` (built locally by `build_bambu_pro
 take the pocket in `dovetail_mount.pocket`, built by `pocket_void()` in
 `hook_geometry.py`.
 
-## Cross-slot hook (print-tested)
+## Bridge hook (print-tested)
 
 The hook in use on printed mounts. The owner's Shapr3D model is
-[hook/cross_slot_hook.step](hook/cross_slot_hook.step); its measured values are
-in `cross_slot_hook` in [panel.yaml](panel.yaml). The printed version keeps
+[hook/bridge_hook_measured.step](hook/bridge_hook_measured.step); its measured values are
+in `bridge_hook` in [panel.yaml](panel.yaml). The printed version keeps
 everything behind the panel and swaps the front for a symmetric dovetail (below);
 the print-ready file, lying on its flat side, is in `hook/print/`.
 
@@ -165,16 +181,16 @@ fit; `hook_geometry.py` builds the hooks, the head and the pocket from the same
 numbers. `build_bambu_project.py` packs both hooks and the test plate into a
 Bambu Studio project (`test-prints/omniwall_test_parts.3mf`), one part per plate.
 
-## One-slot hook (print-tested)
+## Slot hook 1 (print-tested)
 
-The owner's 1u hook, [hook/one_slot_hook.step](hook/one_slot_hook.step),
-measured as `one_slot_hook` in [panel.yaml](panel.yaml). It mounts in a single
+The owner's 1u hook, [hook/slot_hook_1_measured.step](hook/slot_hook_1_measured.step),
+measured as `slot_hook_1` in [panel.yaml](panel.yaml). It mounts in a single
 slot, so an object can sit within one cell. A finger goes up behind the panel
 above the slot, and the body fills the slot's full 15.5 mm height. A cavity open
 to the back lets the foot flex as the body snaps into the slot.
 
-The printed version (`hook/print/one_slot_hook_dovetail`) carries the same
-dovetail front as the cross-slot hook, in the same place relative to the panel,
+The printed version (`hook/print/slot_hook_1`) carries the same
+dovetail front as the bridge hook, in the same place relative to the panel,
 so one pocket fits either hook. To make room for the spine, the cavity now ends
 6.45 mm from the back instead of 7.51. The foot is thinned from 4.0 to 3.44 mm
 so the shorter foot flexes about as easily as before. The finger and the top of the body have 0.5 mm
@@ -193,7 +209,7 @@ The notch's front edge has a 0.3 mm chamfer to guide the rim in.
   The official hooks above are the print-tested reference; record new tested
   fits here. Tested so far: the dovetail pocket (0.25 mm per side, 0.15 mm to
   the spine and floor, 0.333 mm snap ridges), the 1.5 mm clamp on the 1.55 mm
-  steel, and the one-slot hook's 0.8 mm rim notch.
+  steel, and slot hook 1's 0.8 mm rim notch.
 - Tabs into slots must be narrower than 3.0 mm and shorter than 15.5 mm; how much
   smaller depends on the slot ends and the fit test.
 - Pegs into the holes must be under Ø6.2 mm, again by an amount the fit test

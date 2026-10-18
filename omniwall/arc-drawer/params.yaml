@@ -1,11 +1,11 @@
 # Omniwall arc-pocket drawer (own design, 2026-10-17): a housing that hangs on the
-# printed cross-slot hooks, and a drawer that slides out on two rear pins, tilts
+# printed bridge hooks, and a drawer that slides out on two rear pins, tilts
 # down 30 deg at the end of its travel and stays captive. Panel, hook and pocket
 # values come from ../panel.yaml (dovetail_mount); the pockets are built by
 # ../hook_geometry.py so they match the print-tested hooks. All sizes in mm.
 # Source tags: given (Zeid), derived, assumed (chosen; the fit test checks it).
 #
-# Grid placement (derived from the hook geometry): a cross-slot hook straddles the
+# Grid placement (derived from the hook geometry): a bridge hook straddles the
 # horizontal slot row, so it sits at a crossing of the slot grid. Sideways, the
 # unit's edges sit on vertical slot columns (as the bins do), so every column
 # inside the unit takes a hook: cells - 1 of them. Vertically the unit's bottom

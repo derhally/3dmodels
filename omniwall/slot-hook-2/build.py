@@ -1,4 +1,5 @@
-# Two-slot hook test print: the hook (../panel.yaml two_slot_hook) and a housing
+# Slot hook 2 test print: the hook (../panel.yaml slot_hook_2), the tall bridge
+# hook (bridge_hook.tall_front) and a housing
 # coupon that slides down onto it, with a stand-in for the panel to check that
 # everything clears. Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
@@ -35,7 +36,7 @@ def export_step(shape, path):
 
 
 pitch, sl = panel["pitch"], panel["slot"]
-one, ts, CP = panel["one_slot_hook"], panel["two_slot_hook"], P["coupon"]
+one, ts, CP = panel["slot_hook_1"], panel["slot_hook_2"], P["coupon"]
 dm = copy.deepcopy(panel["dovetail_mount"])
 dv, pk = dm["dovetail"], dm["pocket"]
 for k in ("spine_clearance", "flank_gap"):
@@ -53,8 +54,8 @@ lines = []
 log = lines.append
 
 # The hook.
-hk = two_slot_hook(panel, ROOT)
-hk.label = "two-slot hook"
+hk = slot_hook_2(panel, ROOT)
+hk.label = "slot hook 2"
 bb = hk.bounding_box()
 log(f"hook: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm (z {bb.min.Z:.2f} to {bb.max.Z:.2f}), volume {hk.volume:.1f} mm3, solids {len(hk.solids())}, valid {hk.is_valid}")
 
@@ -91,7 +92,7 @@ chan = Polygon((cx - bw - e, yb), (cx + bw + e, yb), (cx, yb + bw + e), align=No
 floor = Polygon((cx - hh - e, yf), (cx + hh + e, yf), (cx, yf + hh + e), align=None)
 seat = H + pk["top_clearance"]
 # A second ridge pair one pitch lower, as in the drawer housings (housing.second_ridges):
-# it clicks into a one-slot hook in the lower slot, or the two-slot hook's lower notches.
+# it clicks into a slot hook 1 in the lower slot, or slot hook 2's lower notches.
 r = pk["ridge"]
 y_ridge_end = yp + dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
 for zc in (seat - r["below_top"] - pitch,):
@@ -113,7 +114,7 @@ def overlap(a, b):
     return sum(s.volume for s in (x.solids() if hasattr(x, "solids") else [x]))
 
 
-log(f"hook vs panel: {overlap(hk, pnl):.3f} mm3 (the rim notch is 1.5 wide on the 1.55 steel, a 0.05 clamp like the cross-slot hook's; the one-slot hook has the same)")
+log(f"hook vs panel: {overlap(hk, pnl):.3f} mm3 (the rim notch is 1.5 wide on the 1.55 steel, a 0.05 clamp like the bridge hook's; slot hook 1 has the same)")
 # Putting it on: finger through the upper slot and behind the panel, then the
 # bottom swings in about the finger's hold until the lower foot snaps over the rim.
 piv = Vector(0, yb_panel, H)
@@ -127,12 +128,24 @@ log(f"coupon vs panel: {overlap(cp, pnl):.3f} mm3")
 log(f"hook vs coupon: {overlap(hk, cp):.3f} mm3 (the ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the head's flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
 for label, dz in (("coupon 3 mm higher (sliding down, ridges not yet over the notches)", 3.0),):
     log(f"hook vs {label}: {overlap(hk, Pos(0, 0, dz) * cp):.3f} mm3")
-# The same coupon on two one-slot hooks, one in each slot: the snaps must land in the same places.
-ones = [Pos(0, 0, z) * one_slot_hook(panel, ROOT) for z in (0.0, zl)]
-log(f"two one-slot hooks vs coupon: {sum(overlap(o, cp) for o in ones):.3f} mm3 (both ridge pairs in notches); "
+# The same coupon on a slot hook 1 in each slot: the snaps must land in the same places.
+ones = [Pos(0, 0, z) * slot_hook_1(panel, ROOT) for z in (0.0, zl)]
+log(f"slot hook 1 in each slot vs coupon: {sum(overlap(o, cp) for o in ones):.3f} mm3 (both ridge pairs in notches); "
     f"3 mm higher: {sum(overlap(o, Pos(0, 0, 3.0) * cp) for o in ones):.3f} mm3; vs panel: {sum(overlap(o, pnl) for o in ones):.3f} mm3")
 for o in ones:
-    o.label = "one-slot hook"
+    o.label = "slot hook 1"
+# The bridge hook with its front raised (bridge_hook.tall_front): its top
+# bar on the upper slot's bottom edge, its foot under the lower slot's top edge.
+cs = panel["bridge_hook"]
+place_cs = lambda s: Pos(0, yp - cs["panel_front_y"], -cs["bar_bottom"]) * s
+tall = place_cs(bridge_hook(panel, ROOT, tall=True))
+tall.label = "bridge hook, tall front"
+tb = tall.bounding_box()
+log(f"tall bridge hook: {tb.size.X:.2f} x {tb.size.Y:.2f} x {tb.size.Z:.2f} mm (z {tb.min.Z:.2f} to {tb.max.Z:.2f}), volume {tall.volume:.1f} mm3, solids {len(tall.solids())}, valid {tall.is_valid}")
+log(f"tall bridge hook vs coupon: {overlap(tall, cp):.3f} mm3 (both ridge pairs in notches, as on the slot hooks); "
+    f"the standard one: {overlap(place_cs(bridge_hook(panel, ROOT)), cp):.3f} mm3 (its top is {cs['tall_front']['rise']} lower, so the ridges pinch its flank)")
+log(f"tall bridge hook stacked one row below another: {overlap(tall, Pos(0, 0, -pitch) * tall):.1f} mm3, "
+    f"over a slot hook 1 in the slot below: {overlap(tall, ones[1]):.1f} mm3 (one per column)")
 
 
 def bad_faces(part, limit=45.0):
@@ -160,25 +173,28 @@ def to_bed(s):
 
 OUT = HERE / "test-prints"
 OUT.mkdir(exist_ok=True)
-export_step(hk, str(OUT / "two_slot_hook.step"))
-export_step(cp, str(OUT / "two_slot_coupon.step"))
-export_step(Compound(children=[pnl, hk, cp]), str(OUT / "two_slot_assembly.step"))
-export_step(Compound(children=[pnl, *ones, copy.copy(cp)]), str(OUT / "one_slot_pair_assembly.step"))
+export_step(hk, str(OUT / "slot_hook_2.step"))
+export_step(cp, str(OUT / "slot_hook_2_coupon.step"))
+export_step(Compound(children=[pnl, hk, cp]), str(OUT / "slot_hook_2_assembly.step"))
+export_step(Compound(children=[pnl, *ones, copy.copy(cp)]), str(OUT / "slot_hook_1_pair_assembly.step"))
+export_step(Compound(children=[copy.copy(pnl), tall, copy.copy(cp)]), str(OUT / "bridge_hook_tall_assembly.step"))
 
 hp = to_bed(Rot(0, -90, 0) * hk)        # on its flat side, like the other hooks
+tp = to_bed(Rot(0, -90, 0) * tall)
 cpp = to_bed(Rot(90, 0, 0) * cp)        # on its back, like the drawer housings
-for part, stem in ((hp, "two_slot_hook_print"), (cpp, "two_slot_coupon_print")):
+for part, stem in ((hp, "slot_hook_2_print"), (tp, "bridge_hook_tall_print"), (cpp, "slot_hook_2_coupon_print")):
     export_step(part, str(OUT / f"{stem}.step"))
     export_stl(part, str(OUT / f"{stem}.stl"))
     write_3mf([(stem, *shape_mesh(part))], OUT / f"{stem}.3mf")
     b = part.bounding_box()
     bad = bad_faces(part)
     log(f"{stem}: {b.size.X:.1f} x {b.size.Y:.1f} x {b.size.Z:.1f}, overhangs flatter than 45 deg: {len(bad)}"
-        + (" (the neck's 0.95 mm bridge 0.75 above the bed and the bed-side snap notches' 0.23 roofs, as on the printed one-slot hook)" if stem.endswith("hook_print") else ""))
+        + (" (the neck's 0.95 mm bridge 0.75 above the bed and the bed-side snap notches' 0.23 roofs, as on the printed hooks)" if stem.endswith("hook_print") else ""))
     for x in sorted(bad, key=lambda t: -t[1])[:10]:
         log(f"    {x[0]:.1f} deg from vertical, area {x[1]} mm2, at ({x[2].X:.1f}, {x[2].Y:.1f}, {x[2].Z:.1f})")
-hb, cb = hp.bounding_box(), cpp.bounding_box()
-write_3mf([("two-slot hook", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp))],
-          OUT / "two_slot_test_plate.3mf")
+hb, cb, tb = hp.bounding_box(), cpp.bounding_box(), tp.bounding_box()
+write_3mf([("slot hook 2", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp)),
+           ("tall bridge hook", *shape_mesh(tp, -(cb.size.X / 2 + 8 + hb.size.X / 2), hb.size.Y / 2 + 6 + tb.size.Y / 2))],
+          OUT / "slot_hook_2_test_plate.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[pnl, hk, cp])

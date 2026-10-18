@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parent
 exec((ROOT / "bambu_project.py").read_text())
 
 PARTS = [
-    ("cross-slot hook", ROOT / "hook/print/cross_slot_hook_dovetail.step"),
-    ("one-slot hook", ROOT / "hook/print/one_slot_hook_dovetail.step"),
+    ("bridge hook", ROOT / "hook/print/bridge_hook.step"),
+    ("slot hook 1", ROOT / "hook/print/slot_hook_1.step"),
     ("pocket test plate", ROOT / "pocket-test/test-prints/pocket_test_plate.step"),
 ]
 (ROOT / "test-prints").mkdir(exist_ok=True)

@@ -25,8 +25,8 @@ panel:
   thickness: 1.55           # measured (calipers)
   wall_standoff: null       # unknown: space behind the panel
 
-# Cross-slot hook: the owner's print-tested hook, measured from their Shapr3D
-# model (hook/cross_slot_hook.step, 2026-10-16). It engages two in-line vertical
+# Bridge hook: the owner's print-tested hook, measured from their Shapr3D
+# model (hook/bridge_hook_measured.step, 2026-10-16). It engages two in-line vertical
 # slots: the top bar rests on the bottom edge of the upper slot with a finger
 # hanging behind the panel, and the foot sits under the top edge of the slot
 # below, so a bump from underneath can't lift it off. The front carries a
@@ -34,8 +34,8 @@ panel:
 # Hook coordinates: x across (straight side x=0), y from the back of the hook
 # (0) to the tongue's flat front face, z up from the bottom of the foot.
 # All edges have 0.5 mm chamfers.
-cross_slot_hook:
-  step: hook/cross_slot_hook.step  # measured source
+bridge_hook:
+  step: hook/bridge_hook_measured.step  # measured source
   thickness: 2.95           # measured: across the 3.0 slot, 0.025 per side
   height: 17.7              # measured: overall
   depth: 10.9               # measured: back of finger/foot to tongue flat face
@@ -46,6 +46,11 @@ cross_slot_hook:
   foot_top: 4.0             # measured: top of the foot, sits under the lower slot's top edge
   foot_back: 0.9            # measured: foot runs y 0.9-4.9, z 0-4.0
   web_grip: 10.2            # measured: bar_bottom - foot_top, against the 9.9 inline_end_gap (0.3 play; 0.2 fillets in the corners)
+  tall_front:               # front moved up so housings take this hook and slot hook 1s alike (Zeid, 2026-10-18)
+    rise: 12.0              # derived: slot length 15.5 - (height - bar_bottom) 3.5; top = the upper slot's top, as on slot hook 1
+    # The front still runs down to the foot (its only link to the bar), so two of
+    # these can't stack one row apart in a column: the upper one's front would
+    # overlap the lower one's raised top by 4.3 mm. One per column, like slot hook 2.
   tongue:                   # original half-dovetail tongue, plan profile, constant over the full height except the 0.5 chamfers (printed hooks use `dovetail_mount` instead)
     stem_width: 2.95        # measured
     depth: 10.9             # measured: y of the flat face
@@ -96,14 +101,14 @@ dovetail_mount:
     spacing: pitch multiple # pockets a whole number of 25.4 mm cells apart to line up with hooks
     # Hooks are identical (symmetric dovetail), so no mirrored pair is needed.
 
-# One-slot hook: Zeid's 1u hook, measured from their Shapr3D model
-# (hook/one_slot_hook.step, "Omniwall Hook 1u", 2026-10-16). It fills one slot:
+# Slot hook 1: Zeid's 1u hook, measured from their Shapr3D model
+# (hook/slot_hook_1_measured.step, "Omniwall Hook 1u", 2026-10-16). It fills one slot:
 # a finger goes up behind the panel above the slot, the body fills the slot's
 # full 15.5 mm height, and a cavity open to the back lets the foot flex so the
 # body can snap into the slot. Same hook coordinates as above; no edge chamfers
 # except the foot's back lead-in.
-one_slot_hook:
-  step: hook/one_slot_hook.step  # measured source
+slot_hook_1:
+  step: hook/slot_hook_1_measured.step  # measured source
   thickness: 2.95           # measured
   height: 15.5              # measured: body, the full slot height (the finger reaches 19.5)
   finger_top: 19.5          # measured: finger y 0-3.4, z 12-19.5, behind the panel above the slot
@@ -119,22 +124,22 @@ one_slot_hook:
   printed:                  # changes for the dovetail front (see dovetail_mount); official design, print-tested 2026-10-17
     cavity_front_y: 6.45    # cavity stops inside the spine: panel_front_y + 2.0 - spine_min (set when block_depth was 2.0; kept)
     foot_top: 3.44          # foot thinned so the shorter foot flexes like the original (stiffness ~ t^3 / L^3: 4.0 x 6.45 / 7.51)
-    top_chamfer: 0.5        # finger and body-top edges on the top side and the finger's top corners (Zeid asked 2026-10-17), like the cross-slot hook's 0.5
+    top_chamfer: 0.5        # finger and body-top edges on the top side and the finger's top corners (Zeid asked 2026-10-17), like the bridge hook's 0.5
     rim_notch:              # the foot reaches below the slot with a notch cut up into it; pushing the bottom in, the foot flexes and snaps over the slot's bottom rim (Zeid asked 2026-10-17)
       depth: 0.8            # assumed: how far the foot reaches below the rim; about the foot's measured 0.816 lead-in, which it already flexes past going on
-      width: 1.5            # the cross-slot hook's measured 1.5 clamp on the 1.55 steel
+      width: 1.5            # the bridge hook's measured 1.5 clamp on the 1.55 steel
       mouth_chamfer: 0.3    # assumed: 45 deg chamfer on the front edge of the notch's mouth, to guide the rim in
                             # in front of the panel the foot and the dovetail front reach down to the same bottom (Zeid asked, 2026-10-17)
                             # the back lip's bottom is one ramp from the top of the foot's lead-in to the notch's back edge (about 25 deg), so it rides over the rim and drops straight in (Zeid, 2026-10-17)
 
-# Two-slot hook (Zeid's idea, 2026-10-18; not print-tested yet): the one-slot hook
+# Slot hook 2 (Zeid's idea, 2026-10-18; not print-tested yet): slot hook 1
 # carried on down into the next slot in line. Its body fills the upper slot and
 # rests on that slot's bottom edge, the finger behind the panel above it, so the
 # hook's top is the top of a slot: an object's seat then sits a fixed distance
 # below a horizontal slot row and its edges can line up with the slot rows. The
-# lower slot holds the one-slot hook's foot and rim-notch snap (none on the upper
+# lower slot holds slot hook 1's foot and rim-notch snap (none on the upper
 # body), so the hook grips two slots and resists tipping out at the bottom. Values
-# not here come from one_slot_hook. Built by two_slot_hook() in hook_geometry.py.
-two_slot_hook:
+# not here come from slot_hook_1. Built by slot_hook_2() in hook_geometry.py.
+slot_hook_2:
   lower_rim_below: 25.4     # derived: pitch, the upper slot's bottom edge to the lower slot's (in-line slots)
   top_to_slot_row: 4.95     # derived: pitch/2 - slot length/2, top of the upper slot to the horizontal slot row above it (assumes slots centred on the cell edge)

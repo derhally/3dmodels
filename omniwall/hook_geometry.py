@@ -115,19 +115,26 @@ def keep_below_y(shape, y, h):
     return shape & Pos(10, y / 2 - 5, h / 2) * Box(40, y + 10, h + 10)
 
 
-def cross_slot_hook(panel, root):
-    """The cross-slot hook as printed: measured back half plus the dovetail front."""
-    dm, hook = panel["dovetail_mount"], panel["cross_slot_hook"]
+def bridge_hook(panel, root, tall=False):
+    """The bridge hook as printed: measured back half plus the dovetail front.
+    tall: the front moved up (bridge_hook.tall_front) so its top and snap
+    notches sit where slot hook 1's do, and housings take either hook."""
+    dm, hook = panel["dovetail_mount"], panel["bridge_hook"]
     real = import_step(str(root / hook["step"]))
-    front, _ = hook_front(dm, hook["height"], hook["panel_front_y"])
+    H, drops = hook["height"], (0.0,)
+    if tall:
+        # The front still runs down to the foot (it is the only link to it). A
+        # second notch pair one pitch lower meets a housing's lower ridges.
+        H, drops = H + hook["tall_front"]["rise"], (0.0, panel["pitch"])
+    front, _ = hook_front(dm, H, hook["panel_front_y"], notch_drops=drops)
     return keep_below_y(real, hook["panel_front_y"], hook["height"]) + front
 
 
-def one_slot_body(panel, root):
-    """The one-slot hook's measured body as printed, without its dovetail front or
+def slot_hook_body(panel, root):
+    """Slot hook 1's measured body as printed, without its dovetail front or
     rim notch: shorter cavity, thinner foot, chamfered finger. Hook coordinates,
     the slot's bottom edge at z = 0."""
-    hook = panel["one_slot_hook"]
+    hook = panel["slot_hook_1"]
     real = import_step(str(root / hook["step"]))
     H, cav, pr = hook["height"], hook["cavity"], hook["printed"]
     y_c, r = pr["cavity_front_y"], cav["fillet"]
@@ -170,42 +177,42 @@ def rim_notch_foot(hook, z):
     return Pos(0, 0, z) * extrude(below, t), Pos(0, 0, z) * (extrude(under_ramp, t) + extrude(notch, t))
 
 
-def one_slot_hook(panel, root):
-    """The one-slot hook as printed: measured body with a shorter cavity and a
+def slot_hook_1(panel, root):
+    """Slot hook 1 as printed: measured body with a shorter cavity and a
     thinner foot, plus the dovetail front."""
-    dm, hook = panel["dovetail_mount"], panel["one_slot_hook"]
+    dm, hook = panel["dovetail_mount"], panel["slot_hook_1"]
     H, y_c, d = hook["height"], hook["printed"]["cavity_front_y"], hook["printed"]["rim_notch"]["depth"]
     # Foot below the slot, with a notch for the slot's bottom rim.
     added, cut = rim_notch_foot(hook, 0)
-    body = one_slot_body(panel, root) + added - cut
+    body = slot_hook_body(panel, root) + added - cut
     # The dovetail front reaches down to the same bottom, keeping its top (and
     # so the snap) where it was.
     front, _ = hook_front(dm, H + d, hook["panel_front_y"], spine_start=y_c)
     return body + Pos(0, 0, -d) * front
 
 
-def two_slot_hook(panel, root):
-    """The one-slot hook carried on down into the next slot in line (Zeid's idea,
-    2026-10-18). The top is the one-slot hook's body filling the upper slot, resting
+def slot_hook_2(panel, root):
+    """Slot hook 1 carried on down into the next slot in line (Zeid's idea,
+    2026-10-18). The top is slot hook 1's body filling the upper slot, resting
     on that slot's bottom edge, with its finger behind the panel above it; no snap
-    there. One pitch lower, the one-slot hook's foot and rim-notch snap sit in the
+    there. One pitch lower, slot hook 1's foot and rim-notch snap sit in the
     lower slot. A spine in front of the panel joins them across the steel between
     the slots, and one dovetail front runs the whole height, its top (and snap
-    notches) where the one-slot hook's are. A second notch pair one pitch lower
-    sits where a one-slot hook's notches would be in the lower slot, so a housing
-    with ridges for two rows of one-slot hooks clicks onto this hook too."""
-    dm, hook, ts = panel["dovetail_mount"], panel["one_slot_hook"], panel["two_slot_hook"]
+    notches) where slot hook 1's are. A second notch pair one pitch lower
+    sits where a slot hook 1's notches would be in the lower slot, so a housing
+    with ridges for two rows of slot hook 1s clicks onto this hook too."""
+    dm, hook, ts = panel["dovetail_mount"], panel["slot_hook_1"], panel["slot_hook_2"]
     H, yp, y_c, t = hook["height"], hook["panel_front_y"], hook["printed"]["cavity_front_y"], hook["thickness"]
     d = hook["printed"]["rim_notch"]["depth"]
     zl = -ts["lower_rim_below"]                       # the lower slot's bottom rim
-    # Lower foot: the one-slot hook's foot (bottom on the rim, thinned top), a
+    # Lower foot: slot hook 1's foot (bottom on the rim, thinned top), a
     # cantilever off the spine so it flexes over the rim, with the rim notch below.
     foot = Pos(0, 0, zl) * extrude(Plane.YZ * Polygon((0, 0), (y_c, 0), (y_c, hook["printed"]["foot_top"]),
                                                       (0, hook["printed"]["foot_top"]), align=None), t)
     added, cut = rim_notch_foot(hook, zl)
     foot = foot + added - cut
     # Spine across the steel and down the lower slot: from the panel's front face
-    # (the one-slot body fills the upper slot behind y_c).
+    # (slot hook 1 body fills the upper slot behind y_c).
     fill = extrude(Plane.YZ * Polygon((yp, zl - d), (y_c, zl - d), (y_c, 0), (yp, 0), align=None), t)
     front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c, notch_drops=(0.0, -zl))
-    return one_slot_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front
+    return slot_hook_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front
