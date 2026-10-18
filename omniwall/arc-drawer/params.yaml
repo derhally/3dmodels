@@ -54,16 +54,15 @@ track:                     # channel in each housing side wall that the drawer's
   depth: 1.2               # assumed
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
-  arc_tilt: 15             # assumed: the arc about the sill turns the drawer this far; past it the S takes over and the drawer hangs open at about 29 deg (build.py finds where)
-  s_radius: 3.25           # assumed: centre line radius of the U, the S's lower curve, which bends back over the arc's end (the wall inside it is rounded 0.88)
-  hook_radius: 3.4         # assumed: centre line radius of the hook, the S's upper curve, which bends forward round the tongue of wall into the exit channel (the tongue's tip is rounded 1.03)
+  tilt: 30                 # assumed: the arc about the sill ends here; the drawer hangs open at this tilt
+  gate: 6.0                # assumed: the tipped drawer is pushed this far back along its bottom before the hook (lifts it 3.4 mm, so let go it slides back to the arc's end)
+  hook_radius: 3.4         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.03)
   stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc
+  nub_round: 1.0           # given (Zeid, 2026-10-18: no sharp turns): the nub of wall between the arc and the gate
   # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).
-  # Past the arc the path is an S (Zeid, 2026-10-18: curved lines, no sharp turns, following the arc's curvature like an S): the U
-  # bends back over the arc's end, the hook bends forward over the tongue into the exit channel. The drawer hangs at the low point
-  # of its centre of gravity along the U; taking it out lifts it back over the U's top, about 3.2 mm, then it runs out the exit.
-  # The whole track is the pin centre's path swept by one circle: the teardrop pin's point + clearance (4.74 wide), so the pin
-  # fits however the drawer turns and every wall is a line or an arc.
+  # Way out (Zeid's sketch, 2026-10-18): the arc as before to 30 deg, then back along the gate and round the hook into the exit
+  # channel, an S of smooth curves. The whole track is the pin centre's path swept by one circle: the teardrop pin's point
+  # + clearance (4.74 wide), so the pin fits however the drawer turns and every wall is a line or an arc.
 
 front:
   pull: scoop              # given (Zeid, 2026-10-17): his scoop replaces the lip; "lip" brings the lip back
