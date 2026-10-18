@@ -86,21 +86,28 @@ column of the back plate to check this pocket before printing the housing.
   no overlap. The drawer of the unit above, tilted the same way, clears this
   drawer's scoop.
 - **Removing.** Pull the drawer out until it tips to 30°, push it straight back
-  about 12 mm at that angle, then pull it out. A branch leaves the end of the
-  arc and runs back and up along the tilted drawer's own bottom, so the drawer
-  slides on the sill and its pins climb 6.2 mm into the exit channel, which
-  runs to the housing's front face. The groove has no opening above it: the old
-  lift notch, 8.5 mm behind the stop, let a drawer that was let go as its pins
-  passed under it rise into it and fall out (Zeid's 2 × 2 print). Going up the
-  branch lifts the whole drawer, so its weight pushes it back down with about
-  half its weight; let go on the branch and it slides back to the end of the
-  arc. The rear 30 mm of the drawer's side walls are 6 mm lower so the back
-  clears the roof. 2 mm of wall separates the end of the arc from the exit
-  channel above it, tapering to a point 3.5 mm back where the branch opens into
-  the channel.
+  about 4.5 mm at that angle until its back pops up, then pull it out. A branch
+  leaves the end of the arc in two parts. The gate runs back and up along the
+  tilted drawer's own bottom, so the drawer slides on the sill and its pins
+  climb 2.2 mm; that lifts the whole drawer, so let go in the gate and it slides
+  back to the end of the arc. From the gate's top the rise goes straight up
+  4.0 mm into the exit channel, which runs to the housing's front face. In the
+  rise the drawer's weight tips it further (30° to 39°) and lifts the pins by
+  itself, so the opening in the exit channel's floor is one pin wide (3.5 mm;
+  Zeid asked for it shorter than the straight 12.4 mm branch's 8.5 mm). The
+  gate is the only thing keeping a tipped drawer in: on the empty drawer it
+  raises the centre of gravity 2.2 mm (the straight branch raised it 6.2 mm).
+  The groove has no opening above it: the old lift notch, 8.5 mm behind the
+  stop, let a drawer that was let go as its pins passed under it rise into it
+  and fall out (Zeid's 2 × 2 print). The point between the arc and the gate is
+  rounded with the pin's radius, 1.75 mm (`track.branch_round`), like the end
+  of the arc. The rear 30 mm of the drawer's side walls are 6 mm lower so the
+  back clears the roof. 2 mm of wall separates the end of the arc from the exit
+  channel above it, thinning to 0.5 mm where the gate meets the rise.
 - **Loading.** Tip the drawer nose-down, put its pins in the exit channel at
-  the face and push it in. At the end of the channel the pins drop down the
-  branch onto the end of the arc by themselves. Level the drawer and push home.
+  the face and push it in until they stop. Lift the face a little so the pins
+  drop down the rise, push the drawer 4.5 mm on into the end of the arc, level
+  it and push home.
 - **Front.** The face's top two corners are rounded to 4 mm
   (`drawer.corner_radius`); the cut runs the length of the drawer, so the side
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
@@ -123,7 +130,7 @@ column of the back plate to check this pocket before printing the housing.
   `../../labels/bin-label`, which keeps the text clear of the returns.
 
 `build.py` checks the drawer against the housing in every position (closed,
-sliding, at the stop, every 5° of the tilt, pushed up the branch and pulled out
+sliding, at the stop, every 5° of the tilt, pushed through the gate and up the rise and pulled out
 along the exit channel, both resting on the sill and held level) and the hooks against the housing; all overlaps are 0 mm³
 (`report.txt`), apart from the hooks' intended 0.56 mm³ in total where the
 snap ridges squeeze the seated hooks.
@@ -205,6 +212,6 @@ bounding boxes and centroids, no hook clash.
 ## Untested
 
 - Pin and groove fit (0.25 mm clearance) and the drop-in load.
-- The way out: whether pushing the tipped drawer 12 mm back up the branch feels natural, and whether it slides back down by itself.
+- The way out: whether pushing the tipped drawer 4.5 mm back through the gate feels natural, whether it slides back down by itself, and whether so short a gate keeps a tipped drawer in when it is pushed by accident.
 - The scoop's grip from below; the label fit (0.15 mm per side).
 - The drawer drops to 30° whenever it is pulled to the stop.

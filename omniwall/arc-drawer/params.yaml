@@ -56,10 +56,12 @@ track:                     # groove in each housing side wall; same teardrop sec
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
   tilt: 30                 # assumed: the arc about the sill ends here
   stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc. Opens the ceiling 0.3 mm at most
+  branch_round: 1.75       # given (Zeid, 2026-10-18: the point between the arc and the branch should be curved like the arc's end); radius on that point. Same as the arc's end (the pin's radius + clearance)
   exit_web: 2.0            # assumed: solid between the arc's top and the exit channel's underside (the pin can't escape from the arc)
   # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).
-  # The way out is a branch from the arc's end, back along the fully tilted drawer, to the exit channel: its length is derived
-  # (exit channel height - arc end height) / sin(tilt), 12.4 here.
+  # The way out is a branch from the arc's end: the gate, back along the fully tilted drawer (its weight brings it back down),
+  # then the rise, straight up into the exit channel so the opening in the exit floor is one pin wide (Zeid, 2026-10-18: shorten C-D).
+  # Both are derived: the gate runs back until its upper edge meets the exit channel's floor, 4.5 here, and the rise is 4.0.
   # the groove, arc, branch and exit are all the same section, so the pin fits everywhere with 0.25 clearance
 
 front:

@@ -18,6 +18,15 @@ sx, sy = bb.size.X + 2, bb.size.Y + 2
 cx, cy = (bb.min.X + bb.max.X) / 2, (bb.min.Y + bb.max.Y) / 2
 over = 0.01
 
+
+
+def touches(s, p):
+    r = s & p
+    if r is not None and r.volume > 1e-9:
+        return True
+    return s.volume + p.volume - (s + p).volume > 1e-9
+
+
 prev = []
 islands = []
 n = 0
@@ -30,8 +39,10 @@ while z < bb.max.Z - 1e-6:
     sols = list(cut.solids()) if hasattr(cut, "solids") else []
     if n:
         for s in sols:
-            # s & p is None when the solids do not overlap
-            if not any((r := s & p) is not None and r.volume > 1e-9 for p in prev):
+            # s & p is None when the solids do not overlap. The kernel's intersection
+            # sometimes returns nothing for a thin overlap it should find (whole wall
+            # sections reported floating), so check a miss again with a fuse.
+            if not any(touches(s, p) for p in prev):
                 c = s.center()
                 islands.append((round(z, 2), round(s.volume / layer, 3), round(c.X, 2), round(c.Y, 2)))
     prev = sols

@@ -1,6 +1,6 @@
-housing: 75.90 x 60.00 x 50.50 mm, volume 69217 mm3, solids 1, valid True
+housing: 75.90 x 60.00 x 50.50 mm, volume 69307 mm3, solids 1, valid True
 drawer: 71.50 x 56.50 x 45.00 mm, volume 35190 mm3, solids 1, valid True
-back plate 10.075  pin closed y 12.575  travel 31.92 (65 % of the drawer)  arc radius 19.01  arc top z 22.03  exit channel z 26.50  lift 12.50  branch 12.45 to y 41.29  shoulder z 35.50  hook columns [25.25, 50.65]  hook bottoms [3.3, 28.7]  seat z 46.40
+back plate 10.075  pin closed y 12.575  travel 31.92 (65 % of the drawer)  arc radius 19.01  arc top z 22.03  exit channel z 26.50  lift 12.50  gate 4.47 to y 48.21 z 22.51, rise 3.99  shoulder z 35.50  hook columns [25.25, 50.65]  hook bottoms [3.3, 28.7]  seat z 46.40
 measured: pocket seats at z [46.4, 46.4] (expect 46.400 x2)
 measured: housing x faces at [0.0, 2.0, 3.2, 23.525, 24.055, 24.275, 26.225, 26.445, 26.975, 48.925, 49.455, 49.675, 51.625, 51.845, 52.375, 72.7, 73.9, 75.9] (groove floors expect 2.0 and 73.9, bay walls 3.2 and 72.69999999999999)
 measured: drawer x faces at [2.2, 3.5, 5.5, 19.25, 20.45, 21.95, 30.674, 45.226, 53.95, 55.45, 56.65, 70.4, 72.4, 73.7] (pin tips expect 2.2 and 73.7)
@@ -12,14 +12,15 @@ open: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 tilted: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 pushed: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 tilt sweep (deg: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 25: 0.000, 30: 0.000
-pushed back up the branch (mm: mm3): 0.0: 0.000, 3.1: 0.000, 6.2: 0.000, 9.3: 0.000, 12.4: 0.000
-pulled out along the exit, resting on the sill (mm: deg, mm3): 0: 30, 0.000, 4: 35, 0.000, 8: 40, 0.000, 12: 47, 0.000, 16: 56, 0.000, 17.7: 60, 0.000
-pulled out along the exit, held level (mm: mm3): 0: 0.000, 4: 0.000, 8: 0.000, 12: 0.000, 16: 0.000, 17.7: 0.000
+pushed back through the gate (mm: mm3): 0.0: 0.000, 1.5: 0.000, 3.0: 0.000, 4.5: 0.000
+up the rise, resting on the sill (mm: deg, mm3): 1.0: 32.4, 0.000, 2.0: 34.6, 0.000, 3.0: 36.7, 0.000, 4.0: 38.6, 0.000
+pulled out along the exit, resting on the sill (mm: deg, mm3): 0.0: 39, 0.000, 2.7: 43, 0.000, 5.4: 48, 0.000, 8.1: 54, 0.000, 10.8: 60, 0.000
+pulled out along the exit, held level (mm: mm3): 0.0: 0.000, 2.7: 0.000, 5.4: 0.000, 8.1: 0.000, 10.8: 0.000
 sliding (pin y: mm3): 21: 0.000, 29: 0.000, 37: 0.000, 42: 0.000
-arc_drawer_3x2x60_housing_print: 75.9 x 50.5 x 60.0, faces 109, overhangs flatter than 45 deg: 0
+arc_drawer_3x2x60_housing_print: 75.9 x 50.5 x 60.0, faces 121, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x60_drawer_print: 71.5 x 56.5 x 45.0, faces 59, overhangs flatter than 45 deg: 1
     90.0 deg from vertical, area 41.16 mm2, at (-5.8, 25.6, 36.0)
-arc_drawer_3x2x60_fit_test_housing_print: 75.9 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
+arc_drawer_3x2x60_fit_test_housing_print: 75.9 x 50.5 x 34.0, faces 54, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x60_fit_test_drawer_print: 71.5 x 40.0 x 42.0, faces 24, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x60_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x60_all_parts: housing and drawer on one plate, 157.4 x 56.5
