@@ -48,15 +48,16 @@ pins:                      # teardrop pins on the drawer's rear side faces, in t
   from_back: 2.0           # assumed: pin centre from the drawer's back face
   height: 14.0             # assumed: pin centre above the unit's bottom edge (groove centre)
   reach: 1.0               # assumed: into the 1.2 groove, 0.2 off its floor
-  point_angle: 45          # derived: teardrop point downward so the pin prints upright on the drawer with no overhang
+  point_angle: 45          # derived: teardrop point downward so the pin prints upright on the drawer
+  flat_point: true         # Zeid, 2026-10-18 (narrower track): the point is cut flat at the pin's radius (a 1.24 wide flat), so the pin turns inside a 3.0 circle and the track is one pin + clearance wide (3.5, was 4.74)
 
 track:                     # channel in each housing side wall that the drawer's pins run in
   depth: 1.2               # assumed
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
   tilt: 30                 # assumed: the arc about the sill ends here; the drawer hangs open at this tilt
-  gate: 3.0                # assumed: the tipped drawer is pushed this far back before the hook, along a curve with the arc's radius (Zeid, 2026-10-18: the gate curves like the arc); it lifts the drawer, so let go it slides back to the arc's end
-  hook_radius: 3.4         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.03)
+  gate: 6.0                # assumed: the tipped drawer is pushed this far back before the hook, along a curve with the arc's radius (Zeid, 2026-10-18: the gate curves like the arc); it lifts the drawer, so let go it slides back to the arc's end
+  hook_radius: 2.8         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.05)
   stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc
   nub_round: 1.0           # given (Zeid, 2026-10-18: no sharp turns): the nub of wall between the arc and the gate
   # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).

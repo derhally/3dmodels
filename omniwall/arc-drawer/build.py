@@ -87,7 +87,7 @@ a0 = math.degrees(math.atan2(z_pin - piv[1], y_stop - piv[0]))
 tilt = TR["tilt"]
 a1 = a0 - tilt                                       # nose-down: the pin swings clockwise in the y-z plane
 pin_end = (piv[0] + R * math.cos(math.radians(a1)), piv[1] + R * math.sin(math.radians(a1)))
-hw = K * PN["diameter"] / 2 + TR["clearance"]        # channel half width: the teardrop pin's point + clearance, so it fits however the drawer turns
+hw = (1 if PN.get("flat_point") else K) * PN["diameter"] / 2 + TR["clearance"]   # channel half width: the pin's reach (to its point, or its flat) + clearance, so it fits however the drawer turns
 # Way out: from the arc's end (the apex, where the drawer hangs at full tilt) the
 # drawer is pushed back along its own bottom, still on the sill (the gate), which lifts
 # it, so let go there it slides back down to the apex. The gate curves up with the
@@ -135,9 +135,11 @@ def solid(s):
 
 
 def tear(r, u, v):
-    """Teardrop section: circle of radius r with a 45 deg point downward, centred (u, v)."""
+    """Teardrop section: circle of radius r with a 45 deg point downward, centred (u, v);
+    with pins.flat_point the point is cut flat at r, so the section stays inside the circle."""
     c = r / K
-    return Pos(u, v) * (Circle(r) + Polygon((-c, -c), (c, -c), (0, -K * r), align=None))
+    tip = [(2 * c - r, -r), (r - 2 * c, -r)] if PN.get("flat_point") else [(0, -K * r)]
+    return Pos(u, v) * (Circle(r) + Polygon((-c, -c), (c, -c), *tip, align=None))
 
 
 def rect2(u0, v0, u1, v1):
