@@ -227,6 +227,11 @@ def slot_hook_2(panel, root):
         toward -y and toward sz in z."""
         sq = Pos(y - r / 2, z + sz * r / 2) * Rectangle(r, r)
         return extrude(Plane.YZ * (sq - Pos(y - r, z + sz * r) * Circle(r)), t)
-    coves = (cove(y_c, cav["top"], fl["under_top_bar"], -1) + cove(y_c, ft, fl["top_foot"], 1)
-             + cove(yp, zl + ft, fl["lower_foot_root"], 1))
+    coves = cove(yp, zl + ft, fl["lower_foot_root"], 1)
+    if ts["fill_top_gap"]:
+        # The top body has no snap, so its gap needn't flex: fill it solid.
+        coves = coves + extrude(Plane.YZ * Polygon((0, ft - 0.1), (y_c + 0.1, ft - 0.1), (y_c + 0.1, cav["top"] + 0.1),
+                                                   (0, cav["top"] + 0.1), align=None), t)
+    else:
+        coves = coves + cove(y_c, cav["top"], fl["under_top_bar"], -1) + cove(y_c, ft, fl["top_foot"], 1)
     return slot_hook_body(panel, root) + foot + fill + coves + Pos(0, 0, zl - d) * front

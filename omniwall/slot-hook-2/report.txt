@@ -1,4 +1,4 @@
-hook: 2.95 x 11.15 x 45.70 mm (z -26.20 to 19.50), volume 839.0 mm3, solids 1, valid True
+hook: 2.95 x 11.15 x 45.70 mm (z -26.20 to 19.50), volume 990.5 mm3, solids 1, valid True
 coupon: 25.10 x 10.07 x 50.50 mm, volume 11707.9 mm3, solids 1, valid True
 slot rows (horizontal slots) at z 20.45 and -30.35; coupon edges at 20.30 and -30.20; seat (pocket top) at 15.50, 4.95 below the slot row; roof above the seat 4.80
 hook vs panel: 0.116 mm3 (the rim notch is 1.5 wide on the 1.55 steel, a 0.05 clamp like the bridge hook's; slot hook 1 has the same)
@@ -7,8 +7,8 @@ swing in, 14 deg out: 0.18 mm3 0.18 at z -0.2..0.0
 swing in, 10 deg out: 0.45 mm3 0.45 at z -0.2..0.0
 swing in,  8 deg out: 0.24 mm3 0.24 at z -0.2..0.0
 swing in,  6 deg out: 0.10 mm3 0.10 at z -0.1..0.0
-swing in,  4 deg out: 0.12 mm3 0.03 at z -0.0..0.0, 0.09 at z -25.6..-25.4
-swing in,  3 deg out: 0.79 mm3 0.78 at z -25.9..-25.4, 0.01 at z -0.0..0.0
+swing in,  4 deg out: 0.12 mm3 0.09 at z -25.6..-25.4, 0.03 at z -0.0..0.0
+swing in,  3 deg out: 0.79 mm3 0.01 at z -0.0..0.0, 0.78 at z -25.9..-25.4
 swing in,  2 deg out: 1.98 mm3 1.98 at z -26.2..-25.4
 swing in,  1 deg out: 1.40 mm3 1.40 at z -26.2..-25.4
 coupon vs panel: 0.000 mm3
