@@ -20,7 +20,7 @@ Drawer lengths include the 7.1 mm scoop. All of them tilt to 30° at the end of
 their travel and have the same scoop and label holder. A size is a folder with a
 `params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
 everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
-moves the track's stop to depth − 15.5 (44.5), so the arc, branch and exit
+moves the track's stop to depth − 15.5 (44.5), so the arc, gate, hook and exit
 channel sit the same distance from the front as in the 84 mm unit. Every pocket
 channel has a ridge pair for each hook row (three on a 3-row unit), one pitch
 apart.
@@ -71,9 +71,14 @@ column of the back plate to check this pocket before printing the housing.
 
 ## How the drawer works
 
-- **Slide.** The drawer sits on the housing floor and pulls out on a teardrop
-  pin (Ø3, 45° point down) on each rear side face, running in a matching groove
-  1.2 mm deep in each housing wall, 0.25 mm clearance all round. The side walls
+- **Slide.** The drawer sits on the housing floor and pulls out on a pin (Ø3)
+  on each rear side face, running in a groove 1.2 mm deep in each housing wall.
+  The pin is a teardrop (45° point down) with its point cut flat at the pin's
+  radius, and that flat is chamfered 45° from the drawer wall up to the pin's end
+  (Zeid's choice, 2026-10-18), so it prints with nothing facing flat down and
+  stays inside a 3 mm circle however the drawer turns. The whole track is that
+  circle's path plus 0.25 mm clearance: one channel 3.5 mm wide, every wall a
+  line or an arc. The side walls
   are 3.2 mm, so 2 mm of wall is left behind the groove (with 1.2 mm the
   track showed through on the outside of Zeid's 2 × 2 print).
 - **Stop and tilt.** 56 mm out, the pins reach the end of the groove. The groove
@@ -82,32 +87,27 @@ column of the back plate to check this pocket before printing the housing.
   30°. The corner where the groove's ceiling meets the arc, above the stop,
   is rounded to 3 mm (`track.stop_round`). The arc is closed: the drawer cannot fall out. The face is already out
   of the housing when it tilts, so the 0.5 mm gap between the face and the roof
-  only has to clear the slide; a sweep through slide, tilt, branch and exit finds
+  only has to clear the slide; a sweep through slide, tilt, gate, hook and exit finds
   no overlap. The drawer of the unit above, tilted the same way, clears this
   drawer's scoop.
-- **Removing.** Pull the drawer out until it tips to 30°, push it straight back
-  about 4.5 mm at that angle until its back pops up, then pull it out. A branch
-  leaves the end of the arc in two parts. The gate runs back and up along the
-  tilted drawer's own bottom, so the drawer slides on the sill and its pins
-  climb 2.2 mm; that lifts the whole drawer, so let go in the gate and it slides
-  back to the end of the arc. From the gate's top the rise goes straight up
-  4.0 mm into the exit channel, which runs to the housing's front face. In the
-  rise the drawer's weight tips it further (30° to 39°) and lifts the pins by
-  itself, so the opening in the exit channel's floor is one pin wide (3.5 mm;
-  Zeid asked for it shorter than the straight 12.4 mm branch's 8.5 mm). The
-  gate is the only thing keeping a tipped drawer in: on the empty drawer it
-  raises the centre of gravity 2.2 mm (the straight branch raised it 6.2 mm).
+- **Removing.** Pull the drawer out until it tips to 30°, push it back about
+  6 mm, then pull it out. From the end of the arc (the apex) the gate runs back
+  and up, curving with the arc's own 19 mm radius: the arc mirrored at the apex
+  (Zeid's sketch, 2026-10-18). The drawer slides back on the sill and its pins
+  climb 3.8 mm, which raises the empty drawer's centre of gravity by up to
+  2.0 mm, so let go in the gate and it slides back to the apex. The gate runs
+  into the hook (radius 2.8), which curves up round the tongue of wall and
+  forward into the exit channel to the housing's front face; on the hook the
+  drawer's weight tips it further (33° to 45°). The tongue's tip is rounded
+  1.05 mm, the nub between the arc and the gate 1.0 mm (`track.nub_round`).
   The groove has no opening above it: the old lift notch, 8.5 mm behind the
   stop, let a drawer that was let go as its pins passed under it rise into it
-  and fall out (Zeid's 2 × 2 print). The point between the arc and the gate is
-  rounded with the pin's radius, 1.75 mm (`track.branch_round`), like the end
-  of the arc. The rear 30 mm of the drawer's side walls are 6 mm lower so the
-  back clears the roof. 2 mm of wall separates the end of the arc from the exit
-  channel above it, thinning to 0.5 mm where the gate meets the rise.
+  and fall out (Zeid's 2 × 2 print). The rear 30 mm of the drawer's side walls
+  are lowered so the back clears the roof.
 - **Loading.** Tip the drawer nose-down, put its pins in the exit channel at
-  the face and push it in until they stop. Lift the face a little so the pins
-  drop down the rise, push the drawer 4.5 mm on into the end of the arc, level
-  it and push home.
+  the face and push it in until they stop at the back of the hook. Let the face
+  drop so the pins run down round the hook and forward through the gate to the
+  apex, then level the drawer and push it home.
 - **Front.** The face's top two corners are rounded to 4 mm
   (`drawer.corner_radius`); the cut runs the length of the drawer, so the side
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
@@ -130,7 +130,7 @@ column of the back plate to check this pocket before printing the housing.
   `../../labels/bin-label`, which keeps the text clear of the returns.
 
 `build.py` checks the drawer against the housing in every position (closed,
-sliding, at the stop, every 5° of the tilt, pushed through the gate and up the rise and pulled out
+sliding, at the stop, every 5° of the tilt, pushed back through the gate and round the hook and pulled out
 along the exit channel, both resting on the sill and held level) and the hooks against the housing; all overlaps are 0 mm³
 (`report.txt`), apart from the hooks' intended 0.56 mm³ in total where the
 snap ridges squeeze the seated hooks.
@@ -151,16 +151,16 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
 
 - **Housing: on its back,** panel side on the bed, open front up. Floor, roof,
   walls and back plate all stand vertical, so no roof is bridged. The pockets
-  are trenches in the bed face with 45° gables; in the track groove, arc, branch
-  and exit channel every face that would hang flat is a 45° ramp rising from the
+  are trenches in the bed face with 45° gables; in the track groove, arc, gate,
+  hook and exit channel every face that would hang flat is a 45° ramp rising from the
   groove floor to the wall face, so each layer of it is attached to the outer
   wall (a two-sided tent left floating slivers at the wall face).
-- **Drawer: upright** on its floor. Pins (point down), scoop (45° rim and ceiling) and
+- **Drawer: upright** on its floor. Pins (chamfered point down), scoop (45° rim and ceiling) and
   label holder (45° under the bottom rail) print without support.
 - **Fit test plate first** (`test-prints/arc_drawer_fit_test_plate.3mf`, one plate; `build.py` writes it, git ignores it): the
-  front 34 mm of the housing (arc, branch, exit) with the rear 40 mm of the drawer
+  front 34 mm of the housing (arc, gate, hook, exit) with the rear 40 mm of the drawer
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
-  drop-in load, the way out up the branch, and the pocket with two hooks.
+  drop-in load, the way out through the gate and hook, and the pocket with two hooks.
 - PLA or PETG, 0.2 mm layers, 3+ walls. `report.txt` lists every face flatter
   than 45° from vertical on each print part: only the drawer's scoop-lip bridge.
 
@@ -174,7 +174,7 @@ folder with its own `params.yaml`.
 
 (the build123d-mcp server's `execute()` sandbox blocks the os, pathlib and yaml imports, so the
 script runs in a plain build123d Python; `uv` fetches build123d and PyYAML the first time). It rewrites
-`step/` (housing, drawer, assemblies with hooks: closed, open, tilted, pushed up the branch),
+`step/` (housing, drawer, assemblies with hooks: closed, open, tilted, pushed back through the gate),
 `print/` and `report.txt`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py print\arc_drawer_housing_print.step
@@ -212,6 +212,7 @@ bounding boxes and centroids, no hook clash.
 ## Untested
 
 - Pin and groove fit (0.25 mm clearance) and the drop-in load.
-- The way out: whether pushing the tipped drawer 4.5 mm back through the gate feels natural, whether it slides back down by itself, and whether so short a gate keeps a tipped drawer in when it is pushed by accident.
+- The way out: whether pushing the tipped drawer 6 mm back through the curved gate feels natural, whether it slides back down by itself, and whether the gate's 2 mm rise keeps a tipped drawer in when it is pushed by accident.
+- The narrower 3.5 mm track and the chamfered pins: how they slide and how the chamfer prints.
 - The scoop's grip from below; the label fit (0.15 mm per side).
 - The drawer drops to 30° whenever it is pulled to the stop.

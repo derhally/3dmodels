@@ -40,7 +40,7 @@ drawer:
   top_gap: 0.5              # given (Zeid, 2026-10-17: smaller gap above the face; was 1.0): plate top below the roof. Only matters while the plate is inside the housing (closed or sliding level); tilting and leaving happen with the plate outside
   corner_radius: 4.0       # given (Zeid, 2026-10-17, approved in SolidCraft): front plate's top two corners, cut along the whole drawer so the side walls' outer top edge follows the curve
   headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or leaving are the lower shoulder)
-  shoulder_length: 30      # derived: rear walls lowered over this length (sized for the old lift notch; build.py checks the branch and exit clear)
+  shoulder_length: 30      # derived: rear walls lowered over this length (sized for the old lift notch; build.py checks the gate, hook and exit clear)
   lift_clearance: 0.5      # assumed: sets the lowered rear walls' height from the exit channel's height
 
 pins:                      # teardrop pins on the drawer's rear side faces, in the housing's track
@@ -99,7 +99,7 @@ label:                     # U holder at the bottom of the face, open at the top
   blend: 0                 # Zeid tried a 1.2 blend on the outside edges and prefers it without (2026-10-17)
 
 fit_test:                  # short sections to print first: pin/track fit, drop-in loading, the way out, and one pocket in this print orientation
-  housing_length: 34       # assumed: front part of the housing with the arc, branch and exit
+  housing_length: 34       # assumed: front part of the housing with the arc, gate, hook and exit
   drawer_length: 40        # assumed: rear part of the drawer with the pins and shoulder
   coupon_half_width: 6.0   # assumed: pocket coupon either side of the hook column
   coupon_bottom: 12.0      # assumed: coupon from here to the unit top (both ridge pairs and the seat)
