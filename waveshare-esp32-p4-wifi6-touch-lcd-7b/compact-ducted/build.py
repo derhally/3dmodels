@@ -167,7 +167,7 @@ write(duct_print, print_dir / "p4_7b_compact_duct_print", ["step", "stl", "3mf"]
 tw = cp["tab_w"]
 write(on_bed(Compound(children=[Pos(i * (tw + 4), 0, 0) * tab for i in range(4)])),
       print_dir / "p4_7b_compact_clamp_tabs_print", ["step", "stl", "3mf"])
-write(facade_test_frame(g, W, L, s_g), print_dir / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
+write(facade_test_frame(g, W, L, s_g), out_dir / "test-prints" / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
 
 tb, db = tab_print.bounding_box(), duct_print.bounding_box()
 tab_x0 = db.size.X / 2 + 12 + tb.size.X / 2

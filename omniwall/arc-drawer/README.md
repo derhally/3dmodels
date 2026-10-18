@@ -1,29 +1,33 @@
 # Omniwall arc-pocket drawer
 
-A drawer unit that hangs on the printed cross-slot hooks (`../hook/`): a housing
+A drawer unit that hangs on the printed bridge hooks (`../hook/`): a housing
 with a floor, roof and side walls, and a drawer that slides out on two rear pins,
 tilts down 30° at the end of its travel and stays captive. Units tile edge to
 edge in any grid of widths and heights with 0.3 mm between them. `params.yaml`
 holds every dimension with its source, and `build.py` makes all the files from it.
 
-Two sizes so far, which tile together (same height and depth):
+Four sizes so far. Units of the same depth tile together; the 84 mm and 60 mm
+deep ones line up at the panel, not at the front.
 
-| | 3 cells × 2 rows (this folder) | 2 cells × 2 rows ([`2x2/`](2x2/)) |
-|---|---|---|
-| Housing W × D × H, mm | 75.9 × 84 × 50.5 | 50.5 × 84 × 50.5 |
-| Drawer, outside W × L × H | 73.1 × 80.5 × 45.0 | 47.7 × 80.5 × 45.0 |
-| Drawer inside | 66.5 wide × 65.5 long × 40 tall (walls 2, floor 2) | 41.1 wide, otherwise the same |
-| Hooks | 2 columns, 1 or 2 rows | 1 column on the centre line, 1 or 2 rows |
-| Files | `step/`, `print/arc_drawer_*` | `2x2/step/`, `2x2/print/arc_drawer_2x2_*` |
+| Size | Folder, file prefix | Housing W × D × H, mm | Drawer outside W × L × H | Drawer inside W × L × H | Hooks | Travel |
+|---|---|---|---|---|---|---|
+| 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 73.1 × 80.5 × 45.0 | 66.5 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
+| 2 × 2, 84 deep | [`2x2/`](2x2/), `arc_drawer_2x2_*` | 50.5 × 84 × 50.5 | 47.7 × 80.5 × 45.0 | 41.1 × 65.4 × 40 | 1 column on the centre line, 1 or 2 rows | 55.9 (76 %) |
+| 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 73.1 × 56.5 × 45.0 | 66.5 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
+| 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 73.1 × 56.5 × 70.4 | 66.5 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
 
-Both have 55.9 mm of travel, then tilt to 30°, and the same scoop and label
-holder. A size is a folder with a `params.yaml` that sets only what differs
-(`2x2/params.yaml` sets `cells: 2`); everything else comes from this folder's
-`params.yaml`.
+Drawer lengths include the 7.1 mm scoop. All of them tilt to 30° at the end of
+their travel and have the same scoop and label holder. A size is a folder with a
+`params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
+everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
+moves the track's stop to depth − 15.5 (44.5), so the arc, notch and exit
+channel sit the same distance from the front as in the 84 mm unit. Every pocket
+channel has a ridge pair for each hook row (three on a 3-row unit), one pitch
+apart.
 
 ## Where it sits on the panel
 
-A cross-slot hook straddles the horizontal slot row, so it sits at a crossing of
+A bridge hook straddles the horizontal slot row, so it sits at a crossing of
 the slot grid. Sideways the unit's edges sit on vertical slot columns, as the bins
 do, so every slot column inside the unit takes a hook: 2 for 3 cells (3 for 4
 cells). Vertically the unit's bottom edge sits on a peg-hole row, so both hook
@@ -37,7 +41,7 @@ Each column has one dovetail channel from the unit's bottom edge up to a closed
 seat at the top row's hook top. The channel is the shared pocket
 (`dovetail_mount` in `../panel.yaml`, built by `pocket_void()` in
 `../hook_geometry.py`): spine channel, 45° dovetail slot, 0.25 mm clearance,
-snap ridges 2.75 mm below the seat. A second ridge pair sits one pitch lower.
+snap ridges 2.75 mm below the seat, and another pair every pitch lower, one per hook row.
 Three of its values are replaced by `housing.pocket` in params.yaml, from the
 pocket coupon that clicked best when printed on its back (coupon 3 of
 `pocket_variants.py`, tested 2026-10-17): the lips' back starts 0.1 mm lower
@@ -62,7 +66,7 @@ would hang flat over the bed got 45° gables: the back of the lips (the lip is
 now a 90° wedge, its 45° bearing flank unchanged) and the pocket floor (the back
 plate grows from 8.35 to 10.1 mm). The first coupon printed this way was loose:
 the lips' gable started at their back face and cut them to a knife edge, which
-`housing.pocket` fixes. `print/arc_drawer_pocket_coupon_print.*` is one
+`housing.pocket` fixes. `test-prints/arc_drawer_pocket_coupon_print.*` is one
 column of the back plate to check this pocket before printing the housing.
 
 ## How the drawer works
@@ -95,7 +99,11 @@ column of the back plate to check this pocket before printing the housing.
   2 mm below the plate top, standing 7.1 mm proud. Fingers go up into it from
   below. It is blended into the face with a 2 mm radius (top, outer sides and
   the cavity's ceiling; the kernel won't fit one where the cavity's side walls
-  meet the face). The scad's 0.5 mm edge rounding is left out, since the rim's
+  meet the face). The front wall's lip would start as a knife edge hanging
+  across the cavity, so its first layers were a thin line in the air (Zeid's
+  2 × 2 print). Its underside is cut flat 1.5 mm up (`scoop.lip_flat`), so it
+  starts as a 14.5 × 2.8 mm bridge between the side walls. That bridge is the
+  one face `report.txt` lists as flatter than 45°, on purpose. The scad's 0.5 mm edge rounding is left out, since the rim's
   would face down flatter than 45°. `front.pull: lip` brings back the old 8 mm
   lip. The label holder
   is a U at the bottom of the face, open at the top: the 34.7 × 10.85 × 0.9 mm
@@ -118,7 +126,7 @@ writes the same kind of file with `../core_3mf.py`). Bambu Studio 2.x rejects th
 geometry, so there is one file per part instead; arrange plates in Bambu Studio.
 
 **Everything in one file:** `print/arc_drawer_all_parts.3mf` (and
-`2x2/print/arc_drawer_2x2_all_parts.3mf`) holds the housing and the drawer side
+`<size>/print/arc_drawer_<size>_all_parts.3mf` for the other sizes) holds the housing and the drawer side
 by side on one plate, already in print orientation, 10 mm apart. Open it in
 Bambu Studio and slice. The drawer label is a separate two-colour print in
 [labels/bin-label](../../labels/bin-label/README.md).
@@ -131,17 +139,18 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
   wall (a two-sided tent left floating slivers at the wall face).
 - **Drawer: upright** on its floor. Pins (point down), scoop (45° rim and ceiling) and
   label holder (45° under the bottom rail) print without support.
-- **Fit test plate first** (`print/arc_drawer_fit_test_plate.3mf`, one plate): the
+- **Fit test plate first** (`test-prints/arc_drawer_fit_test_plate.3mf`, one plate; `build.py` writes it, git ignores it): the
   front 34 mm of the housing (arc, notch, exit) with the rear 40 mm of the drawer
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
   drop-in load, the lift-out, and the pocket with two hooks.
 - PLA or PETG, 0.2 mm layers, 3+ walls. `report.txt` lists every face flatter
-  than 45° from vertical on each print part: none.
+  than 45° from vertical on each print part: only the drawer's scoop-lip bridge.
 
 ## Regenerating
 
 `build.py` with no argument builds the 3 × 2 unit; `build.py 2x2` builds the
-2 × 2 into `2x2/`. Any new size is a new folder with its own `params.yaml`.
+2 × 2 into `2x2/`, and likewise `3x2x60` and `3x3x60`. Any new size is a new
+folder with its own `params.yaml`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 

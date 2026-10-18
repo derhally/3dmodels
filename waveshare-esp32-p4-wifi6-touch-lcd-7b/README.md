@@ -88,7 +88,7 @@ CAD as editable bodies.
    - Every revision was clash-checked against stand-ins for the display, its
      standoffs, the speaker, the USB plug and the port, to confirm no overlaps.
    - Every revision was reviewed by opening the STEP in CAD.
-   - The glass pocket was confirmed with a printed test frame. `print/p4_7b_facade_test_frame` checks the facade window the same way.
+   - The glass pocket was confirmed with a printed test frame. `test-prints/p4_7b_facade_test_frame` (built by `build.py`) checks the facade window the same way.
    - Bambu Studio projects were checked for watertight, outward-facing meshes.
 4. **Exports.** The print files are the same solids, rotated into print
    orientation.

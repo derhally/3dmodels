@@ -1,18 +1,18 @@
 # Omniwall arc-pocket drawer (own design, 2026-10-17): a housing that hangs on the
-# printed cross-slot hooks, and a drawer that slides out on two rear pins, tilts
+# printed bridge hooks, and a drawer that slides out on two rear pins, tilts
 # down 30 deg at the end of its travel and stays captive. Panel, hook and pocket
 # values come from ../panel.yaml (dovetail_mount); the pockets are built by
 # ../hook_geometry.py so they match the print-tested hooks. All sizes in mm.
 # Source tags: given (Zeid), derived, assumed (chosen; the fit test checks it).
 #
-# Grid placement (derived from the hook geometry): a cross-slot hook straddles the
+# Grid placement (derived from the hook geometry): a bridge hook straddles the
 # horizontal slot row, so it sits at a crossing of the slot grid. Sideways, the
 # unit's edges sit on vertical slot columns (as the bins do), so every column
 # inside the unit takes a hook: cells - 1 of them. Vertically the unit's bottom
 # edge sits on a peg-hole row, so every hook row is inside it: `rows` of them.
 # Each column has one pocket channel from the bottom edge up to a closed seat at
-# the top row's hook top, with snap ridges for both rows, so the unit hangs on
-# one row of hooks (top) or two.
+# the top row's hook top, with snap ridges for every row, so the unit hangs on
+# the top row of hooks alone or on more rows.
 
 unit:
   cells: 3                 # given: 3 cells wide
@@ -25,7 +25,7 @@ housing:
   roof: 2.0                # assumed
   floor: 3.0               # assumed: the drawer slides on it; its front edge is the tilt pivot (sill)
   back_front_wall: 2.0     # assumed: solid in front of the pocket floor gable (back plate = 6.5 + 1.725 + 2.0 = 10.225)
-  second_ridges: true      # assumed: a second ridge pair one pitch below the seat, so a lower row of hooks also clicks in
+  ridges_every_row: true   # a ridge pair every pitch below the seat, one per hook row, so every row of hooks clicks in (Zeid, 2026-10-18: snaps at every row, never in between)
   pocket:                  # print-tested 2026-10-17: pocket_variants coupon 3 clicked best (Zeid). Overrides panel.yaml dovetail_mount.pocket for the housing only
     spine_clearance: -0.1  # lips' 45 deg back starts 0.1 below the spine's front (pocket_variants.gable_drop), so the print gable no longer thins them
     flank_gap: 0.1         # lip flank 0.1 behind the hook's flank (was 0.4)
@@ -72,6 +72,7 @@ scoop:                     # Zeid's scoop_prototype.scad (E:\source\openscad\omn
   embed: 0.5               # assumed: reaches this far into the front plate so the fuse has no coincident faces
   below_top: 2.0           # assumed: scoop top this far below the plate top, so the blend has a face to run onto (it was flush)
   blend: 2.0               # given (Zeid asked to blend the scoop into the face, 2026-10-17); 2 = the scad's back_fillet_r
+  lip_flat: 1.5            # given (Zeid, 2026-10-18: the front wall's lip printed almost in the air): flat underside this far up from the lip's knife edge, so its first layers bridge between the side walls; 0 = knife edge
   # Not carried over: the scad's 0.5 mm rounding of every edge (the rim's would face down flatter than 45 deg) and its r2 back fillets
 
 lip:                       # finger lip along the top of the drawer front (front.pull: lip); replaced by the scoop 2026-10-17

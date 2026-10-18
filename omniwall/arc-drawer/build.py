@@ -44,7 +44,7 @@ def export_step(shape, path):
 
 
 pitch = panel["pitch"]
-hook = panel["cross_slot_hook"]
+hook = panel["bridge_hook"]
 U, HS, DR, PN, TR, LP, LB, FT = (P[k] for k in ("unit", "housing", "drawer", "pins", "track", "lip", "label", "fit_test"))
 dm = copy.deepcopy(panel["dovetail_mount"])
 dv, pk = dm["dovetail"], dm["pocket"]
@@ -153,15 +153,15 @@ def track_void(x_face):
 def pocket(xc):
     """Pocket channel for one hook column: the shared dovetail pocket from
     hook_geometry (open at the bottom, closed seat at the top, snap ridges), a
-    second ridge pair one pitch lower for a second row of hooks, and 45 deg gables
+    ridge pair one pitch lower for every further row of hooks, and 45 deg gables
     on the spine channel's end and the pocket floor so it prints on its back."""
     zl = -(seat_z - HH) - 1
     zt = HH + pk["top_clearance"]
     v = pocket_void(dm, HH, 0.0, zl)
-    if HS["second_ridges"] and U["rows"] > 1:
-        r = pk["ridge"]
-        zc = zt - r["below_top"] - pitch
-        y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
+    r = pk["ridge"]
+    y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
+    for k in range(1, U["rows"] if HS["ridges_every_row"] else 1):
+        zc = zt - r["below_top"] - k * pitch
         for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
             v = v - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
     e = 0.02   # gables start a hair wider than the channel, so no flat strip is left at the corners
@@ -219,7 +219,16 @@ def scoop():
     walls = extrude(pl * Polygon((0, 0), (fl, dp), (fr, dp), (w, 0), (w - a, 0), (w - b, dp - t), (b, dp - t), (a, 0), align=None), h, dir=(0, -s, c))
     floor = extrude(pl.offset(h - t) * Polygon((0, 0), (fl, dp), (fr, dp), (w, 0), align=None), t + dp, dir=(0, -s, c))   # runs on into the face, as in the scad
     keep = Pos(W / 2, D - SC["embed"] + 20, plate_top - top / 2) * Box(w + 2, 40, top + 10)
-    return solid((walls + floor) & keep)
+    sc = solid((walls + floor) & keep)
+    if SC["lip_flat"] > 0:
+        # The front wall's lip starts as a knife edge hanging across the cavity, so its first
+        # layers are a thin line in the air. Cut it flat so they print as a short bridge
+        # anchored on the side walls (only between the side walls' inner corners).
+        z_lip = pl.origin.Z + (dp - t) * s
+        y_lip = D + (dp - t) * c
+        cut = Pos(W / 2 - w / 2 + b, y_lip - SC["lip_flat"] - 0.5, z_lip - 5) * Box(w - 2 * b, t * s + SC["lip_flat"] + 2, 5 + SC["lip_flat"], align=Align.MIN)
+        sc = solid(sc - cut)
+    return sc
 
 
 BLENDS = []
@@ -334,7 +343,7 @@ def drawer_at(d, state, angle=None, y=None):
 
 
 def hooks(rows=None):
-    hk = cross_slot_hook(panel, ROOT)
+    hk = bridge_hook(panel, ROOT)
     out = []
     for xc in hook_cols:
         for z in (hook_rows if rows is None else rows):
@@ -421,7 +430,7 @@ for state in ("closed", "open", "tilted", "lifted"):
 log("tilt sweep (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
 log("lifted, pulled out from the notch by (mm: mm3): " + ", ".join(
     f"{y}: {overlap(h, drawer_at(d, 'lifted', y=y)):.3f}" for y in (0, 5, 10, 15, 20, 24)))
-log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (10, 25, 40, travel - 3)))
+log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
 
 # Print orientation: housing on its back, drawer upright.
 hp, dp = print_housing(h), to_bed(d)
@@ -433,12 +442,14 @@ cp = solid(h & Pos(xc0 - FT["coupon_half_width"], 0, FT["coupon_bottom"]) * Box(
 ht.label, dt.label, cp.label = "fit test housing front", "fit test drawer rear", "pocket coupon"
 htp, dtp, cpp = print_housing(ht), to_bed(dt), print_housing(cp)
 plates = []
-for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
-                   (htp, f"{NAME}_fit_test_housing_print"), (dtp, f"{NAME}_fit_test_drawer_print"),
-                   (cpp, f"{NAME}_pocket_coupon_print")):
-    export_step(part, str(HERE / "print" / f"{stem}.step"))
-    export_stl(part, str(HERE / "print" / f"{stem}.stl"))
-    write_3mf([(stem, *shape_mesh(part))], HERE / "print" / f"{stem}.3mf")
+TEST = HERE / "test-prints"                          # fit tests: local only (git-ignored)
+TEST.mkdir(exist_ok=True)
+for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{NAME}_drawer_print", HERE / "print"),
+                        (htp, f"{NAME}_fit_test_housing_print", TEST), (dtp, f"{NAME}_fit_test_drawer_print", TEST),
+                        (cpp, f"{NAME}_pocket_coupon_print", TEST)):
+    export_step(part, str(out / f"{stem}.step"))
+    export_stl(part, str(out / f"{stem}.stl"))
+    write_3mf([(stem, *shape_mesh(part))], out / f"{stem}.3mf")
     bad = bad_faces(part)
     bb = part.bounding_box()
     log(f"{stem}: {bb.size.X:.1f} x {bb.size.Y:.1f} x {bb.size.Z:.1f}, faces {len(part.faces())}, overhangs flatter than 45 deg: {len(bad)}")
@@ -446,7 +457,7 @@ for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
-           ("pocket coupon", *shape_mesh(cpp, 0, 60))], HERE / "print" / f"{NAME}_fit_test_plate.3mf")
+           ("pocket coupon", *shape_mesh(cpp, 0, 60))], TEST / f"{NAME}_fit_test_plate.3mf")
 # Housing and drawer side by side on one plate, 10 mm apart, centred on the origin.
 gap = 10.0
 hb, db = hp.bounding_box(), dp.bounding_box()

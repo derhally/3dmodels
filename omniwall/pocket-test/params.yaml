@@ -1,6 +1,6 @@
 # Pocket test plate: a small plate with two dovetail pockets that slides onto two
 # hooks, to test the fit and the snap before designing boxes. Hook and pocket
-# values come from ../panel.yaml (cross_slot_hook.dovetail and .pocket).
+# values come from ../panel.yaml (bridge_hook.dovetail and .pocket).
 plate:
   hook_spacing_cells: 1   # given: wide enough for two hooks; 1 cell apart is the smallest
   side_wall: 3.0          # assumed: solid beside each pocket
