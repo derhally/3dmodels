@@ -113,3 +113,28 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   below_hook: 4.0          # assumed: coupon runs this far below the seated hook (open end)
   roof: 2.0                # assumed: solid above the seat
   mark_depth: 0.4          # assumed: ID grooves on the front face
+
+handle_test:               # handle_test.py: a separate bar handle that snaps onto the drawer face with two legs on its posts (Zeid's idea, 2026-10-18); test print first
+  plate_width: 60.0        # assumed: strip of drawer face for the test
+  plate_height: 24.0       # assumed
+  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
+  bar_width: 42.0          # assumed: handle overall width
+  post: 10.0               # assumed: post width across
+  height: 12.0             # assumed: handle height (posts, bar and snap tabs)
+  depth: 20.0              # assumed: handle front from the drawer face
+  bar: 8.0                 # assumed: bar front to back, leaving a 12 mm finger gap
+  round_out: 2.0           # assumed: outside corners in plan view
+  round_in: 1.0            # assumed: inside corners in plan view
+  top_round: 1.0           # assumed: top edges
+  bed_chamfer: 0.5         # assumed: bed edges (45 deg, so they print without supports)
+  # The handle prints on its bottom face, so it is a plan-view shape extruded upward: nothing overhangs, and the snap tabs'
+  # legs bend in the bed plane, along the layers (Zeid, 2026-10-18: plugs attached to the handle, fewer parts)
+  tab: 5.0                 # assumed: snap tab width across, behind each post; full handle height
+  slot: 1.4                # assumed: splits each tab into two legs
+  slot_into_post: 4.0      # assumed: slot runs this far into the post, so the legs are long enough to flex
+  barb_slack: 0.15         # assumed: barb's back face this far behind the face's back
+  barb_flat: 0.5           # assumed: barb's straight length
+  tip: 1.2                 # assumed: half width at the tip after the 45 deg lead-in
+  barbs: [5.8, 6.1, 6.4]   # assumed: handle variants A, B, C (1, 2, 3 notches on the bar's top), across the barbs
+  hole: 5.2                # assumed: slot in the face for each tab, across
+  hole_height: 12.4        # assumed: slot height to the start of its 45 deg pointed top (the face prints standing, so the slot's top can't be flat)
