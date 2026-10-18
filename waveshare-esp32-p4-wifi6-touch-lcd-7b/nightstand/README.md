@@ -53,14 +53,20 @@ they're weighed. Print the hinge test and the snap test first.
   bars, running front to back. The slots start 2 mm behind the knob, so the hinge
   never sits over them. Leaned back, the case hangs over the grille and reflects
   some of the sound backward.
-- **Wires.** The USB-C connector is in the tower's back wall, under the speaker.
-  The cable runs forward along the floor, up in front of the speaker, and out
-  through a wire pass near the top of the tower front. A matching pass in the
-  case's back panel faces it across the 1.5 mm gap, and inside the case the cable
-  runs behind the board to its middle `USB` port on the left edge. The speaker
-  lead takes the same passes to the `SPK` header. Tilting to 30° opens the gap
-  between the passes to about 16 mm, so leave about 20 mm of slack inside the
-  case.
+- **Wires.** One cable does it all: a screw-on USB-C socket, a flat ribbon
+  (7.9 × 1.5 mm, 300 mm long) and a 90° plug with an 11 × 11 mm head. The socket
+  is in the tower's back wall, under the speaker. The ribbon runs forward along
+  the floor, up the inside of the tower front, and out through a wire pass near
+  its top. A matching pass in the case's back panel faces it across the 1.5 mm
+  gap. Inside the case the ribbon lies flat on the back panel, then runs forward
+  along the left wall to the plug in the board's middle `USB` port on the left
+  edge. The plug's head sits beside the board, about 4 mm from the side wall,
+  with the ribbon leaving toward the back. Both passes are 13 mm wide and
+  17.5 mm tall, so the plug goes through ribbon last. The ribbon crosses the gap
+  lying flat, so it bends with the tilt. The speaker lead takes the same passes
+  to the `SPK` header. The route uses about 175 mm of the cable, including the
+  loop across the gap: leave about 25 mm of slack there for the 30° tilt and
+  coil the spare inside the tower, under the speaker.
 - **Snaps.** The front plate clips into the back shell (8 snaps) and the deck lid
   onto the base (6). The arms have 45° barbs that hook behind 45° ridges, so a
   firm pull releases them for service. The tower lid keeps screws because it
@@ -77,8 +83,7 @@ they're weighed. Print the hinge test and the snap test first.
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
 | 1 | Box speaker 100 × 45 × 20.75 mm, four Ø6.2 mm corner ears 10 mm behind the cone face | Audio, into the board's `SPK` header at the top edge of the board. The lead needs about 20 cm to get there through the wire passes: plan on an extension |
 | 1 | Foam tape, about 1.5 mm thick and 3 mm wide | Gasket round the speaker face's rim, squeezed to 1 mm by the tower lid |
-| 1 | Flanged panel-mount USB-C connector (as the desk stands), 4 wires | Power and data in the tower's back wall, two screws from outside |
-| 1 | Right-angle USB-C cable with a flat ribbon (5 × 1 mm) | Board's middle `USB` port, spliced to the connector's wires |
+| 1 | Flat USB-C extension cable, 30 cm: screw-on panel socket (25.2 × 8.2 mm flange, screws 17 mm apart) to a 90° plug (11 × 11 mm head), ribbon 7.9 × 1.5 mm | Power and data: socket in the tower's back wall (two screws from outside), plug in the board's middle `USB` port |
 | 1 | M4 × 30 hex-head bolt (DIN 933) | Hinge, head in the knob |
 | 1 | M4 hex nut | Captured in the tower knuckle |
 | 4 | M2.5 × 6 screw | Clamp tabs into the display's standoffs |
@@ -92,7 +97,7 @@ they're weighed. Print the hinge test and the snap test first.
 |---|---|
 | Front plate | Facade on the bed |
 | Back shell | Back panel on the bed |
-| Case hinge | Bracket plate on the bed, knuckle up |
+| Case hinge | Knob-side face on the bed, teeth facing up (crisp teeth, and the lug is built with the plate in every layer) |
 | Knob | Flat face on the bed, hex pocket up |
 | Base | Upright, on its floor |
 | Deck lid | Top face on the bed, snap arms up |
@@ -104,13 +109,12 @@ and blind pilots that face down end in a 90° point.
 
 ## Assembly
 
-1. Set the USB-C connector's flange into the pocket inside the tower's back
+1. Set the cable's USB-C socket flange into the pocket inside the tower's back
    wall, socket through the opening, and fit its two screws from outside.
-2. Thread the bare end of the USB-C cable from inside the case out through the
-   case's wire pass, then in through the tower front's pass, down in front of
-   the speaker posts and back along the floor. Splice it to the connector's wires
-   (see the device's build guide for the wire order).
-   Pass the speaker lead's plug out through the same two holes into the case.
+2. Feed the cable's 90° plug, metal first, from inside the tower up the inside
+   of the tower front, out through its wire pass and in through the case's
+   pass, with the ribbon following flat. Pass the speaker lead's plug out
+   through the same two holes into the case.
 3. Stick the foam tape round the rim of the speaker's face. Set the speaker face
    up on the posts, each ear over a spigot.
 4. Snap the deck lid onto the base.
@@ -120,8 +124,9 @@ and blind pilots that face down end in a 90° point.
 7. Mount the display in the front plate with the clamp tabs, as the desk stands.
 8. Set the case knuckle against the tower knuckle's teeth, push the bolt through
    from the right and turn the knob to pull the nut to the bottom of its pocket.
-9. Inside the case, lay the cable behind the board, leaving about 20 mm of slack
-   for the tilt, and plug it into the middle `USB` port. Plug the speaker into
+9. Inside the case, lay the ribbon flat on the back panel, leaving about 25 mm of slack
+   for the tilt, and plug it into the middle `USB` port with the ribbon pointing
+   toward the back. Plug the speaker into
    `SPK`. Snap the front plate into the shell.
 
 ## Open points
@@ -134,7 +139,9 @@ and blind pilots that face down end in a 90° point.
   empty and can take ballast.
 - **Speaker cones.** The cone positions aren't measured; the grille assumes they
   sit under the middle of the face.
-- **Hinge.** Print the hinge test before the full parts.
+- **Hinge.** Print the hinge test before the full parts, at 0.12 mm layers if you can.
+  The tower lid's teeth are on a vertical face as it prints, so they come out less
+  crisp than the case hinge's.
 
 ## Regenerate
 

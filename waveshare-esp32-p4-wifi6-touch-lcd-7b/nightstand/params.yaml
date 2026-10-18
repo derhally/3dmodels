@@ -49,7 +49,8 @@ hinge:                   # rosette joint: two knuckles side by side, one toothed
   tooth_r_in: 0.0        # teeth run from here to the knuckle edge (0: to the axis, so no
                          # bore faces down in print)
   face_gap: 0.1          # axial clearance between meshed tooth faces
-  bolt_hole: 4.4         # M4 clearance, teardrop
+  bolt_hole: 4.4         # M4 clearance (teardrop in the tower knuckle, round in the case
+                         # knuckle, which prints teeth up)
   nut_af: 7.2            # M4 nut 7.0 across flats + 0.2, captured in the tower knuckle
   nut_t: 3.2             # M4 nut thickness
   nut_pocket: 7.4        # pocket depth from the tower knuckle's left face: the nut sits 4.2
@@ -57,7 +58,8 @@ hinge:                   # rosette joint: two knuckles side by side, one toothed
   bolt: [4, 30]          # M4 x 30 hex-head bolt (DIN 933), head in the knob: ends 1 mm inside
                          # the pocket, 3 mm through the nut (still through it when loosened 1.5)
   plate_t: 6.0           # case bracket plate on the case back
-  plate_corner_r: 3.0    # its corners seen from the back
+  plate_corner_r: 3.0    # its corners seen from the back: fillets, 45 deg chamfers on the
+                         # print-bed (knob) side
   plate_z: [-12.5, 18.0] # case bracket plate extent about the axis (stays 1.5 above the tower lid)
   plate_screws: [[7.5, -7.0], [-9.0, 14.8], [9.0, 14.8]]   # X, Z about the axis: M3 x 8 pan
                          # head from inside the case into the plate
@@ -112,10 +114,20 @@ wire:                    # USB-C cable and speaker lead from the tower into the 
                          # 1.5 mm gap; tilting to 30 deg opens it to ~16 mm, so leave ~20 mm
                          # of slack inside the case
   x: -36.0               # hole centre, seen from the front
-  z0: 33.0               # hole bottom above the table, upright
-  width: 7.0             # a PH2.0 plug (about 10 x 4.5, assumed) passes on its side
-  side: 10.0             # straight sides, then a 45 deg roof (prints without a bridge)
-  cable_d: 3.5           # USB-C cable stand-in (assumed)
+  z0: 29.0               # hole bottom above the table, upright
+  plug: [11.0, 11.0, 6.0]  # the cable's 90 deg USB-C plug head: width along the metal x depth
+                         # (seller drawing, 11 x 11) x height under the metal (ASSUMED); the
+                         # ribbon leaves its back face at the metal's side, flat
+  plug_metal: [8.3, 2.5, 6.6]  # the metal: width x thickness x length (USB-C standard)
+  plug_front: 3.0        # metal centre behind the head's front face (ASSUMED, from the photo)
+  plug_gap: 1.0          # board edge to the head (as the shared plug stand-in)
+  width: 13.0            # plug width + 1 a side; the ribbon passes flat (it bends with the
+                         # tilt that way), and so does the speaker's PH2.0 plug (about 10 x 4.5)
+  side: 11.0             # then a 45 deg roof to a point (prints without a bridge): the plug
+                         # goes through ribbon last, 11 wide for the head and 8.3 for the metal,
+                         # 12.6 tall in all; the roof is 8.3 wide at 13.35
+  ribbon: [7.9, 1.5]     # USB-C cable: flat ribbon, width x thickness (measured)
+  cable_len: 300.0       # its length (measured); check.py compares it with the route
 
 snap:                    # cantilever snaps with 45 deg barbs and ridges: every face prints
                          # within 45 deg, and a firm pull releases them for service
@@ -127,9 +139,13 @@ snap:                    # cantilever snaps with 45 deg barbs and ridges: every 
   gap: 1.2               # arm to wall: the arm clears the ridge by 0.2; barb and ridge
                          # overlap 0.6 (barb + ridge - gap)
 
-usb_port:                # snap-in panel USB-C socket in the tower's back wall, under the speaker
+usb_port:                # the cable's own screw-on USB-C socket in the tower's back wall, under
+                         # the speaker
   x: -30.0               # clear of the speaker posts
   z: 9.4                 # centre height
+  screw_body: [13.0, 7.0, 19.5]  # body behind the flange, stand-in only: depth from the seller
+                         # drawing (19.5 front face to the ribbon's strain relief, taken from the
+                         # wall's inside to stay safe), width and height ASSUMED from its photo
   panel_t: 2.5
 
 feet:

@@ -119,13 +119,6 @@ def tooth_ring(n, r_out, r_in):
 TEETH, MATE = tooth_ring(hg["teeth"], R_k, hg["tooth_r_in"])
 
 
-def pilot_hole(d, depth):
-    """Pilot along +Z from z = 0 with a 90 deg point at the end, for pilots whose
-    end faces down in print."""
-    return Cylinder(d / 2, depth, align=(CENTER, CENTER, MIN)) + Pos(0, 0, depth) * Cone(
-        d / 2, 0, d / 2, align=(CENTER, CENTER, MIN))
-
-
 def soft_edges(part, edges, n, level, c, r):
     """Round the perimeter `edges` of a face that lies on the print bed: a 45 deg
     chamfer `c`, then a fillet `r` where the chamfer meets the sides, so no face is
@@ -276,10 +269,14 @@ def knuckle(x0, x1):
 
 def build_case_bracket():
     """Hinge bracket screwed to the case back: a plate and the case knuckle, whose
-    left face carries the mating teeth. Printed on its plate (up = +Y)."""
+    left face carries the mating teeth. Printed on its right end, teeth up (up = -X):
+    the teeth print face up and the lug grows with the plate in every layer."""
     z0, z1 = hg["plate_z"]
     br = Pos(0, D_case, Z_h + z0) * Box(2 * xc1, hg["plate_t"], z1 - z0, align=(CENTER, MIN, MIN))
-    br = fillet(br.edges().filter_by(Axis.Y), hg["plate_corner_r"])
+    corners = br.edges().filter_by(Axis.Y)
+    br = fillet(corners.filter_by_position(Axis.X, -xc1 - 1, 0), hg["plate_corner_r"])
+    br = chamfer(br.edges().filter_by(Axis.Y).filter_by_position(Axis.X, xc1 - 0.01, xc1 + 0.01),
+                 hg["plate_corner_r"])           # bed side: 45 deg, no overhang
     # room for the tower knuckle and its fin: the knuckle sweeps a cylinder, the fin
     # rises from below
     xl, xr = -xc1 - 1, xc0 - 0.01
@@ -289,11 +286,12 @@ def build_case_bracket():
     br += knuckle(xc0, xc1)
     # mating teeth: the complement of the tower knuckle's teeth, a face gap away
     br += face_plane(xt1 + hg["face_gap"], 1).location * MATE
-    for dx, dz in hg["plate_screws"]:               # pointed: the bracket prints plate down
-        br -= Pos(dx, D_case - 0.01, Z_h + dz) * (Rot(X=-90) * pilot_hole(hg["pilot"], hg["pilot_depth"] + 0.01))
-    # bolt hole, teardrop toward print-up (+Y)
-    br -= teardrop(Plane.YZ.offset(0), (0, Y_h, Z_h), hg["bolt_hole"] / 2, 2 * xc1 + 2,
-                   up=(0, 1, 0), both=True)
+    into_plate = Plane(origin=(0, D_case - 0.01, 0), x_dir=(1, 0, 0), z_dir=(0, 1, 0))
+    for dx, dz in hg["plate_screws"]:               # sideways in print: teardrops, point up (-X)
+        br -= teardrop(into_plate, (dx, D_case - 0.01, Z_h + dz), hg["pilot"] / 2,
+                       hg["pilot_depth"] + 0.01, up=(-1, 0, 0))
+    # bolt hole: upright in print, so plain round
+    br -= Pos(0, Y_h, Z_h) * Cylinder(hg["bolt_hole"] / 2, 2 * xc1 + 2, rotation=(0, 90, 0))
     return labelled(br, "case_hinge")
 
 
@@ -350,7 +348,7 @@ tb_ys = (Y_tw + rb - 0.4, Y_back - bw - rb + 0.4)    # set into the walls (not t
 assert tb_x - rb >= sw / 2 + 0.5, "lid screw boss hits the speaker"
 assert tb_x + 3.2 <= x_to - ba["tower_lid_edge_r"], "countersink runs into the lid's rounded edge"
 Y_spk0 = Y_sc - sh / 2                              # speaker front
-z_w = wr["z0"] + wr["cable_d"] / 2 + 0.5            # cable height through the wire holes
+z_w = wr["z0"] + wr["ribbon"][1] / 2 + 0.5          # ribbon height through the wire holes
 
 
 def wire_hole(plane, x, z0):
@@ -362,16 +360,21 @@ def wire_hole(plane, x, z0):
     return sk.sketch
 
 
-def tube(points, d):
-    """Cable stand-in: round segments through `points`, rounded at the bends."""
+def ribbon(points, normals, w, t):
+    """Flat cable stand-in through `points`: one strip per segment, lying flat
+    against the plane whose normal is given for that segment."""
     pts = [Vector(*p) for p in points]
     out = Part()
-    for a, b in zip(pts, pts[1:]):
+    for a, b, n in zip(pts, pts[1:], normals):
         v = b - a
-        out += Solid.make_cylinder(d / 2, v.length, Plane(origin=a, z_dir=v))
-    for p in pts[1:-1]:
-        out += Pos(p) * Sphere(d / 2)
+        d = v.normalized()
+        strip = Box(w, t, v.length + t, align=(CENTER, CENTER, CENTER))
+        out += Plane(origin=(a + b) * 0.5, x_dir=Vector(*n).cross(d), z_dir=d).location * strip
     return out
+
+
+def route_length(points):
+    return sum((Vector(*b) - Vector(*a)).length for a, b in zip(points, points[1:]))
 
 
 def footprint(z0, z1, inset=0.0):
@@ -468,23 +471,56 @@ def build_tower_lid():
     return labelled(tl, "tower_lid")
 
 
+def usb_plug_frame():
+    """The 90 deg plug in the board's left-edge port (upright): edge x, metal centre y, z."""
+    return g.gx - dp["pcb_w"] / 2, g.f + 10.4, Z_cb + s_g + g.usb_y   # as the shared plug stand-in
+
+
+def usb_plug():
+    """The cable's 90 deg USB-C plug: the head beside the board, and the metal up to the
+    board edge (the rest is inside the port, part of the board stand-in)."""
+    xe, yc, zc = usb_plug_frame()
+    (hw, hd, hh), (mw, mt, _) = wr["plug"], wr["plug_metal"]
+    head = Pos(xe - wr["plug_gap"], yc - wr["plug_front"], zc) * Box(
+        hh, hd, hw, align=(MAX, MIN, CENTER))
+    metal = Pos(xe - wr["plug_gap"] - 0.1, yc, zc) * Box(wr["plug_gap"], mt, mw, align=(MIN, CENTER, CENTER))
+    return labelled(head + metal, "usb_plug")
+
+
+def plug_exit():
+    """Where the ribbon leaves the plug head: its back face, on the metal's side."""
+    xe, yc, zc = usb_plug_frame()
+    w, t_ = wr["ribbon"]
+    return (xe - wr["plug_gap"] - t_ / 2 - 0.5, yc - wr["plug_front"] + wr["plug"][1] + t_ / 2 + 0.1, zc)
+
+
+def cable_routes():
+    """The USB-C ribbon's route: in the case, from the board's plug back behind the
+    board and down the inside of the back panel to the wire pass; in the base, from
+    the tower's wire pass down the inside of the tower front and back along the floor
+    to the connector. Points, and per segment the normal of the plane it lies flat on."""
+    w, t_ = wr["ribbon"]
+    x0, y0, z_plug = plug_exit()
+    y_run = D_case - wall - t_ / 2 - 0.3             # flat on the inside of the back panel
+    in_case = [(x0, y0, z_plug), (x0, y_run, z_plug), (wr["x"], y_run, z_w + w),
+               (wr["x"], y_run, z_w), (wr["x"], D_case - t_, z_w)]
+    case_n = [(1, 0, 0), (0, 1, 0), (0, 1, 0), (0, 0, 1)]
+    z_f = z_fi + t_ / 2 + 0.2
+    y_d = Y_tw + t_ / 2 + 2.0                         # down the inside of the tower front
+    y_sock = usb_port_stand_in(P, Y_back).bounding_box().min.Y   # the connector's back end
+    in_base = [(wr["x"], Y_tf + t_, z_w), (wr["x"], y_d, z_w), (wr["x"], y_d, z_f),
+               (up["x"], y_d + 12, z_f), (up["x"], y_sock - 3, z_f)]
+    base_n = [(0, 0, 1), (0, 1, 0), (0, 0, 1), (0, 0, 1)]
+    return (in_case, case_n), (in_base, base_n)
+
+
 def cables():
-    """USB-C cable stand-ins: in the case, from the board's plug back behind the board
-    to the wire pass; in the base, from the tower's wire pass down in front of the
-    speaker and back along the floor to the socket. The loop across the gap between
-    them changes with the tilt and isn't modelled."""
-    d = wr["cable_d"]
-    x0 = g.gx - (dp["pcb_w"] / 2 + 1 + 1.75)        # the plug stand-in's centre
-    z_plug = Z_cb + s_g + g.usb_y
-    y_run = D_case - wall - d / 2 - 0.5              # along the inside of the back panel
-    in_case = tube([(x0, g.clamp_back - 5, z_plug), (x0, y_run, z_plug), (wr["x"], y_run, z_w + 4),
-                    (wr["x"], y_run, z_w), (wr["x"], D_case + 0.3, z_w)], d)
-    z_f = z_fi + d / 2 + 0.2
-    y_d = (Y_tw + Y_spk0) / 2                        # down in front of the speaker
-    y_sock = usb_port_stand_in(P, Y_back).bounding_box().min.Y   # the socket's back end
-    in_base = tube([(wr["x"], Y_tf - 0.3, z_w), (wr["x"], y_d, z_w), (wr["x"], y_d, z_f),
-                    (up["x"], y_d + 10, z_f), (up["x"], y_sock - 6, z_f), (up["x"], y_sock - 2, up["z"])], d)
-    return labelled(in_case, "usb_cable_case"), labelled(in_base, "usb_cable_base")
+    """USB-C ribbon stand-ins, in the case and in the base. The loop across the gap
+    between the wire passes changes with the tilt and isn't modelled."""
+    w, t_ = wr["ribbon"]
+    (pc, nc), (pb, nb) = cable_routes()
+    return (labelled(ribbon(pc, nc, w, t_), "usb_cable_case"),
+            labelled(ribbon(pb, nb, w, t_), "usb_cable_base"))
 
 
 def gasket():
@@ -506,7 +542,8 @@ def build_all():
             place_knob(knob)]
     bolt, nut = hardware()                          # the nut stays in the tower knuckle
     cable_case, cable_base = cables()
-    case_hw = [bolt, cable_case] + display_stand_ins(g, s_g) + place_tabs(g, tab, s_g, columns)
+    stand_ins = [d for d in display_stand_ins(g, s_g) if d.label != "usb_plug"]   # straight plug
+    case_hw = [bolt, cable_case, usb_plug()] + stand_ins + place_tabs(g, tab, s_g, columns)
     base = [build_base(), build_deck_lid(), build_tower_lid()]
     speaker = labelled(Pos(0, Y_sc, z_sf) * speaker_stand_in(sp, ears), "speaker")
     base_hw = [speaker, gasket(), usb_port_stand_in(P, Y_back), nut, cable_base]
@@ -515,7 +552,7 @@ def build_all():
     prints = {                                      # name: (part in print orientation, how)
         "front_plate": (on_bed(Rot(X=180) * plate_pf), "face down"),
         "back_shell": (on_bed(Rot(X=-90) * shell), "back panel down"),
-        "case_hinge": (on_bed(Rot(X=90) * bracket), "plate down, knuckles up"),
+        "case_hinge": (on_bed(Rot(Y=90) * bracket), "outer face down, teeth up"),
         "knob": (on_bed(knob), "flat face down, pocket up"),
         "base": (on_bed(body), "upright"),
         "deck_lid": (on_bed(Rot(X=180) * deck), "top face down, snap arms up"),

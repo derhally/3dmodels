@@ -113,4 +113,17 @@ for deg in (P["tilt"]["min"], P["tilt"]["max"]):
         f"screen top at Y {top.Y:.1f} Z {top.Z:.1f}; tips back with {f_back:.2f} N at the top, forward with {f_fwd:.2f} N; "
         f"case {cm:.0f} g, hinge holds {abs(hinge):.3f} N m ({'back' if hinge > 0 else 'forward'})")
 
+log()
+log("== USB-C cable length ==")
+(pc, _), (pb, _) = b.cable_routes()
+gap = math.dist(pc[-1], pb[0])
+y, z = pc[-1][1] - b.Y_h, pc[-1][2] - b.Z_h              # case-side pass at full tilt
+th = math.radians(P["tilt"]["max"])
+moved = (pc[-1][0], b.Y_h + y * math.cos(th) + z * math.sin(th), b.Z_h - y * math.sin(th) + z * math.cos(th))
+loop = math.dist(moved, pb[0])
+need = b.route_length(pc) + b.route_length(pb) + loop + 20
+log(f"route: {b.route_length(pc):.0f} mm in the case, {b.route_length(pb):.0f} mm in the base, "
+    f"{gap:.1f} mm across the gap upright, {loop:.0f} mm at {P['tilt']['max']} deg; with 20 mm for the "
+    f"bends it needs {need:.0f} mm of the {P['wire']['cable_len']:.0f} mm cable")
+
 (b.here / "report.txt").write_text("\n".join(lines) + "\n")
