@@ -143,4 +143,8 @@ slot_hook_1:
 # not here come from slot_hook_1. Built by slot_hook_2() in hook_geometry.py.
 slot_hook_2:
   lower_rim_below: 25.4     # derived: pitch, the upper slot's bottom edge to the lower slot's (in-line slots)
+  fillets:                  # inside corners where the bars meet the front, for strength (Zeid, 2026-10-18; A, C, E on the side-profile diagram)
+    under_top_bar: 3.0      # assumed (A): under the top bar with the finger; was slot hook 1's 0.2
+    top_foot: 3.0           # assumed (C): on the top body's foot (no snap up there); was 0.2
+    lower_foot_root: 1.5    # assumed (E): root of the lower foot; kept small, the foot flexes to snap over the rim
   top_to_slot_row: 4.95     # derived: pitch/2 - slot length/2, top of the upper slot to the horizontal slot row above it (assumes slots centred on the cell edge)

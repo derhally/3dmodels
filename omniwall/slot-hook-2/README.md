@@ -18,7 +18,11 @@ coupon, to check that it goes on, snaps and holds before any drawer changes.
   a pocket with ridges for two rows clicks onto a slot hook 1 in each slot or onto one
   slot hook 2 (Zeid, 2026-10-18).
 
-It is 2.95 × 11.15 × 45.7 mm, 826.2 mm³. The geometry is `slot_hook_2()` in
+The inside corners where the bars meet the front are filleted for strength
+(`slot_hook_2.fillets`): 3 mm under the top bar and on the top body's foot, and
+1.5 mm at the lower foot's root, kept small so the foot still flexes to snap.
+
+It is 2.95 × 11.15 × 45.7 mm, 839.0 mm³. The geometry is `slot_hook_2()` in
 [hook_geometry.py](../hook_geometry.py), with its values in
 [panel.yaml](../panel.yaml) (`slot_hook_2`, and `slot_hook_1` for everything
 it shares).

@@ -218,4 +218,15 @@ def slot_hook_2(panel, root):
     # (slot hook 1 body fills the upper slot behind y_c).
     fill = extrude(Plane.YZ * Polygon((yp, zl - d), (y_c, zl - d), (y_c, 0), (yp, 0), align=None), t)
     front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c, pitch=panel["pitch"])
-    return slot_hook_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front
+    # Fillets in the inside corners where the bars meet the front (Zeid marked
+    # them A, C and E on the side profile, 2026-10-18): under the top bar,
+    # on the top body's foot, and at the root of the lower foot.
+    cav, ft, fl = hook["cavity"], hook["printed"]["foot_top"], ts["fillets"]
+    def cove(y, z, r, sz):
+        """Fillet of radius r in the inside corner at (y, z), the open side
+        toward -y and toward sz in z."""
+        sq = Pos(y - r / 2, z + sz * r / 2) * Rectangle(r, r)
+        return extrude(Plane.YZ * (sq - Pos(y - r, z + sz * r) * Circle(r)), t)
+    coves = (cove(y_c, cav["top"], fl["under_top_bar"], -1) + cove(y_c, ft, fl["top_foot"], 1)
+             + cove(yp, zl + ft, fl["lower_foot_root"], 1))
+    return slot_hook_body(panel, root) + foot + fill + coves + Pos(0, 0, zl - d) * front
