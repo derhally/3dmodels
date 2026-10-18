@@ -1,18 +1,18 @@
 # Omniwall arc-pocket drawer (own design, 2026-10-17): a housing that hangs on the
-# printed cross-slot hooks, and a drawer that slides out on two rear pins, tilts
+# printed bridge hooks, and a drawer that slides out on two rear pins, tilts
 # down 30 deg at the end of its travel and stays captive. Panel, hook and pocket
 # values come from ../panel.yaml (dovetail_mount); the pockets are built by
 # ../hook_geometry.py so they match the print-tested hooks. All sizes in mm.
 # Source tags: given (Zeid), derived, assumed (chosen; the fit test checks it).
 #
-# Grid placement (derived from the hook geometry): a cross-slot hook straddles the
+# Grid placement (derived from the hook geometry): a bridge hook straddles the
 # horizontal slot row, so it sits at a crossing of the slot grid. Sideways, the
 # unit's edges sit on vertical slot columns (as the bins do), so every column
 # inside the unit takes a hook: cells - 1 of them. Vertically the unit's bottom
 # edge sits on a peg-hole row, so every hook row is inside it: `rows` of them.
 # Each column has one pocket channel from the bottom edge up to a closed seat at
-# the top row's hook top, with snap ridges for both rows, so the unit hangs on
-# one row of hooks (top) or two.
+# the top row's hook top, with snap ridges for every row, so the unit hangs on
+# the top row of hooks alone or on more rows.
 
 unit:
   cells: 3                 # given: 3 cells wide
@@ -21,11 +21,11 @@ unit:
   depth: 84                # assumed: housing from the panel face to its front
 
 housing:
-  side: 2.4                # assumed: side wall; the 1.2 track groove leaves 1.2 (3 perimeters)
+  side: 3.2                # given (Zeid, 2026-10-18: the track showed through the 1.2 left behind the groove; was 2.4): side wall; the 1.2 track groove leaves 2.0 (5 perimeters)
   roof: 2.0                # assumed
   floor: 3.0               # assumed: the drawer slides on it; its front edge is the tilt pivot (sill)
   back_front_wall: 2.0     # assumed: solid in front of the pocket floor gable (back plate = 6.5 + 1.725 + 2.0 = 10.225)
-  second_ridges: true      # assumed: a second ridge pair one pitch below the seat, so a lower row of hooks also clicks in
+  ridges_every_row: true   # a ridge pair every pitch below the seat, one per hook row, so every row of hooks clicks in (Zeid, 2026-10-18: snaps at every row, never in between)
   pocket:                  # print-tested 2026-10-17: pocket_variants coupon 3 clicked best (Zeid). Overrides panel.yaml dovetail_mount.pocket for the housing only
     spine_clearance: -0.1  # lips' 45 deg back starts 0.1 below the spine's front (pocket_variants.gable_drop), so the print gable no longer thins them
     flank_gap: 0.1         # lip flank 0.1 behind the hook's flank (was 0.4)
@@ -37,26 +37,33 @@ drawer:
   wall: 2.0                # assumed: side and rear walls
   floor: 2.0               # assumed
   front_thickness: 6.0     # assumed: front plate (carries the lip and label holder; its bottom front edge pivots on the sill)
-  top_gap: 1.0             # assumed: plate top below the roof; its back top corner rises 0.4 while tilting (checked in build)
-  headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or lifted are the lower shoulder)
-  shoulder_length: 30      # derived: rear walls lowered over this length; >= the drawer inside the housing when lifted at the notch (26.0) + margin
-  lift_clearance: 0.5      # assumed: lowered rear walls stay this far under the roof when lifted into the exit channel
+  top_gap: 0.5              # given (Zeid, 2026-10-17: smaller gap above the face; was 1.0): plate top below the roof. Only matters while the plate is inside the housing (closed or sliding level); tilting and leaving happen with the plate outside
+  corner_radius: 4.0       # given (Zeid, 2026-10-17, approved in SolidCraft): front plate's top two corners, cut along the whole drawer so the side walls' outer top edge follows the curve
+  headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or leaving are the lower shoulder)
+  shoulder_length: 30      # derived: rear walls lowered over this length (sized for the old lift notch; build.py checks the gate, hook and exit clear)
+  lift_clearance: 0.5      # assumed: sets the lowered rear walls' height from the exit channel's height
 
 pins:                      # teardrop pins on the drawer's rear side faces, in the housing's track
   diameter: 3.0            # assumed
   from_back: 2.0           # assumed: pin centre from the drawer's back face
   height: 14.0             # assumed: pin centre above the unit's bottom edge (groove centre)
   reach: 1.0               # assumed: into the 1.2 groove, 0.2 off its floor
-  point_angle: 45          # derived: teardrop point downward so the pin prints upright on the drawer with no overhang
+  point_angle: 45          # derived: teardrop point downward so the pin prints upright on the drawer
+  flat_point: true         # Zeid, 2026-10-18 (narrower track): the point is cut flat at the pin's radius (a 1.24 wide flat), so the pin turns inside a 3.0 circle and the track is one pin + clearance wide (3.5, was 4.74); the flat is chamfered 45 deg from the drawer wall up to the pin's end (Zeid), so nothing faces flat down
 
-track:                     # groove in each housing side wall; same teardrop section as the pin, 0.25 larger all round
+track:                     # channel in each housing side wall that the drawer's pins run in
   depth: 1.2               # assumed
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
-  tilt: 30                 # assumed: the arc about the sill ends here
-  notch_back: 8.5          # assumed: lift notch centre behind the stop (Zeid: notch clear of the arc); tooth between them 5.0, so the 1.2 print ramp on its underside leaves >= 3.8
-  exit_web: 2.0            # assumed: solid between the arc's top and the exit channel's underside (the pin can't escape from the arc)
-  # the groove, arc, notch and exit are all the same section, so the pin fits everywhere with 0.25 clearance
+  tilt: 30                 # assumed: the arc about the sill ends here; the drawer hangs open at this tilt
+  gate: 6.0                # assumed: the tipped drawer is pushed this far back before the hook, along a curve with the arc's radius (Zeid, 2026-10-18: the gate curves like the arc); it lifts the drawer, so let go it slides back to the arc's end
+  hook_radius: 2.8         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.05)
+  stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc
+  nub_round: 1.0           # given (Zeid, 2026-10-18: no sharp turns): the nub of wall between the arc and the gate
+  # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).
+  # Way out (Zeid's sketch, 2026-10-18): the arc as before to 30 deg, then back along the gate and round the hook into the exit
+  # channel, an S of smooth curves. The whole track is the pin centre's path swept by one circle: the teardrop pin's point
+  # + clearance (4.74 wide), so the pin fits however the drawer turns and every wall is a line or an arc.
 
 front:
   pull: scoop              # given (Zeid, 2026-10-17): his scoop replaces the lip; "lip" brings the lip back
@@ -71,6 +78,7 @@ scoop:                     # Zeid's scoop_prototype.scad (E:\source\openscad\omn
   embed: 0.5               # assumed: reaches this far into the front plate so the fuse has no coincident faces
   below_top: 2.0           # assumed: scoop top this far below the plate top, so the blend has a face to run onto (it was flush)
   blend: 2.0               # given (Zeid asked to blend the scoop into the face, 2026-10-17); 2 = the scad's back_fillet_r
+  lip_flat: 1.5            # given (Zeid, 2026-10-18: the front wall's lip printed almost in the air): flat underside this far up from the lip's knife edge, so its first layers bridge between the side walls; 0 = knife edge
   # Not carried over: the scad's 0.5 mm rounding of every edge (the rim's would face down flatter than 45 deg) and its r2 back fillets
 
 lip:                       # finger lip along the top of the drawer front (front.pull: lip); replaced by the scoop 2026-10-17
@@ -90,8 +98,8 @@ label:                     # U holder at the bottom of the face, open at the top
   top_clear: 0.45          # assumed: side rails above the label's top
   blend: 0                 # Zeid tried a 1.2 blend on the outside edges and prefers it without (2026-10-17)
 
-fit_test:                  # short sections to print first: pin/track fit, drop-in loading, lift-out, and one pocket in this print orientation
-  housing_length: 34       # assumed: front part of the housing with the arc, notch and exit
+fit_test:                  # short sections to print first: pin/track fit, drop-in loading, the way out, and one pocket in this print orientation
+  housing_length: 34       # assumed: front part of the housing with the arc, gate, hook and exit
   drawer_length: 40        # assumed: rear part of the drawer with the pins and shoulder
   coupon_half_width: 6.0   # assumed: pocket coupon either side of the hook column
   coupon_bottom: 12.0      # assumed: coupon from here to the unit top (both ridge pairs and the seat)
@@ -105,3 +113,41 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   below_hook: 4.0          # assumed: coupon runs this far below the seated hook (open end)
   roof: 2.0                # assumed: solid above the seat
   mark_depth: 0.4          # assumed: ID grooves on the front face
+
+handle_test:               # handle_test.py: a plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
+  strip_width: 60.0        # assumed: strip of drawer face for the test
+  strip_height: 26.0       # assumed: the top 26 mm of the face, where the handle sits
+  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
+  # The handle prints on its top (the rib's top and the plate's top edge, flush): the plate then rises 15 deg off vertical,
+  # the sockets run sideways as teardrops and their snap shoulders are vertical, so nothing needs supports.
+  width: 40.0              # given (scoop.width): plate width, so it fits the 2x2 drawer too (H2: 80)
+  drop: 20.0               # assumed: plate length down from the handle's top, along the plate (H2: 20)
+  thickness: 3.0           # measured on H2: plate thickness
+  lean: 15                 # measured on H2: plate leans out this far from the face
+  standoff: 10.0           # assumed: rib length, face to the plate's inner face at the top (H2: 9); the finger gap
+  below_top: 2.0           # = scoop.below_top: handle top this far below the face top
+  rib: 6.0                 # measured on H2: rib height between the bosses
+  boss: 10.0               # measured on H2: boss width at each end of the rib (flat-topped here, round below)
+  boss_height: 12.0        # assumed: boss depth below the handle's top (H2: 10), so the chamber's teardrop point keeps 2.2 mm of wall
+  socket_down: 5.0         # assumed: socket axis this far below the handle's top (2.6 mm over the entry, 1.6 over the chamber)
+  boss_x: 14.0             # assumed: socket centres either side of the middle (bosses reach 19, the plate 20)
+  taper: 5.0               # assumed: rib grows into each boss over this length (H2: 12; shorter here to leave the finger gap 18 mm clear at full depth)
+  corner_radius: 5.0       # measured on H2: plate's lower corners
+  top_chamfer: 2.0         # assumed: 45 deg on the plate's top corners, which sit on the bed as printed
+  socket_entry: 5.2        # assumed: socket in each boss, first part (teardrop, point down in use = up as printed)
+  socket_entry_depth: 2.0  # assumed: shoulder here that the barbs catch behind
+  socket_chamber: 6.8      # assumed: wider chamber the legs spring out in
+  socket_depth: 5.5        # assumed: chamber end (the pin tip reaches 4.65 with barbs 6.4)
+  hole: 5.2                # assumed: through the face; teardrop, point up (it runs sideways when the drawer prints)
+  counterbore: 9.4         # assumed: for the pin head, on the inside of the face
+  counterbore_depth: 2.0   # assumed: head sits flush
+  shank: 5.0               # assumed: pin shank
+  flats: 3.54              # derived: pin thickness between its two flats (shank radius x sin 45 x 2), so it prints lying on a flat with nothing flatter than 45 deg
+  head: 9.0                # assumed
+  head_thick: 2.0          # = counterbore_depth
+  slot: 1.4                # assumed: splits the shank into two legs that bend in the bed plane
+  slot_start: 4.0          # assumed: from the head's back face
+  barb_slack: 0.15         # assumed: head-to-barb length this much longer than counterbore floor to socket shoulder
+  barb_flat: 0.5           # assumed
+  tip: 1.2                 # assumed: tip radius after the 45 deg lead-in
+  barbs: [5.8, 6.1, 6.4]   # assumed: pin variants A, B, C (1, 2, 3 notches on the head), across the barbs; the hole is 5.2

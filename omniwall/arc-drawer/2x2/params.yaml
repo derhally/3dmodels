@@ -1,0 +1,9 @@
+# Omniwall arc-pocket drawer, 2 cells x 2 rows (Zeid asked 2026-10-17).
+# Everything not set here comes from ../params.yaml (the 3 x 2 unit), section by
+# section and key by key. Build with ../build.py 2x2 (see ../README.md).
+# 50.5 wide: one hook column on the unit's centre line (25.25), one dovetail
+# channel with ridges for both hook rows, same mechanism, scoop and label holder.
+unit:
+  cells: 2                    # given: 2 cells wide
+  rows: 2                     # given: 2 rows tall
+  file_prefix: arc_drawer_2x2 # output files: arc_drawer_2x2_housing_print.3mf and so on

@@ -31,7 +31,7 @@ exec((ROOT / "core_3mf.py").read_text())
 
 dm0 = panel["dovetail_mount"]
 dv = dm0["dovetail"]
-hook = panel["cross_slot_hook"]
+hook = panel["bridge_hook"]
 PV = P["pocket_variants"]
 HH = hook["height"]
 
@@ -90,7 +90,8 @@ for i, rh in enumerate(PV["ridge_heights"] + [None], start=1):
     parts.append((c, to_print(c)))
 
 result = Compound(children=[p for p, _ in parts])
-out = HERE / "print"
+out = HERE / "test-prints"                         # local only (git-ignored)
+out.mkdir(exist_ok=True)
 pr = [Pos(((i - 1) % 2) * 25.0, ((i - 1) // 2) * 25.0, 0) * p for i, (_, p) in enumerate(parts, start=1)]
 export_step(Compound(children=pr), str(out / "arc_drawer_pocket_variants.step"))
 export_stl(Compound(children=pr), str(out / "arc_drawer_pocket_variants.stl"))

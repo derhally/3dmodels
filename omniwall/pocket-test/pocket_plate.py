@@ -1,7 +1,7 @@
 # build123d script for create_model (params = pocket-test/params.yaml).
 # Builds the test plate: two dovetail pockets with snap ridges, one or more cells
 # apart, that slide down onto two identical hooks of either kind. MODE =
-# "assembly" gives the plate with two hooks (HOOK = "cross_slot" or "one_slot")
+# "assembly" gives the plate with two hooks (HOOK = "bridge" or "slot_1")
 # in place for a clash check; "print" gives the plate alone, upside down (closed
 # pocket tops on the bed, so nothing overhangs). Pocket and hooks come from
 # ../panel.yaml through ../hook_geometry.py.
@@ -9,10 +9,10 @@ from pathlib import Path
 import yaml
 
 MODE = "assembly"
-HOOK = "cross_slot"
+HOOK = "bridge"
 ROOT = Path(r"E:\source\3dmodels\omniwall")
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
-hook = panel["cross_slot_hook"]       # the tallest hook sets the pocket length
+hook = panel["bridge_hook"]       # the tallest hook sets the pocket length
 dm = panel["dovetail_mount"]
 dv, pk = dm["dovetail"], dm["pocket"]
 pl = params["plate"]
@@ -41,7 +41,7 @@ if MODE == "print":
     result = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * p
 else:
     # Stand-ins: the printed hooks in both slots, their tops against the pocket tops.
-    h1 = cross_slot_hook(panel, ROOT) if HOOK == "cross_slot" else one_slot_hook(panel, ROOT)
+    h1 = bridge_hook(panel, ROOT) if HOOK == "bridge" else slot_hook_1(panel, ROOT)
     h1 = Pos(0, hook["panel_front_y"] - panel[HOOK + "_hook"]["panel_front_y"],
              H - panel[HOOK + "_hook"]["height"]) * h1
     h1.label = "hook left"

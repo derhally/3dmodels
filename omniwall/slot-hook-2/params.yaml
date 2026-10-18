@@ -1,0 +1,47 @@
+# Slot hook 2 test print (Zeid asked 2026-10-18). The hook itself is in
+# ../panel.yaml (slot_hook_2) and ../hook_geometry.py. This builds it with a
+# housing coupon: a one-cell-wide slice of a 2-row housing back whose pocket seat
+# sits under the hook's top, so its top and bottom edges line up with horizontal
+# slot rows. The pocket's fit values come from ../arc-drawer/params.yaml
+# (housing.pocket, print-tested coupon 3), so it fits like the drawer housings.
+coupon:
+  width: 25.1          # derived: one cell (25.4) - 0.3, the drawers' gap between neighbours
+  rows: 2              # assumed: a 2-row housing's height (50.5), hook column on its centre line
+  edge_gap: 0.15       # derived: half the 0.3 gap; edges this far inside the slot rows
+  back_front_wall: 2.0 # as ../arc-drawer/params.yaml housing.back_front_wall: solid in front of the pocket floor's gable
+
+# Firmer lower-foot snap test (Zeid, 2026-10-18: the bed-chamfered hook printed
+# fine but its lower foot pops out of the rim too easily; more force to put it
+# on is fine, and the foot can be taller). Each variant overrides the lower foot
+# (../panel.yaml slot_hook_2.lower_foot) and is printed bed-side chamfered, with
+# 1 to 3 marks (marks:) on its top side to tell them apart. All assumed, to be picked by
+# test print.
+# Round 1 (A, B, C) printed 2026-10-18: A (foot 4.0, notch 1.45 = 0.10 grip, 0.4
+# tip land, depth 0.8) held best of the three, and Zeid wanted slightly more.
+# Round 2: each a single small step past A, to see which lever helps. Zeid printed
+# them 2026-10-18 and picked E (most satisfying snap, enough grip): it is now
+# slot_hook_2.lower_foot in ../panel.yaml, and the list is empty so build.py
+# skips the variants. Round 2 as tested, to restore if needed:
+#   - name: D                # A with a bit more grip on the steel
+#     foot_top: 4.0
+#     rim_notch:
+#       width: 1.425         # 0.125 grip (A 0.10)
+#       tip_land: 0.4
+#   - name: E                # A with the lip a bit deeper under the rim
+#     foot_top: 4.0
+#     rim_notch:
+#       width: 1.45
+#       tip_land: 0.4
+#       depth: 0.9           # A 0.8; the hook's bottom moves 0.1 lower too
+#   - name: F                # A with a stiffer foot
+#     foot_top: 4.25         # A 4.0
+#     rim_notch:
+#       width: 1.45
+#       tip_land: 0.4
+snap_variants: []
+marks:                     # tell-apart marks on the top side of the top body (in the slot, not a fit face)
+  shape: dash              # round 1 used dots; round 2 dashes, so the prints don't get mixed up
+  width: 1.0
+  length: 3.0              # dash length (along the hook); a dot's diameter is width
+  depth: 0.3
+  pitch: 2.0

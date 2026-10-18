@@ -1,0 +1,9 @@
+# Omniwall arc-pocket drawer, 3 cells x 2 rows, 60 mm deep (Zeid asked 2026-10-18).
+# Everything not set here comes from ../params.yaml (the 3 x 2 unit, 84 deep),
+# section by section and key by key. Build with ../build.py 3x2x60 (see ../README.md).
+unit:
+  depth: 60                      # given: 60 mm deep
+  file_prefix: arc_drawer_3x2x60 # output files: arc_drawer_3x2x60_housing_print.3mf and so on
+
+track:
+  stop: 44.5                     # derived: depth - 15.5, the same as 68.5 in the 84 deep unit, so the arc, gate, hook and exit sit the same distance from the front
