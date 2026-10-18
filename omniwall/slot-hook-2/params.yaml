@@ -9,3 +9,31 @@ coupon:
   rows: 2              # assumed: a 2-row housing's height (50.5), hook column on its centre line
   edge_gap: 0.15       # derived: half the 0.3 gap; edges this far inside the slot rows
   back_front_wall: 2.0 # as ../arc-drawer/params.yaml housing.back_front_wall: solid in front of the pocket floor's gable
+
+# Firmer lower-foot snap test (Zeid, 2026-10-18: the bed-chamfered hook printed
+# fine but its lower foot pops out of the rim too easily; more force to put it
+# on is fine, and the foot can be taller). Each variant overrides the lower foot
+# (../panel.yaml slot_hook_2.lower_foot) and is printed bed-side chamfered, with
+# 1, 2 or 3 dots on its top side to tell them apart. All assumed, to be picked by
+# test print.
+snap_variants:
+  - name: A                # mild: a bit stiffer and a bit more grip
+    foot_top: 4.0          # lower foot 4.0 tall (was 3.44, slot hook 1's thinned foot; the measured original was 4.0)
+    rim_notch:
+      width: 1.45          # notch 1.45 on the 1.55 steel: 0.10 grip (was 1.5, 0.05)
+      tip_land: 0.4        # the ramp stops 0.4 short of the notch: a flat tip on the lip instead of a knife edge that prints rounded
+  - name: B                # firmer
+    foot_top: 4.5
+    rim_notch:
+      width: 1.4           # 0.15 grip
+      tip_land: 0.4
+  - name: C                # firmest: also hooks 0.2 further under the rim
+    foot_top: 4.5
+    rim_notch:
+      width: 1.4
+      tip_land: 0.4
+      depth: 1.0           # lip 1.0 below the rim (was 0.8); the hook's bottom moves 0.2 lower too
+dots:                      # tell-apart marks on the top side of the top body (in the slot, not a fit face)
+  diameter: 1.2
+  depth: 0.3
+  pitch: 2.0

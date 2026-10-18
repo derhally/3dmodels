@@ -4,6 +4,7 @@
 # numbers (panel.yaml, dovetail_mount).
 # Hook coordinates: x across (hook's flat side at 0), y out from the back of the
 # hook, z up from the bottom of the foot.
+import copy
 import math
 
 
@@ -177,12 +178,14 @@ def rim_notch_foot(hook, z):
     it for the rim. The back lip's bottom is one ramp from the top of the foot's
     lead-in to the notch's back edge, so pushing the bottom in rides it over the
     rim until it drops into the notch. The notch's front edge is chamfered to
-    guide the rim in."""
+    guide the rim in. rim_notch.tip_land (optional) ends the ramp that far short
+    of the notch, so the lip's tip is a flat instead of a knife edge."""
     pr, t = hook["printed"], hook["thickness"]
     rn, li, yp, y_c = pr["rim_notch"], hook["foot_lead_in"], hook["panel_front_y"], pr["cavity_front_y"]
     d, y_n, c = rn["depth"], yp - rn["width"], rn["mouth_chamfer"]
-    below = Plane.YZ * Polygon((0, li), (y_n, -d), (y_c, -d), (y_c, li), align=None)
-    under_ramp = Plane.YZ * Polygon((-1, -d - 1), (y_n, -d - 1), (y_n, -d), (0, li), (-1, li), align=None)
+    y_r = y_n - rn.get("tip_land", 0.0)              # where the ramp meets the lip's bottom
+    below = Plane.YZ * Polygon((0, li), (y_r, -d), (y_c, -d), (y_c, li), align=None)
+    under_ramp = Plane.YZ * Polygon((-1, -d - 1), (y_r, -d - 1), (y_r, -d), (0, li), (-1, li), align=None)
     notch = Plane.YZ * Polygon((y_n, -d - 0.1), (yp + c, -d - 0.1), (yp + c, -d), (yp, -d + c),
                                (yp, 0), (y_n, 0), align=None)
     return Pos(0, 0, z) * extrude(below, t), Pos(0, 0, z) * (extrude(under_ramp, t) + extrude(notch, t))
@@ -202,7 +205,7 @@ def slot_hook_1(panel, root):
     return body + Pos(0, 0, -d) * front
 
 
-def slot_hook_2(panel, root):
+def slot_hook_2(panel, root, lower_foot=None):
     """Slot hook 1 carried on down into the next slot in line (Zeid's idea,
     2026-10-18). The top is slot hook 1's body filling the upper slot, resting
     on that slot's bottom edge, with its finger behind the panel above it; no snap
@@ -211,16 +214,22 @@ def slot_hook_2(panel, root):
     the slots, and one dovetail front runs the whole height, its top (and snap
     notches) where slot hook 1's are. A second notch pair one pitch lower
     sits where a slot hook 1's notches would be in the lower slot, so a housing
-    with ridges for two rows of slot hook 1s clicks onto this hook too."""
+    with ridges for two rows of slot hook 1s clicks onto this hook too.
+    lower_foot: overrides for the lower foot and its rim notch (foot_top,
+    rim_notch keys), on top of slot_hook_2.lower_foot, for snap test variants."""
     dm, hook, ts = panel["dovetail_mount"], panel["slot_hook_1"], panel["slot_hook_2"]
     H, yp, y_c, t = hook["height"], hook["panel_front_y"], hook["printed"]["cavity_front_y"], hook["thickness"]
-    d = hook["printed"]["rim_notch"]["depth"]
+    # The lower foot starts as slot hook 1's and takes slot_hook_2.lower_foot's changes.
+    lfh = copy.deepcopy(hook)
+    for over in (ts.get("lower_foot") or {}, lower_foot or {}):
+        lfh["printed"]["foot_top"] = over.get("foot_top", lfh["printed"]["foot_top"])
+        lfh["printed"]["rim_notch"].update(over.get("rim_notch", {}))
+    lft, d = lfh["printed"]["foot_top"], lfh["printed"]["rim_notch"]["depth"]
     zl = -ts["lower_rim_below"]                       # the lower slot's bottom rim
     # Lower foot: slot hook 1's foot (bottom on the rim, thinned top), a
     # cantilever off the spine so it flexes over the rim, with the rim notch below.
-    foot = Pos(0, 0, zl) * extrude(Plane.YZ * Polygon((0, 0), (y_c, 0), (y_c, hook["printed"]["foot_top"]),
-                                                      (0, hook["printed"]["foot_top"]), align=None), t)
-    added, cut = rim_notch_foot(hook, zl)
+    foot = Pos(0, 0, zl) * extrude(Plane.YZ * Polygon((0, 0), (y_c, 0), (y_c, lft), (0, lft), align=None), t)
+    added, cut = rim_notch_foot(lfh, zl)
     foot = foot + added - cut
     # Spine across the steel and down the lower slot: from the panel's front face
     # (slot hook 1 body fills the upper slot behind y_c).
@@ -235,7 +244,7 @@ def slot_hook_2(panel, root):
         toward -y and toward sz in z."""
         sq = Pos(y - r / 2, z + sz * r / 2) * Rectangle(r, r)
         return extrude(Plane.YZ * (sq - Pos(y - r, z + sz * r) * Circle(r)), t)
-    coves = cove(yp, zl + ft, fl["lower_foot_root"], 1)
+    coves = cove(yp, zl + lft, fl["lower_foot_root"], 1)
     # The top body has no snap, so its gap needn't flex: fill_top_gap fills it
     # solid (in slot_hook_body, so its back edge is chamfered all the way down).
     if not ts["fill_top_gap"]:
@@ -250,7 +259,7 @@ def slot_hook_2(panel, root):
     # the top body, so the chamfer ends in a corner rather than a step. The
     # ramp and the rim notch, which ride over and hold the rim, stay square.
     if ts["lower_foot_chamfer"] > 0:
-        eps, z0, z1 = 1e-3, zl + hook["foot_lead_in"], zl + ft + fl["lower_foot_root"]
+        eps, z0, z1 = 1e-3, zl + hook["foot_lead_in"], zl + lft + fl["lower_foot_root"]
         def foot_edge(e):
             bb = e.bounding_box()
             if bb.min.X < t - eps or bb.max.Y > yp + eps or bb.min.Z < z0 - eps:

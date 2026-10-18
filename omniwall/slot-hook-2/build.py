@@ -217,5 +217,35 @@ log(f"{stem}: first layer {first.volume / 0.2:.1f} mm2 against {(hp & Pos(0, 0, 
 write_3mf([("slot hook 2 plain", *shape_mesh(hp, 0, -(hb.size.Y / 2 + 4))),
            ("slot hook 2 bed side chamfered", *shape_mesh(hcp, 0, hb.size.Y / 2 + 4))],
           OUT / "slot_hook_2_chamfer_compare.3mf")
+
+# Firmer lower-foot snap variants (params.yaml snap_variants), bed-side
+# chamfered like the one that printed fine, with dots to tell them apart.
+def swing_peak(h):
+    """Largest hook/panel overlap while the bottom swings in over the last 4 deg:
+    how much has to give for the foot to ride over the rim."""
+    return max(overlap(Pos(piv) * Rot(a, 0, 0) * Pos(-piv) * h, pnl) for a in (4, 3, 2, 1.5, 1, 0.5))
+
+
+log(f"snap variants (plain hook for reference: swing-in peak {swing_peak(hkc):.2f} mm3, seated vs panel {overlap(hkc, pnl):.3f} mm3):")
+plate, dt = [], P["dots"]
+for i, v in enumerate(P["snap_variants"]):
+    over = {k: v[k] for k in ("foot_top", "rim_notch") if k in v}
+    hv = slot_hook_2(panel, ROOT, lower_foot=over)
+    hv = hv & mirror(hv, Plane.YZ.offset(hv.bounding_box().center().X))
+    hv = hv.solids()[0] if len(hv.solids()) == 1 else hv
+    t1 = one["thickness"]
+    for k in range(i + 1):
+        hv = hv - Pos(t1, 1.5 + k * dt["pitch"], 8.0) * Rot(0, 90, 0) * Cylinder(dt["diameter"] / 2, 2 * dt["depth"])
+    hv.label = f"slot hook 2 snap {v['name']}"
+    log(f"  {v['name']}: {over}; volume {hv.volume:.1f} mm3, solids {len(hv.solids())}, valid {hv.is_valid}, "
+        f"bottom z {hv.bounding_box().min.Z:.2f}; seated vs panel {overlap(hv, pnl):.3f} mm3 (the grip on the rim), "
+        f"swing-in peak {swing_peak(hv):.2f} mm3; vs coupon {overlap(hv, cp):.3f} mm3")
+    pv = to_bed(Rot(0, -90, 0) * hv)
+    stem = f"slot_hook_2_snap_{v['name']}_print"
+    export_step(pv, str(OUT / f"{stem}.step"))
+    export_stl(pv, str(OUT / f"{stem}.stl"))
+    log(f"    {stem}: overhangs flatter than 45 deg: {len(bad_faces(pv))} (plain: {len(bad_faces(hp))})")
+    plate.append((f"slot hook 2 snap {v['name']} ({i + 1} dot{'s' if i else ''})", *shape_mesh(pv, 0, (i - 1) * (hb.size.Y + 6))))
+write_3mf(plate, OUT / "slot_hook_2_snap_variants.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[pnl, hk, cp])
