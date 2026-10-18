@@ -270,4 +270,9 @@ def slot_hook_2(panel, root, lower_foot=None):
     for r, y, z in ((fl["d_relief"], hook["panel_back_y"], H), (fl["f_relief"], yp, 0.0)):
         if r > 0:
             out = out - extrude(Plane.YZ * Pos(y, z) * Circle(r), t)
+    if ts.get("bed_chamfer"):
+        # Chamfer the bed side like the top side: keep what the hook shares with
+        # its mirror image across its mid-plane.
+        out = out & mirror(out, Plane.YZ.offset(t / 2))
+        out = out.solids()[0] if len(out.solids()) == 1 else out
     return out

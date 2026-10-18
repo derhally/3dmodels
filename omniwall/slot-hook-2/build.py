@@ -115,7 +115,10 @@ def overlap(a, b):
     return sum(s.volume for s in (x.solids() if hasattr(x, "solids") else [x]))
 
 
-log(f"hook vs panel: {overlap(hk, pnl):.3f} mm3 (the rim notch is 1.5 wide on the 1.55 steel, a 0.05 clamp like the bridge hook's; slot hook 1 has the same)")
+w_rn = {**one["printed"]["rim_notch"], **(ts.get("lower_foot") or {}).get("rim_notch", {})}["width"]
+log(f"hook vs panel: {overlap(hk, pnl):.3f} mm3 (the lower rim notch is {w_rn} wide on the {yp - yb_panel:.2f} steel, "
+    f"a {yp - yb_panel - w_rn:.2f} grip; slot hook 1's {one['printed']['rim_notch']['width']} notch grips "
+    f"{yp - yb_panel - one['printed']['rim_notch']['width']:.2f}, like the bridge hook's clamp)")
 # Putting it on: finger through the upper slot and behind the panel, then the
 # bottom swings in about the finger's hold until the lower foot snaps over the rim.
 piv = Vector(0, yb_panel, H)
@@ -198,41 +201,19 @@ write_3mf([("slot hook 2", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2),
            ("tall bridge hook", *shape_mesh(tp, -(cb.size.X / 2 + 8 + hb.size.X / 2), hb.size.Y / 2 + 6 + tb.size.Y / 2))],
           OUT / "slot_hook_2_test_plate.3mf")
 
-# Comparison print (Zeid, 2026-10-18): the same hook with the bed side chamfered
-# like the top side, by keeping only what it shares with its mirror image across
-# its mid-plane. Printed next to the plain one to see whether the bed side grips.
-hkc = hk & mirror(hk, Plane.YZ.offset(hk.bounding_box().center().X))
-hkc = hkc.solids()[0] if len(hkc.solids()) == 1 else hkc
-hkc.label = "slot hook 2, bed side chamfered"
-log(f"bed-side chamfered hook: volume {hkc.volume:.1f} mm3 ({hk.volume - hkc.volume:.1f} less), solids {len(hkc.solids())}, valid {hkc.is_valid}; "
-    f"vs panel {overlap(hkc, pnl):.3f}, vs coupon {overlap(hkc, cp):.3f} mm3 (same as the plain hook means the fit is unchanged)")
-hcp = to_bed(Rot(0, -90, 0) * hkc)
-stem = "slot_hook_2_bed_chamfer_print"
-export_step(hcp, str(OUT / f"{stem}.step"))
-export_stl(hcp, str(OUT / f"{stem}.stl"))
-write_3mf([(stem, *shape_mesh(hcp))], OUT / f"{stem}.3mf")
-first = hcp & Pos(0, 0, 0.1) * Box(200, 200, 0.2)
-log(f"{stem}: first layer {first.volume / 0.2:.1f} mm2 against {(hp & Pos(0, 0, 0.1) * Box(200, 200, 0.2)).volume / 0.2:.1f} mm2 plain; "
-    f"overhangs flatter than 45 deg: {len(bad_faces(hcp))} (plain: {len(bad_faces(hp))})")
-write_3mf([("slot hook 2 plain", *shape_mesh(hp, 0, -(hb.size.Y / 2 + 4))),
-           ("slot hook 2 bed side chamfered", *shape_mesh(hcp, 0, hb.size.Y / 2 + 4))],
-          OUT / "slot_hook_2_chamfer_compare.3mf")
-
-# Firmer lower-foot snap variants (params.yaml snap_variants), bed-side
-# chamfered like the one that printed fine, with marks to tell them apart.
+# Lower-foot snap: how much has to give for the foot to ride over the rim, and
+# the grip once it's on. Test variants (params.yaml snap_variants), when listed,
+# are built the same way with marks to tell them apart.
 def swing_peak(h):
-    """Largest hook/panel overlap while the bottom swings in over the last 4 deg:
-    how much has to give for the foot to ride over the rim."""
+    """Largest hook/panel overlap while the bottom swings in over the last 4 deg."""
     return max(overlap(Pos(piv) * Rot(a, 0, 0) * Pos(-piv) * h, pnl) for a in (4, 3, 2, 1.5, 1, 0.5))
 
 
-log(f"snap variants (plain hook for reference: swing-in peak {swing_peak(hkc):.2f} mm3, seated vs panel {overlap(hkc, pnl):.3f} mm3):")
+log(f"lower-foot snap {ts.get('lower_foot')}: swing-in peak {swing_peak(hk):.2f} mm3, seated vs panel {overlap(hk, pnl):.3f} mm3 (the grip on the rim)")
 plate, mk = [], P["marks"]
-for i, v in enumerate(P["snap_variants"]):
+for i, v in enumerate(P["snap_variants"] or []):
     over = {k: v[k] for k in ("foot_top", "rim_notch") if k in v}
     hv = slot_hook_2(panel, ROOT, lower_foot=over)
-    hv = hv & mirror(hv, Plane.YZ.offset(hv.bounding_box().center().X))
-    hv = hv.solids()[0] if len(hv.solids()) == 1 else hv
     t1 = one["thickness"]
     for k in range(i + 1):
         at = Pos(t1, 1.5 + k * mk["pitch"], 8.0)
@@ -248,9 +229,10 @@ for i, v in enumerate(P["snap_variants"]):
     stem = f"slot_hook_2_snap_{v['name']}_print"
     export_step(pv, str(OUT / f"{stem}.step"))
     export_stl(pv, str(OUT / f"{stem}.stl"))
-    log(f"    {stem}: overhangs flatter than 45 deg: {len(bad_faces(pv))} (plain: {len(bad_faces(hp))})")
+    log(f"    {stem}: overhangs flatter than 45 deg: {len(bad_faces(pv))} (standard hook: {len(bad_faces(hp))})")
     plate.append((f"slot hook 2 snap {v['name']} ({i + 1} {mk['shape']}{'es' if i and mk['shape'] == 'dash' else 's' if i else ''})",
                   *shape_mesh(pv, 0, (i - 1) * (hb.size.Y + 6))))
-write_3mf(plate, OUT / "slot_hook_2_snap_variants.3mf")
+if plate:
+    write_3mf(plate, OUT / "slot_hook_2_snap_variants.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[pnl, hk, cp])

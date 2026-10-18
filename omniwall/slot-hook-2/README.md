@@ -4,13 +4,17 @@ A version of the [slot hook 1](../hook/) that carries on down into the next
 vertical slot in line, so one hook holds in two slots one cell apart (Zeid's
 idea, 2026-10-18). This folder is a test print: the hook plus a short housing
 coupon, to check that it goes on, snaps and holds before any drawer changes.
+Zeid has printed it and picked its lower-foot snap from two rounds of test
+variants (below).
 
 ## The hook
 
 - **Top:** slot hook 1's body fills the upper slot and rests on its bottom
   edge, with the finger behind the panel above it. It has no snap of its own.
-- **Bottom:** one pitch (25.4 mm) lower, slot hook 1's foot with its rim
-  notch sits in the lower slot and snaps over that slot's bottom rim.
+- **Bottom:** one pitch (25.4 mm) lower, a foot with a rim notch sits in the
+  lower slot and snaps over that slot's bottom rim. It started as slot hook
+  1's, but that popped out too easily here, so it is firmer (see Lower-foot
+  snap).
 - **Front:** a spine joins the two across the steel between the slots, and one
   dovetail front runs the whole 45.7 mm. Its top and snap notches are where the
   slot hook 1's are, and a second notch pair one cell lower sits where a
@@ -25,12 +29,37 @@ The lower foot's root has a 1.5 mm fillet, kept small so the foot still flexes
 to snap. Filling the gap adds no contact with the panel while swinging the hook
 on, checked about four pivot points. The two corners the panel's edges sit in (D:
 the finger's front face meets the top; F: the top body's underside meets the
-spine, over the steel between the slots) can't take a fillet, since it would
-push into the steel, so each has a 0.5 mm round relief groove cut into it
-instead, which takes the sharp corner out (`fillets.d_relief`, `f_relief`). F's
-groove leaves 1.05 mm of the 1.55 mm rim for the top body to rest on.
+spine, over the steel between the slots) stay sharp: a fillet would push into
+the steel, and a 0.5 mm relief groove (`fillets.d_relief`, `f_relief`, now 0)
+cut the finger's root from 3.4 to 2.9 mm deep for little gain.
 
-It is 2.95 × 11.15 × 45.7 mm, 987.1 mm³. The geometry is `slot_hook_2()` in
+Every edge has a 0.5 mm chamfer on both sides, except the bottom end, the ramp
+and rim notch (the snap's working faces) and the inside corners. The bed side
+is chamfered too (`slot_hook_2.bed_chamfer`): Zeid printed it next to the plain
+one and it held the bed fine, with about 10% less first-layer area. The lower
+foot's chamfer runs from its back, over its top and up the spine to the top
+body (`lower_foot_chamfer`).
+
+### Lower-foot snap
+
+Slot hook 1's foot (3.44 mm tall, a 1.5 mm rim notch on the 1.55 mm steel, a
+lip 0.8 mm under the rim ending in a knife edge) let go too easily on this hook.
+Two rounds of test variants, printed bed-chamfered (`params.yaml`
+`snap_variants`, now empty, with both rounds recorded there), led to snap E,
+Zeid's pick for the most satisfying snap and enough grip
+(`slot_hook_2.lower_foot` in panel.yaml):
+
+| | Slot hook 1 | Slot hook 2 (E) |
+|---|---|---|
+| Foot height | 3.44 | 4.0 |
+| Rim notch on the 1.55 steel | 1.5 (0.05 grip) | 1.45 (0.10 grip) |
+| Lip under the rim | 0.8 | 0.9 |
+| Lip tip | knife edge | 0.4 flat |
+
+The hook's bottom is 0.1 mm lower to go with the deeper lip. Slot hook 1 is
+unchanged.
+
+It is 2.95 × 11.15 × 45.8 mm, 988.5 mm³. The geometry is `slot_hook_2()` in
 [hook_geometry.py](../hook_geometry.py), with its values in
 [panel.yaml](../panel.yaml) (`slot_hook_2`, and `slot_hook_1` for everything
 it shares).
@@ -76,10 +105,10 @@ from this folder.
 
 ## Checks (report.txt)
 
-- Hook vs panel 0.12 mm³: the rim notch is 1.5 mm wide on the 1.55 mm steel,
-  the same 0.05 mm clamp as the printed slot hook 1 and bridge hook.
+- Hook vs panel 0.27 mm³: the lower rim notch grips the steel by 0.10 mm.
 - Swinging the bottom in about the finger: the foot rides over the lower rim in
-  the last 3° (up to 2.0 mm³, about what slot hook 1's snap does). Between
+  the last 3° (up to 3.0 mm³, against 2.0 for slot hook 1's foot; Zeid was
+  fine with more force to put it on). Between
   14° and 6° the top body's lower back corner rubs the upper rim by up to 0.2 mm,
   so the hook lifts that much while it swings.
 - Coupon vs panel 0. On slot hook 2, and on a slot hook 1 in each slot, the
@@ -91,6 +120,8 @@ from this folder.
   coupon has nothing flatter than 45°. The hook has the same two small bridges
   as slot hook 1 (the neck's 0.95 mm under the head, and the bed-side
   notches' 0.23 mm roofs).
+- Slicer: Arachne walls, 5+ walls or 100% infill. Inner/outer/inner wall
+  order suits it: the fit faces are outer walls and it keeps them accurate.
 
 ## Printing
 

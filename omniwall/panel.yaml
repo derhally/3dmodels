@@ -133,7 +133,7 @@ slot_hook_1:
                             # in front of the panel the foot and the dovetail front reach down to the same bottom (Zeid asked, 2026-10-17)
                             # the back lip's bottom is one ramp from the top of the foot's lead-in to the notch's back edge (about 25 deg), so it rides over the rim and drops straight in (Zeid, 2026-10-17)
 
-# Slot hook 2 (Zeid's idea, 2026-10-18; not print-tested yet): slot hook 1
+# Slot hook 2 (Zeid's idea, 2026-10-18; print-tested with snap E 2026-10-18): slot hook 1
 # carried on down into the next slot in line. Its body fills the upper slot and
 # rests on that slot's bottom edge, the finger behind the panel above it, so the
 # hook's top is the top of a slot: an object's seat then sits a fixed distance
@@ -144,6 +144,13 @@ slot_hook_1:
 slot_hook_2:
   lower_rim_below: 25.4     # derived: pitch, the upper slot's bottom edge to the lower slot's (in-line slots)
   fill_top_gap: true        # Zeid, 2026-10-18: the top body's gap (between A and C) filled solid; the top has no snap, so it needn't flex. false = the fillets below
+  bed_chamfer: true         # Zeid's side-by-side print, 2026-10-18: the bed side chamfered like the top side (the hook intersected with its mirror image) printed fine, so it's standard
+  lower_foot:               # the lower foot's snap, changed from slot hook 1's: snap test E (slot-hook-2/params.yaml), picked by Zeid 2026-10-18 for the most satisfying snap and enough grip; slot hook 1's own popped out too easily here
+    foot_top: 4.0           # print-tested: lower foot 4.0 tall (slot hook 1's is thinned to 3.44)
+    rim_notch:
+      width: 1.45           # print-tested: notch 1.45 on the 1.55 steel, 0.10 grip (slot hook 1: 1.5, 0.05)
+      tip_land: 0.4         # print-tested: the ramp stops 0.4 short of the notch, a flat tip on the lip instead of a knife edge
+      depth: 0.9            # print-tested: lip 0.9 under the rim (slot hook 1: 0.8); the hook's bottom is 0.1 lower to match
   lower_foot_chamfer: 0.5   # Zeid asked, 2026-10-18: the lower foot's back and top edges on the top side, like the top body's; not the ramp or rim notch (the snap's working faces). 0 = none, as on slot hook 1
   fillets:                  # inside corners where the bars meet the front, for strength (Zeid, 2026-10-18; A, C, E on the side-profile diagram)
     under_top_bar: 3.0      # assumed (A): under the top bar with the finger; was slot hook 1's 0.2
