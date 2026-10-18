@@ -219,7 +219,16 @@ def scoop():
     walls = extrude(pl * Polygon((0, 0), (fl, dp), (fr, dp), (w, 0), (w - a, 0), (w - b, dp - t), (b, dp - t), (a, 0), align=None), h, dir=(0, -s, c))
     floor = extrude(pl.offset(h - t) * Polygon((0, 0), (fl, dp), (fr, dp), (w, 0), align=None), t + dp, dir=(0, -s, c))   # runs on into the face, as in the scad
     keep = Pos(W / 2, D - SC["embed"] + 20, plate_top - top / 2) * Box(w + 2, 40, top + 10)
-    return solid((walls + floor) & keep)
+    sc = solid((walls + floor) & keep)
+    if SC["lip_flat"] > 0:
+        # The front wall's lip starts as a knife edge hanging across the cavity, so its first
+        # layers are a thin line in the air. Cut it flat so they print as a short bridge
+        # anchored on the side walls (only between the side walls' inner corners).
+        z_lip = pl.origin.Z + (dp - t) * s
+        y_lip = D + (dp - t) * c
+        cut = Pos(W / 2 - w / 2 + b, y_lip - SC["lip_flat"] - 0.5, z_lip - 5) * Box(w - 2 * b, t * s + SC["lip_flat"] + 2, 5 + SC["lip_flat"], align=Align.MIN)
+        sc = solid(sc - cut)
+    return sc
 
 
 BLENDS = []

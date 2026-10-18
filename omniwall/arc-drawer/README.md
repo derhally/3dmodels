@@ -95,7 +95,11 @@ column of the back plate to check this pocket before printing the housing.
   2 mm below the plate top, standing 7.1 mm proud. Fingers go up into it from
   below. It is blended into the face with a 2 mm radius (top, outer sides and
   the cavity's ceiling; the kernel won't fit one where the cavity's side walls
-  meet the face). The scad's 0.5 mm edge rounding is left out, since the rim's
+  meet the face). The front wall's lip would start as a knife edge hanging
+  across the cavity, so its first layers were a thin line in the air (Zeid's
+  2 × 2 print). Its underside is cut flat 1.5 mm up (`scoop.lip_flat`), so it
+  starts as a 14.5 × 2.8 mm bridge between the side walls. That bridge is the
+  one face `report.txt` lists as flatter than 45°, on purpose. The scad's 0.5 mm edge rounding is left out, since the rim's
   would face down flatter than 45°. `front.pull: lip` brings back the old 8 mm
   lip. The label holder
   is a U at the bottom of the face, open at the top: the 34.7 × 10.85 × 0.9 mm
@@ -136,7 +140,7 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
   drop-in load, the lift-out, and the pocket with two hooks.
 - PLA or PETG, 0.2 mm layers, 3+ walls. `report.txt` lists every face flatter
-  than 45° from vertical on each print part: none.
+  than 45° from vertical on each print part: only the drawer's scoop-lip bridge.
 
 ## Regenerating
 

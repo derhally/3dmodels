@@ -1,9 +1,9 @@
 housing: 50.50 x 84.00 x 50.50 mm, volume 58382 mm3, solids 1, valid True
-drawer: 47.70 x 80.50 x 45.00 mm, volume 31281 mm3, solids 1, valid True
+drawer: 47.70 x 80.50 x 45.00 mm, volume 31248 mm3, solids 1, valid True
 back plate 10.075  pin closed y 12.575  travel 55.92 (76 % of the drawer)  arc radius 19.01  arc top z 22.03  exit channel z 26.50  lift 12.50  shoulder z 35.50  hook columns [25.25]  hook bottoms [3.3, 28.7]  seat z 46.40
 measured: pocket seats at z [46.4] (expect 46.400 x1)
 measured: housing x faces at [0.0, 1.2, 2.4, 23.525, 24.055, 24.275, 26.225, 26.445, 26.975, 48.1, 49.3, 50.5] (groove floors expect 1.2 and 49.3, bay walls 2.4 and 48.1)
-measured: drawer x faces at [1.4, 2.7, 4.7, 6.55, 7.75, 9.25, 41.25, 42.75, 43.95, 45.8, 47.8, 49.1] (pin tips expect 1.4 and 49.1)
+measured: drawer x faces at [1.4, 2.7, 4.7, 6.55, 7.75, 9.25, 17.974, 32.526, 41.25, 42.75, 43.95, 45.8, 47.8, 49.1] (pin tips expect 1.4 and 49.1)
 scoop blend r 2.0: 2 front corners; at the face: outside (3), ceiling (1), cavity sides not blended (kernel refused r 2.0)
 front top corners r 4.0
 hooks vs housing: 0.279 mm3 total over 2 hooks (ridges reach 0.280 past the hook flank into its 0.23 notches: a small overlap is expected)
@@ -15,7 +15,8 @@ tilt sweep (deg: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 25: 
 lifted, pulled out from the notch by (mm: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 24: 0.000
 sliding (pin y: mm3): 23: 0.000, 38: 0.000, 53: 0.000, 66: 0.000
 arc_drawer_2x2_housing_print: 50.5 x 50.5 x 84.0, faces 76, overhangs flatter than 45 deg: 0
-arc_drawer_2x2_drawer_print: 47.7 x 80.5 x 45.0, faces 55, overhangs flatter than 45 deg: 0
+arc_drawer_2x2_drawer_print: 47.7 x 80.5 x 45.0, faces 59, overhangs flatter than 45 deg: 1
+    90.0 deg from vertical, area 41.16 mm2, at (-5.8, 37.6, 36.0)
 arc_drawer_2x2_fit_test_housing_print: 50.5 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_2x2_fit_test_drawer_print: 47.7 x 40.0 x 42.0, faces 24, overhangs flatter than 45 deg: 0
 arc_drawer_2x2_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0

@@ -1,9 +1,9 @@
 housing: 75.90 x 84.00 x 50.50 mm, volume 79615 mm3, solids 1, valid True
-drawer: 73.10 x 80.50 x 45.00 mm, volume 43113 mm3, solids 1, valid True
+drawer: 73.10 x 80.50 x 45.00 mm, volume 43080 mm3, solids 1, valid True
 back plate 10.075  pin closed y 12.575  travel 55.92 (76 % of the drawer)  arc radius 19.01  arc top z 22.03  exit channel z 26.50  lift 12.50  shoulder z 35.50  hook columns [25.25, 50.65]  hook bottoms [3.3, 28.7]  seat z 46.40
 measured: pocket seats at z [46.4, 46.4] (expect 46.400 x2)
 measured: housing x faces at [0.0, 1.2, 2.4, 23.525, 24.055, 24.275, 26.225, 26.445, 26.975, 48.925, 49.455, 49.675, 51.625, 51.845, 52.375, 73.5, 74.7, 75.9] (groove floors expect 1.2 and 74.7, bay walls 2.4 and 73.49999999999999)
-measured: drawer x faces at [1.4, 2.7, 4.7, 19.25, 20.45, 21.95, 53.95, 55.45, 56.65, 71.2, 73.2, 74.5] (pin tips expect 1.4 and 74.5)
+measured: drawer x faces at [1.4, 2.7, 4.7, 19.25, 20.45, 21.95, 30.674, 45.226, 53.95, 55.45, 56.65, 71.2, 73.2, 74.5] (pin tips expect 1.4 and 74.5)
 scoop blend r 2.0: 2 front corners; at the face: outside (3), ceiling (1), cavity sides not blended (kernel refused r 2.0)
 front top corners r 4.0
 hooks vs housing: 0.559 mm3 total over 4 hooks (ridges reach 0.280 past the hook flank into its 0.23 notches: a small overlap is expected)
@@ -15,7 +15,8 @@ tilt sweep (deg: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 25: 
 lifted, pulled out from the notch by (mm: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 24: 0.000
 sliding (pin y: mm3): 23: 0.000, 38: 0.000, 53: 0.000, 66: 0.000
 arc_drawer_housing_print: 75.9 x 50.5 x 84.0, faces 109, overhangs flatter than 45 deg: 0
-arc_drawer_drawer_print: 73.1 x 80.5 x 45.0, faces 55, overhangs flatter than 45 deg: 0
+arc_drawer_drawer_print: 73.1 x 80.5 x 45.0, faces 59, overhangs flatter than 45 deg: 1
+    90.0 deg from vertical, area 41.16 mm2, at (-5.8, 37.6, 36.0)
 arc_drawer_fit_test_housing_print: 75.9 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_fit_test_drawer_print: 73.1 x 40.0 x 42.0, faces 24, overhangs flatter than 45 deg: 0
 arc_drawer_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0

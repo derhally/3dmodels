@@ -72,6 +72,7 @@ scoop:                     # Zeid's scoop_prototype.scad (E:\source\openscad\omn
   embed: 0.5               # assumed: reaches this far into the front plate so the fuse has no coincident faces
   below_top: 2.0           # assumed: scoop top this far below the plate top, so the blend has a face to run onto (it was flush)
   blend: 2.0               # given (Zeid asked to blend the scoop into the face, 2026-10-17); 2 = the scad's back_fillet_r
+  lip_flat: 1.5            # given (Zeid, 2026-10-18: the front wall's lip printed almost in the air): flat underside this far up from the lip's knife edge, so its first layers bridge between the side walls; 0 = knife edge
   # Not carried over: the scad's 0.5 mm rounding of every edge (the rim's would face down flatter than 45 deg) and its r2 back fillets
 
 lip:                       # finger lip along the top of the drawer front (front.pull: lip); replaced by the scoop 2026-10-17
