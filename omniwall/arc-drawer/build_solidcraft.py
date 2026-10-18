@@ -201,9 +201,7 @@ embed = 0.2
 apex = r["height"] + r["tip_radius"] * (1 / math.cos(th) - 1)
 ra = (apex + embed) / math.tan(th)
 y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
-ridge_z = [seat_z - r["below_top"]]
-if HS["second_ridges"] and U["rows"] > 1:
-    ridge_z.append(seat_z - r["below_top"] - pitch)
+ridge_z = [seat_z - r["below_top"] - k * pitch for k in range(U["rows"] if HS["ridges_every_row"] else 1)]
 zl = -1.0
 for i, xc in enumerate(hook_cols, 1):
     # Dovetail slot and spine channel, open at the bottom, closed seat at seat_z.

@@ -2,8 +2,7 @@
 # Everything not set here comes from ../params.yaml (the 3 x 2 unit), section by
 # section and key by key. Build with ../build.py 3x3x60 (see ../README.md).
 # 75.9 wide x 75.9 tall: two hook columns (25.25 and 50.65), three hook rows.
-# The pocket channels have snap ridges for the top two rows; a third-row hook
-# slides into the same channel and holds the back against the panel without a click.
+# The pocket channels have snap ridges for all three rows.
 unit:
   cells: 3                       # given: 3 cells wide
   rows: 3                        # given: 3 rows tall

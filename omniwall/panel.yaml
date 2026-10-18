@@ -86,6 +86,7 @@ dovetail_mount:
       bottom_radius: 0.52   # Kong measured (fit to the 1.15 mm long profile)
       below_top: 2.75       # Kong measured: notch centre below the top of the head
       front_land: 0.5       # assumed: notch stops this far behind the head's front, so it doesn't cut the bed strip in two (it left a 1.5 x 1.4 mm island at the top end)
+      repeat_min_z: 1.5     # assumed: notches repeat every pitch down a hook's front (Zeid, 2026-10-18: snaps at every row, never in between) while the centre is at least this far above the front's bottom (the groove reaches ~0.9)
   pocket:                   # matching dovetail slot in the back of each object; open at the bottom, closed at the top
     side_clearance: 0.25    # Kong measured: per side, head and neck
     spine_clearance: 0.15   # assumed: channel for the spine is this much deeper than the spine, so the object's back sits on the panel

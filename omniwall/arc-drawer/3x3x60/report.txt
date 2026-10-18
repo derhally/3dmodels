@@ -1,4 +1,4 @@
-housing: 75.90 x 60.00 x 75.90 mm, volume 89833 mm3, solids 1, valid True
+housing: 75.90 x 60.00 x 75.90 mm, volume 89837 mm3, solids 1, valid True
 drawer: 73.10 x 56.50 x 70.40 mm, volume 54393 mm3, solids 1, valid True
 back plate 10.075  pin closed y 12.575  travel 31.92 (65 % of the drawer)  arc radius 19.01  arc top z 22.03  exit channel z 26.50  lift 12.50  shoulder z 60.90  hook columns [25.25, 50.65]  hook bottoms [3.3, 28.7, 54.1]  seat z 71.80
 measured: pocket seats at z [71.8, 71.8] (expect 71.800 x2)
@@ -6,7 +6,7 @@ measured: housing x faces at [0.0, 1.2, 2.4, 23.525, 24.055, 24.275, 26.225, 26.
 measured: drawer x faces at [1.4, 2.7, 4.7, 19.25, 20.45, 21.95, 30.674, 45.226, 53.95, 55.45, 56.65, 71.2, 73.2, 74.5] (pin tips expect 1.4 and 74.5)
 scoop blend r 2.0: 2 front corners; at the face: outside (3), ceiling (1), cavity sides not blended (kernel refused r 2.0)
 front top corners r 4.0
-hooks vs housing: 0.559 mm3 total over 6 hooks (ridges reach 0.280 past the hook flank into its 0.23 notches: a small overlap is expected)
+hooks vs housing: 0.838 mm3 total over 6 hooks (ridges reach 0.280 past the hook flank into its 0.23 notches: a small overlap is expected)
 closed: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 open: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 tilted: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
@@ -14,10 +14,10 @@ lifted: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 tilt sweep (deg: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 25: 0.000, 30: 0.000
 lifted, pulled out from the notch by (mm: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 24: 0.000
 sliding (pin y: mm3): 21: 0.000, 29: 0.000, 37: 0.000, 42: 0.000
-arc_drawer_3x3x60_housing_print: 75.9 x 75.9 x 60.0, faces 109, overhangs flatter than 45 deg: 0
+arc_drawer_3x3x60_housing_print: 75.9 x 75.9 x 60.0, faces 125, overhangs flatter than 45 deg: 0
 arc_drawer_3x3x60_drawer_print: 73.1 x 56.5 x 70.4, faces 59, overhangs flatter than 45 deg: 1
     90.0 deg from vertical, area 41.16 mm2, at (-5.8, 25.6, 61.4)
 arc_drawer_3x3x60_fit_test_housing_print: 75.9 x 75.9 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_3x3x60_fit_test_drawer_print: 73.1 x 40.0 x 67.4, faces 24, overhangs flatter than 45 deg: 0
-arc_drawer_3x3x60_pocket_coupon_print: 12.0 x 63.9 x 10.1, faces 39, overhangs flatter than 45 deg: 0
+arc_drawer_3x3x60_pocket_coupon_print: 12.0 x 63.9 x 10.1, faces 47, overhangs flatter than 45 deg: 0
 arc_drawer_3x3x60_all_parts: housing and drawer on one plate, 159.0 x 75.9

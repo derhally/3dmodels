@@ -153,15 +153,15 @@ def track_void(x_face):
 def pocket(xc):
     """Pocket channel for one hook column: the shared dovetail pocket from
     hook_geometry (open at the bottom, closed seat at the top, snap ridges), a
-    second ridge pair one pitch lower for a second row of hooks, and 45 deg gables
+    ridge pair one pitch lower for every further row of hooks, and 45 deg gables
     on the spine channel's end and the pocket floor so it prints on its back."""
     zl = -(seat_z - HH) - 1
     zt = HH + pk["top_clearance"]
     v = pocket_void(dm, HH, 0.0, zl)
-    if HS["second_ridges"] and U["rows"] > 1:
-        r = pk["ridge"]
-        zc = zt - r["below_top"] - pitch
-        y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
+    r = pk["ridge"]
+    y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
+    for k in range(1, U["rows"] if HS["ridges_every_row"] else 1):
+        zc = zt - r["below_top"] - k * pitch
         for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
             v = v - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
     e = 0.02   # gables start a hair wider than the channel, so no flat strip is left at the corners

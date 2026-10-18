@@ -39,11 +39,12 @@ def v_groove_prism(x_face, inward, zc, y0, y1, depth, flank_deg, radius, embed=0
     return extrude(pl * sk, amount=y1 - y0, dir=(0, 1, 0))
 
 
-def hook_front(dm, H, y_panel, spine_start=None, notch_drops=(0.0,)):
+def hook_front(dm, H, y_panel, spine_start=None, pitch=None):
     """Spine and dovetail head for a hook whose panel front is at y_panel and whose
     front is H tall. The spine runs from spine_start (default: the panel front) to
-    the neck, which always sits block_depth in front of the panel. notch_drops:
-    how far below the top notch pair each pair of snap notches sits."""
+    the neck, which always sits block_depth in front of the panel. With pitch,
+    snap notches repeat every pitch down the front for as long as they fit, so
+    they meet a housing's ridges at every hook row; none in between."""
     dv = dm["dovetail"]
     y0 = y_panel if spine_start is None else spine_start
     yb = y_panel + dv["block_depth"]
@@ -74,8 +75,10 @@ def hook_front(dm, H, y_panel, spine_start=None, notch_drops=(0.0,)):
     # the head's strip on the bed stays in one piece.
     n = dv["notch"]
     y_flank_end = yf - dv["head_flat"] - (hh - hn) * math.tan(math.radians(dv["flank_angle"]))
-    for drop in notch_drops:
-        zc = H - n["below_top"] - drop
+    zcs = [H - n["below_top"]]
+    while pitch and zcs[-1] - pitch >= n["repeat_min_z"]:
+        zcs.append(zcs[-1] - pitch)
+    for zc in zcs:
         for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
             head = head - v_groove_prism(x_face, inward, zc, y_flank_end, yf - n["front_land"],
                                          n["depth"], n["flank_angle"], n["bottom_radius"])
@@ -121,12 +124,12 @@ def bridge_hook(panel, root, tall=False):
     notches sit where slot hook 1's do, and housings take either hook."""
     dm, hook = panel["dovetail_mount"], panel["bridge_hook"]
     real = import_step(str(root / hook["step"]))
-    H, drops = hook["height"], (0.0,)
+    H = hook["height"]
     if tall:
-        # The front still runs down to the foot (it is the only link to it). A
-        # second notch pair one pitch lower meets a housing's lower ridges.
-        H, drops = H + hook["tall_front"]["rise"], (0.0, panel["pitch"])
-    front, _ = hook_front(dm, H, hook["panel_front_y"], notch_drops=drops)
+        # The front still runs down to the foot (it is the only link to it); its
+        # notches repeat a pitch lower, where a housing's next ridges sit.
+        H += hook["tall_front"]["rise"]
+    front, _ = hook_front(dm, H, hook["panel_front_y"], pitch=panel["pitch"])
     return keep_below_y(real, hook["panel_front_y"], hook["height"]) + front
 
 
@@ -187,7 +190,7 @@ def slot_hook_1(panel, root):
     body = slot_hook_body(panel, root) + added - cut
     # The dovetail front reaches down to the same bottom, keeping its top (and
     # so the snap) where it was.
-    front, _ = hook_front(dm, H + d, hook["panel_front_y"], spine_start=y_c)
+    front, _ = hook_front(dm, H + d, hook["panel_front_y"], spine_start=y_c, pitch=panel["pitch"])
     return body + Pos(0, 0, -d) * front
 
 
@@ -214,5 +217,5 @@ def slot_hook_2(panel, root):
     # Spine across the steel and down the lower slot: from the panel's front face
     # (slot hook 1 body fills the upper slot behind y_c).
     fill = extrude(Plane.YZ * Polygon((yp, zl - d), (y_c, zl - d), (y_c, 0), (yp, 0), align=None), t)
-    front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c, notch_drops=(0.0, -zl))
+    front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c, pitch=panel["pitch"])
     return slot_hook_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front

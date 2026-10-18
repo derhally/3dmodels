@@ -37,7 +37,7 @@ on clashes no more than the standard bridge hook does.
 ## The coupon
 
 A one-cell-wide slice (25.1 mm) of a 2-row housing back, 50.5 mm tall, with the
-drawer housings' print-tested pocket and its second ridge pair one cell lower (`housing.pocket` in
+drawer housings' print-tested pocket and a ridge pair for each row (two here), one cell apart (`housing.pocket` in
 [arc-drawer/params.yaml](../arc-drawer/params.yaml)). The pocket's closed top
 rests on the hook's top, which puts the coupon's top and bottom edges 0.15 mm
 inside the horizontal slot rows above and below. That is the lining-up a drawer

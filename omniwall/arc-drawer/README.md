@@ -21,10 +21,9 @@ their travel and have the same scoop and label holder. A size is a folder with a
 `params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
 everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
 moves the track's stop to depth − 15.5 (44.5), so the arc, notch and exit
-channel sit the same distance from the front as in the 84 mm unit. On a 3-row
-unit the pocket channels have snap ridges for the top two hook rows; a hook in
-the bottom row slides into the same channel and holds the back to the panel
-without a click.
+channel sit the same distance from the front as in the 84 mm unit. Every pocket
+channel has a ridge pair for each hook row (three on a 3-row unit), one pitch
+apart.
 
 ## Where it sits on the panel
 
@@ -42,7 +41,7 @@ Each column has one dovetail channel from the unit's bottom edge up to a closed
 seat at the top row's hook top. The channel is the shared pocket
 (`dovetail_mount` in `../panel.yaml`, built by `pocket_void()` in
 `../hook_geometry.py`): spine channel, 45° dovetail slot, 0.25 mm clearance,
-snap ridges 2.75 mm below the seat. A second ridge pair sits one pitch lower.
+snap ridges 2.75 mm below the seat, and another pair every pitch lower, one per hook row.
 Three of its values are replaced by `housing.pocket` in params.yaml, from the
 pocket coupon that clicked best when printed on its back (coupon 3 of
 `pocket_variants.py`, tested 2026-10-17): the lips' back starts 0.1 mm lower

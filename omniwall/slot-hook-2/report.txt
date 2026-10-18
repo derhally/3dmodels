@@ -7,7 +7,7 @@ swing in, 14 deg out: 0.18 mm3 0.18 at z -0.2..0.0
 swing in, 10 deg out: 0.45 mm3 0.45 at z -0.2..0.0
 swing in,  8 deg out: 0.24 mm3 0.24 at z -0.2..0.0
 swing in,  6 deg out: 0.10 mm3 0.10 at z -0.1..0.0
-swing in,  4 deg out: 0.12 mm3 0.03 at z -0.0..0.0, 0.09 at z -25.6..-25.4
+swing in,  4 deg out: 0.12 mm3 0.09 at z -25.6..-25.4, 0.03 at z -0.0..0.0
 swing in,  3 deg out: 0.79 mm3 0.01 at z -0.0..0.0, 0.78 at z -25.9..-25.4
 swing in,  2 deg out: 1.98 mm3 1.98 at z -26.2..-25.4
 swing in,  1 deg out: 1.40 mm3 1.40 at z -26.2..-25.4

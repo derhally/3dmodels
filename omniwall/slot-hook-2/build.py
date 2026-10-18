@@ -91,11 +91,12 @@ yb = yp + dv["block_depth"] + pk["spine_clearance"]
 chan = Polygon((cx - bw - e, yb), (cx + bw + e, yb), (cx, yb + bw + e), align=None)
 floor = Polygon((cx - hh - e, yf), (cx + hh + e, yf), (cx, yf + hh + e), align=None)
 seat = H + pk["top_clearance"]
-# A second ridge pair one pitch lower, as in the drawer housings (housing.second_ridges):
-# it clicks into a slot hook 1 in the lower slot, or slot hook 2's lower notches.
+# A ridge pair every pitch lower, one per row, as in the drawer housings
+# (housing.ridges_every_row): it clicks into a slot hook 1 in the lower slot, or
+# into the lower notches of slot hook 2 and the tall bridge hook.
 r = pk["ridge"]
 y_ridge_end = yp + dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
-for zc in (seat - r["below_top"] - pitch,):
+for zc in (seat - r["below_top"] - k * pitch for k in range(1, CP["rows"])):
     for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
         void = void - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
 void = void + Pos(0, 0, z_lo) * extrude(chan, seat - z_lo) + Pos(0, 0, z_lo) * extrude(floor, seat - z_lo)
