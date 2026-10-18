@@ -82,39 +82,39 @@ z_pin = PN["height"]
 y_stop = TR["stop"]
 travel = y_stop - y_pin
 piv = (D, z_floor)                                   # sill: the floor's front top edge (y, z)
-rv = PN["diameter"] / 2 + TR["clearance"]            # track section radius
 R = math.hypot(y_stop - piv[0], z_pin - piv[1])      # arc radius about the sill
 a0 = math.degrees(math.atan2(z_pin - piv[1], y_stop - piv[0]))
-tilt = TR["tilt"]
+tilt = TR["arc_tilt"]                                # the arc about the sill, then the S takes over
 a1 = a0 - tilt                                       # nose-down: the pin swings clockwise in the y-z plane
 pin_end = (piv[0] + R * math.cos(math.radians(a1)), piv[1] + R * math.sin(math.radians(a1)))
-rb = K * rv                                          # channel half width: the pin's teardrop fits this circle however it turns
-arc_top = pin_end[1] + rb
-exit_z = arc_top + TR["exit_web"] + rb               # exit channel centre; its floor is exit_web above the arc
+hw = K * PN["diameter"] / 2 + TR["clearance"]        # channel half width: the teardrop pin's point + clearance, so it fits however the drawer turns
+# Past the arc the path is an S: the U curves the other way, back over the arc's end,
+# into the hook, which curves forward over the tongue of wall into the exit channel.
+# The drawer's weight tips it on round the U until its centre of gravity is lowest
+# (where it hangs open); taking it out means pushing it back up over the U's top.
+Lh = lambda h: (-math.sin(math.radians(h)), math.cos(math.radians(h)))   # left of heading h (deg, 0 = forward)
+he = a1 - 90                                         # heading at the arc's end
+r_u, r_h = TR["s_radius"], TR["hook_radius"]
+u_c = (pin_end[0] + r_u * Lh(he)[0], pin_end[1] + r_u * Lh(he)[1])
+u_top = (u_c[0], u_c[1] + r_u)                       # the U ends heading straight back
+hook_c = (u_top[0], u_top[1] + r_h)
+exit_z = hook_c[1] + r_h
 lift = exit_z - z_pin
-# Branch: from the arc's end the tilted drawer is pushed straight back along its own
-# bottom (still on the sill), the gate: its weight pulls it back down to the arc's end,
-# and the groove has no opening above the pins. The gate runs on into a hook that
-# curves up round the tongue of wall between the arc and the exit channel and over
-# into the exit channel, one smooth path of one width.
-ta = math.radians(tilt)
-hook_r = TR["tongue_round"] + rb                     # hook centre line radius, about the tongue's rounded tip
-hook_c = (pin_end[0] + (hook_r - math.cos(ta) * (exit_z - hook_r - pin_end[1])) / math.sin(ta), exit_z - hook_r)
-gate = -math.cos(ta) * (hook_c[0] - pin_end[0]) + math.sin(ta) * (hook_c[1] - pin_end[1])
-assert gate > 0, f"no room for the gate ({gate:.2f}): raise track.exit_web"
-gate_top = (pin_end[0] - gate * math.cos(ta), pin_end[1] + gate * math.sin(ta))
-hook_len = hook_r * math.radians(180 - tilt)
-branch = gate + hook_len
-branch_top = (hook_c[0], exit_z)
+branch_top = (hook_c[0], exit_z)                     # the exit channel starts here
+arc_len, u_len, hook_len = R * math.radians(tilt), r_u * math.radians(180 - he), r_h * math.pi
+path_len = arc_len + u_len + hook_len
 
 
-def branch_point(s):
-    """Pin centre `s` along the branch: back along the gate, then round the hook
-    (heading 180 - tilt deg turning down to 0, i.e. forward)."""
-    if s <= gate:
-        return (pin_end[0] - s * math.cos(ta), pin_end[1] + s * math.sin(ta))
-    h = (180 - tilt) * (1 - (s - gate) / hook_len)
-    return (hook_c[0] - hook_r * math.sin(math.radians(h)), hook_c[1] + hook_r * math.cos(math.radians(h)))
+def path_point(s):
+    """Pin centre `s` along the path from the stop: up the arc, round the U, round the hook."""
+    if s <= arc_len:
+        a = math.radians(a0) - s / R
+        return (piv[0] + R * math.cos(a), piv[1] + R * math.sin(a))
+    if s <= arc_len + u_len:
+        h = he + math.degrees((s - arc_len) / r_u)
+        return (u_c[0] - r_u * Lh(h)[0], u_c[1] - r_u * Lh(h)[1])
+    h = 180 - math.degrees((s - arc_len - u_len) / r_h)
+    return (hook_c[0] + r_h * Lh(h)[0], hook_c[1] + r_h * Lh(h)[1])
 
 
 body_top = z_roof - DR["headroom"]
@@ -185,45 +185,19 @@ def fillet_line_circle(V, p0, d, side, c0, Rc, r):
     return V + (Polygon(corner, t1, c, t2, align=None) - Pos(*c) * Circle(r))
 
 
-def circles_meet(c1, r1, c2, r2, near):
-    """The crossing point of two circles nearer `near`."""
-    dx, dy = c2[0] - c1[0], c2[1] - c1[1]
-    dd = math.hypot(dx, dy)
-    a = (r1 * r1 - r2 * r2 + dd * dd) / (2 * dd)
-    h = math.sqrt(r1 * r1 - a * a)
-    m = (c1[0] + a * dx / dd, c1[1] + a * dy / dd)
-    ps = [(m[0] + s_ * h * dy / dd, m[1] - s_ * h * dx / dd) for s_ in (1, -1)]
-    return min(ps, key=lambda p: math.hypot(p[0] - near[0], p[1] - near[1]))
-
-
-def fillet_circles(V, c1, r1, c2, r2, r, near):
-    """Round the point of wall where two arc walls of the track meet (circles r1 about
-    c1 and r2 about c2, the wall outside both) to radius r: cut away the point."""
-    corner = circles_meet(c1, r1, c2, r2, near)
-    c = circles_meet(c1, r1 + r, c2, r2 + r, near)
-    ts = [(o[0] + (c[0] - o[0]) * rr / math.hypot(c[0] - o[0], c[1] - o[1]),
-           o[1] + (c[1] - o[1]) * rr / math.hypot(c[0] - o[0], c[1] - o[1])) for o, rr in ((c1, r1), (c2, r2))]
-    return V + (Polygon(corner, ts[0], c, ts[1], align=None) - Pos(*c) * Circle(r))
-
-
 def track_region():
     """The track as a 2D region in the y-z plane: the pin centre's path (the straight
     groove to the stop, the arc it sweeps while the drawer tilts about the sill, the
-    gate back along the tilted drawer, the hook round the tongue's tip, the exit
-    channel to the front) swept by a circle of radius rb, which holds the pin's
-    teardrop however the drawer turns. So every wall is a line or arc at rb from one
-    smooth path, every end is a semicircle, and the two points of wall where the
-    path forks are rounded."""
-    V = slot((y_pin, z_pin), (y_stop, z_pin), rb)
-    V = V + band(piv, R, a1, a0, rb) + Pos(*pin_end) * Circle(rb)
-    V = V + slot(pin_end, gate_top, rb)
-    V = V + band(hook_c, hook_r, 90, 270 - tilt, rb)
-    V = V + slot(branch_top, (D + rb + 1, exit_z), rb)
-    # Round the two points of wall where the path forks: where the groove's ceiling
-    # meets the arc's outer wall, across from the stop, and where the arc's outer wall
-    # meets the hook's outer wall (the gate is short enough to lie inside the two).
-    V = fillet_line_circle(V, (y_stop, z_pin + rb), (-1, 0), -1, piv, R + rb, TR["stop_round"])
-    V = fillet_circles(V, piv, R + rb, hook_c, hook_r + rb, TR["branch_round"], gate_top)
+    S of the U and the hook, the exit channel to the front) swept by a circle of
+    radius hw, which holds the teardrop pin however the drawer turns. Every wall is
+    a line or an arc at hw from that one smooth path, and the only corner, where the
+    groove's ceiling meets the arc's outer wall across from the stop, is rounded."""
+    V = slot((y_pin, z_pin), (y_stop, z_pin), hw)
+    V = V + band(piv, R, a1, a0, hw)
+    V = V + band(u_c, r_u, he - 90, 90, hw)
+    V = V + band(hook_c, r_h, 90, 270, hw)
+    V = V + slot(branch_top, (D + hw + 1, exit_z), hw)
+    V = fillet_line_circle(V, (y_stop, z_pin + hw), (-1, 0), -1, piv, R + hw, TR["stop_round"])
     return V
 
 
@@ -430,19 +404,20 @@ def resting(d, yp, zp):
 
 
 def drawer_at(d, state, angle=None, y=None):
-    """closed; open (at the stop, level); tilted (at the stop, nose down `angle`,
-    default the full tilt); pushed (`y` along the branch, resting on the sill: back
-    along its bottom through the gate, then round the hook; default the whole
-    branch); exit (pins in the exit channel `y` in front of the branch,
-    resting on the sill); held (same, held level)."""
+    """closed; open (at the stop, level); tilted (nose down `angle` on the arc, by
+    default hanging at the low point of the S); pushed (`y` along the path from the
+    stop, resting on the sill; by default at the top of the U, on its way out); exit
+    (pins in the exit channel `y` in front of its start, resting on the sill); held
+    (same, held level)."""
     if state == "closed":
         return d
     if state == "open":
         return Pos(0, travel, 0) * d
-    if state == "tilted":
-        return (Pos(0, travel, 0) * d).rotate(Axis((0, piv[0], piv[1]), (1, 0, 0)), -(tilt if angle is None else angle))
-    if state == "pushed":
-        return resting(d, *branch_point(branch if y is None else y))
+    if state == "tilted" and angle is not None:
+        return (Pos(0, travel, 0) * d).rotate(Axis((0, piv[0], piv[1]), (1, 0, 0)), -angle)
+    if state in ("tilted", "pushed"):
+        s_ = (s_hang if state == "tilted" else arc_len + u_len) if y is None else y
+        return resting(d, *path_point(s_))
     if state in ("exit", "held"):
         yp = branch_top[0] + (y or 0)
         if state == "held":
@@ -515,7 +490,7 @@ for part in (h, d):
             b2 = so.bounding_box()
             log(f"    solid volume {so.volume:.2f} at x {b2.min.X:.2f}..{b2.max.X:.2f} y {b2.min.Y:.2f}..{b2.max.Y:.2f} z {b2.min.Z:.2f}..{b2.max.Z:.2f}")
 log(f"back plate {plate_t:.3f}  pin closed y {y_pin:.3f}  travel {travel:.2f} ({travel / (D - y_back) * 100:.0f} % of the drawer)  "
-    f"arc radius {R:.2f}  arc top z {arc_top:.2f}  exit channel z {exit_z:.2f}  lift {lift:.2f}  gate {gate:.2f}, hook radius {hook_r:.2f} about ({hook_c[0]:.2f}, {hook_c[1]:.2f}), exit from y {branch_top[0]:.2f}  shoulder z {shoulder_z:.2f}  "
+    f"arc radius {R:.2f} to {tilt} deg  U radius {r_u} about ({u_c[0]:.2f}, {u_c[1]:.2f})  hook radius {r_h} about ({hook_c[0]:.2f}, {hook_c[1]:.2f})  exit channel z {exit_z:.2f} from y {branch_top[0]:.2f}  lift {lift:.2f}  channel width {2 * hw:.2f}  shoulder z {shoulder_z:.2f}  "
     f"hook columns {[round(x, 2) for x in hook_cols]}  hook bottoms {[round(z, 2) for z in hook_rows]}  seat z {seat_z:.2f}")
 # Measured on the solids, not read from the code.
 seats = [f for f in faces_at_z(h, seat_z) if f.normal_at().Z < 0]
@@ -531,17 +506,31 @@ export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
 log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
+cgv = d.center()
+
+
+def cg_z(s_):
+    """Height of the drawer's centre of gravity resting on the sill with its pins s_ along the path."""
+    yp, zp = path_point(s_)
+    t = math.radians(rest_tilt(yp, zp))
+    return zp - (cgv.Y - y_pin) * math.sin(t) + (cgv.Z - z_pin) * math.cos(t)
+
+
+ss = [arc_len * 0.5 + (path_len - arc_len * 0.5) * k / 400 for k in range(401)]
+cz = [cg_z(x) for x in ss]
+k_hang = next(k for k in range(1, 400) if cz[k] <= cz[k - 1] and cz[k] < cz[k + 1])
+s_hang = ss[k_hang]
+cg_lift = max(cz[k_hang:]) - cz[k_hang]
 for state in ("closed", "open", "tilted", "pushed"):
     moved = drawer_at(d, state)
     moved.label = f"drawer {state}"
     log(f"{state}: drawer vs housing {overlap(h, moved):.3f} mm3, vs hooks {sum(overlap(moved, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"{NAME}_assembly_{state}.step"))
-log("tilt sweep (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
-log("pushed back through the gate (mm: mm3): " + ", ".join(
-    f"{s:.1f}: {overlap(h, drawer_at(d, 'pushed', y=s)):.3f}" for s in (0, gate / 2, gate)))
-log("round the hook, resting on the sill (mm along it: deg, mm3): " + ", ".join(
-    f"{s:.1f}: {rest_tilt(*branch_point(gate + s)):.1f}, {overlap(h, drawer_at(d, 'pushed', y=gate + s)):.3f}"
-    for s in (hook_len * k / 5 for k in range(1, 6))))
+log("tilt sweep on the arc (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
+log(f"hangs open at {rest_tilt(*path_point(s_hang)):.1f} deg, {s_hang - arc_len:.1f} mm round the U; pushing it out over the top lifts its centre of gravity {cg_lift:.2f} mm")
+log("along the S, resting on the sill (mm from the arc's end: deg, mm3): " + ", ".join(
+    f"{s_ - arc_len:.1f}: {rest_tilt(*path_point(s_)):.1f}, {overlap(h, drawer_at(d, 'pushed', y=s_)):.3f}"
+    for s_ in (arc_len + (u_len + hook_len) * k / 10 for k in range(11))))
 ex = [round((D - branch_top[0] - 1) * k / 4, 1) for k in range(5)]
 log("pulled out along the exit, resting on the sill (mm: deg, mm3): " + ", ".join(
     f"{y}: {exit_tilt(branch_top[0] + y):.0f}, {overlap(h, drawer_at(d, 'exit', y=y)):.3f}" for y in ex))
