@@ -31,13 +31,16 @@ would get if it hung on this hook.
 
 ## Files
 
+`build.py` writes these to `test-prints/`, which git ignores (test prints stay
+local), plus `report.txt` here.
+
 | File | What |
 |---|---|
-| `print/two_slot_test_plate.3mf` | Hook and coupon on one plate, in print orientation |
-| `print/two_slot_hook_print.*`, `print/two_slot_coupon_print.*` | Each part on its own (STEP, STL, 3MF) |
-| `step/two_slot_assembly.step` | Hook and coupon hung on a stand-in for the panel |
-| `step/two_slot_hook.step`, `step/two_slot_coupon.step` | Each part in hook coordinates |
-| `report.txt` | Sizes and the checks below, written by `build.py` |
+| `test-prints/two_slot_test_plate.3mf` | Hook and coupon on one plate, in print orientation |
+| `test-prints/two_slot_hook_print.*`, `test-prints/two_slot_coupon_print.*` | Each part on its own (STEP, STL, 3MF) |
+| `test-prints/two_slot_assembly.step` | Hook and coupon hung on a stand-in for the panel |
+| `test-prints/two_slot_hook.step`, `test-prints/two_slot_coupon.step` | Each part in hook coordinates |
+| `report.txt` | Sizes and the checks below |
 
 Rebuild with
 `uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py`

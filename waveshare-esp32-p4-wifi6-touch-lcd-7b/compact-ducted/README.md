@@ -17,7 +17,7 @@ USB-C port and how the files were made.
 | `print/p4_7b_compact_body_print.*` | Body, standing on its floor |
 | `print/p4_7b_compact_duct_print.*` | Duct, mouth on the bed, speaker standoffs up |
 | `print/p4_7b_compact_clamp_tabs_print.*` | All four clamp tabs, flat |
-| `print/p4_7b_facade_test_frame.*` | Quick print of the facade: window, bevel and a shallow glass pocket. Drop the glass in from behind to check the fit and that the window sits evenly over the screen |
+| `test-prints/p4_7b_facade_test_frame.*` (built locally, not in git) | Quick print of the facade: window, bevel and a shallow glass pocket. Drop the glass in from behind to check the fit and that the window sits evenly over the screen |
 | `step/p4_7b_compact_assembly.step` | Assembled, with stand-ins for the display, speaker and port |
 | `step/p4_7b_compact_enclosure_only.step` | Just the printed parts, assembled |
 

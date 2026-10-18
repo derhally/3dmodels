@@ -106,7 +106,7 @@ The cross-slot and one-slot hooks below, as built by `hook/build_hooks.py` from
 [panel.yaml](panel.yaml), are the official design. Both were printed with the
 test plate (`pocket-test/`) and fit, snap and hold. Print files are in
 `hook/print/`, lying on their flat side with no supports, and in the Bambu Studio
-project `print/omniwall_test_parts.3mf`. Earlier versions are kept in
+project `test-prints/omniwall_test_parts.3mf` (built locally by `build_bambu_project.py`). Earlier versions are kept in
 `hook/old-finger-snap/` and `hook/old-offset-head/` for reference only. Objects
 take the pocket in `dovetail_mount.pocket`, built by `pocket_void()` in
 `hook_geometry.py`.
@@ -163,7 +163,7 @@ on the slot centre, so objects line up with the slot grid. The pockets sit a
 whole number of 25.4 mm cells apart. `pocket-test/` has a test plate for the
 fit; `hook_geometry.py` builds the hooks, the head and the pocket from the same
 numbers. `build_bambu_project.py` packs both hooks and the test plate into a
-Bambu Studio project (`print/omniwall_test_parts.3mf`), one part per plate.
+Bambu Studio project (`test-prints/omniwall_test_parts.3mf`), one part per plate.
 
 ## One-slot hook (print-tested)
 

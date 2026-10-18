@@ -107,7 +107,7 @@ write(body_print, print_dir / "p4_7b_body_print", ["step", "stl", "3mf"])
 tw = cp["tab_w"]
 write(on_bed(Compound(children=[Pos(i * (tw + 4), 0, 0) * tab for i in range(4)])),
       print_dir / "p4_7b_clamp_tabs_print", ["step", "stl", "3mf"])
-write(facade_test_frame(g, W, L, s_g), print_dir / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
+write(facade_test_frame(g, W, L, s_g), out_dir / "test-prints" / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
 
 tb = tab_print.bounding_box()
 write_bambu_project(

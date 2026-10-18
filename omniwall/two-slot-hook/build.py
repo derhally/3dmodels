@@ -2,8 +2,9 @@
 # coupon that slides down onto it, with a stand-in for the panel to check that
 # everything clears. Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
-# Writes step/ (hook in hook coordinates, assembly with the panel), print/ (STEP,
-# STL and plain 3MF per part, plus both on one plate) and report.txt.
+# Writes test-prints/ (local only, git-ignored): the hook and coupon in hook
+# coordinates, the assembly with the panel, and each part in print orientation
+# (STEP, STL and plain 3MF, plus both on one plate). Also report.txt.
 # Hook coordinates: x across (hook's flat side at 0), y out from the back of the
 # hook, z up from the upper slot's bottom edge.
 import copy
@@ -144,18 +145,18 @@ def to_bed(s):
     return Pos(-bb.center().X, -bb.center().Y, -bb.min.Z) * s
 
 
-(HERE / "step").mkdir(exist_ok=True)
-(HERE / "print").mkdir(exist_ok=True)
-export_step(hk, str(HERE / "step" / "two_slot_hook.step"))
-export_step(cp, str(HERE / "step" / "two_slot_coupon.step"))
-export_step(Compound(children=[pnl, hk, cp]), str(HERE / "step" / "two_slot_assembly.step"))
+OUT = HERE / "test-prints"
+OUT.mkdir(exist_ok=True)
+export_step(hk, str(OUT / "two_slot_hook.step"))
+export_step(cp, str(OUT / "two_slot_coupon.step"))
+export_step(Compound(children=[pnl, hk, cp]), str(OUT / "two_slot_assembly.step"))
 
 hp = to_bed(Rot(0, -90, 0) * hk)        # on its flat side, like the other hooks
 cpp = to_bed(Rot(90, 0, 0) * cp)        # on its back, like the drawer housings
 for part, stem in ((hp, "two_slot_hook_print"), (cpp, "two_slot_coupon_print")):
-    export_step(part, str(HERE / "print" / f"{stem}.step"))
-    export_stl(part, str(HERE / "print" / f"{stem}.stl"))
-    write_3mf([(stem, *shape_mesh(part))], HERE / "print" / f"{stem}.3mf")
+    export_step(part, str(OUT / f"{stem}.step"))
+    export_stl(part, str(OUT / f"{stem}.stl"))
+    write_3mf([(stem, *shape_mesh(part))], OUT / f"{stem}.3mf")
     b = part.bounding_box()
     bad = bad_faces(part)
     log(f"{stem}: {b.size.X:.1f} x {b.size.Y:.1f} x {b.size.Z:.1f}, overhangs flatter than 45 deg: {len(bad)}"
@@ -164,6 +165,6 @@ for part, stem in ((hp, "two_slot_hook_print"), (cpp, "two_slot_coupon_print")):
         log(f"    {x[0]:.1f} deg from vertical, area {x[1]} mm2, at ({x[2].X:.1f}, {x[2].Y:.1f}, {x[2].Z:.1f})")
 hb, cb = hp.bounding_box(), cpp.bounding_box()
 write_3mf([("two-slot hook", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp))],
-          HERE / "print" / "two_slot_test_plate.3mf")
+          OUT / "two_slot_test_plate.3mf")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[pnl, hk, cp])

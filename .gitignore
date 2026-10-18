@@ -4,3 +4,7 @@ result.json
 
 # local-only MCP server config (machine-specific paths)
 .mcp.json
+
+# Test prints (fit tests, coupons, probes): every design writes them to its own
+# test-prints/ folder, which stays local. Rebuild them with the design's script.
+test-prints/

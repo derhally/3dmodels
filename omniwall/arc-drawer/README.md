@@ -67,7 +67,7 @@ would hang flat over the bed got 45° gables: the back of the lips (the lip is
 now a 90° wedge, its 45° bearing flank unchanged) and the pocket floor (the back
 plate grows from 8.35 to 10.1 mm). The first coupon printed this way was loose:
 the lips' gable started at their back face and cut them to a knife edge, which
-`housing.pocket` fixes. `print/arc_drawer_pocket_coupon_print.*` is one
+`housing.pocket` fixes. `test-prints/arc_drawer_pocket_coupon_print.*` is one
 column of the back plate to check this pocket before printing the housing.
 
 ## How the drawer works
@@ -140,7 +140,7 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
   wall (a two-sided tent left floating slivers at the wall face).
 - **Drawer: upright** on its floor. Pins (point down), scoop (45° rim and ceiling) and
   label holder (45° under the bottom rail) print without support.
-- **Fit test plate first** (`print/arc_drawer_fit_test_plate.3mf`, one plate): the
+- **Fit test plate first** (`test-prints/arc_drawer_fit_test_plate.3mf`, one plate; `build.py` writes it, git ignores it): the
   front 34 mm of the housing (arc, notch, exit) with the rear 40 mm of the drawer
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
   drop-in load, the lift-out, and the pocket with two hooks.

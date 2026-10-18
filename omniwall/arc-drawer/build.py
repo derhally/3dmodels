@@ -442,12 +442,14 @@ cp = solid(h & Pos(xc0 - FT["coupon_half_width"], 0, FT["coupon_bottom"]) * Box(
 ht.label, dt.label, cp.label = "fit test housing front", "fit test drawer rear", "pocket coupon"
 htp, dtp, cpp = print_housing(ht), to_bed(dt), print_housing(cp)
 plates = []
-for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
-                   (htp, f"{NAME}_fit_test_housing_print"), (dtp, f"{NAME}_fit_test_drawer_print"),
-                   (cpp, f"{NAME}_pocket_coupon_print")):
-    export_step(part, str(HERE / "print" / f"{stem}.step"))
-    export_stl(part, str(HERE / "print" / f"{stem}.stl"))
-    write_3mf([(stem, *shape_mesh(part))], HERE / "print" / f"{stem}.3mf")
+TEST = HERE / "test-prints"                          # fit tests: local only (git-ignored)
+TEST.mkdir(exist_ok=True)
+for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{NAME}_drawer_print", HERE / "print"),
+                        (htp, f"{NAME}_fit_test_housing_print", TEST), (dtp, f"{NAME}_fit_test_drawer_print", TEST),
+                        (cpp, f"{NAME}_pocket_coupon_print", TEST)):
+    export_step(part, str(out / f"{stem}.step"))
+    export_stl(part, str(out / f"{stem}.stl"))
+    write_3mf([(stem, *shape_mesh(part))], out / f"{stem}.3mf")
     bad = bad_faces(part)
     bb = part.bounding_box()
     log(f"{stem}: {bb.size.X:.1f} x {bb.size.Y:.1f} x {bb.size.Z:.1f}, faces {len(part.faces())}, overhangs flatter than 45 deg: {len(bad)}")
@@ -455,7 +457,7 @@ for part, stem in ((hp, f"{NAME}_housing_print"), (dp, f"{NAME}_drawer_print"),
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
-           ("pocket coupon", *shape_mesh(cpp, 0, 60))], HERE / "print" / f"{NAME}_fit_test_plate.3mf")
+           ("pocket coupon", *shape_mesh(cpp, 0, 60))], TEST / f"{NAME}_fit_test_plate.3mf")
 # Housing and drawer side by side on one plate, 10 mm apart, centred on the origin.
 gap = 10.0
 hb, db = hp.bounding_box(), dp.bounding_box()
