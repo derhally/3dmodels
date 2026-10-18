@@ -1,0 +1,11 @@
+# Two-slot hook test print (Zeid asked 2026-10-18). The hook itself is in
+# ../panel.yaml (two_slot_hook) and ../hook_geometry.py. This builds it with a
+# housing coupon: a one-cell-wide slice of a 2-row housing back whose pocket seat
+# sits under the hook's top, so its top and bottom edges line up with horizontal
+# slot rows. The pocket's fit values come from ../arc-drawer/params.yaml
+# (housing.pocket, print-tested coupon 3), so it fits like the drawer housings.
+coupon:
+  width: 25.1          # derived: one cell (25.4) - 0.3, the drawers' gap between neighbours
+  rows: 2              # assumed: a 2-row housing's height (50.5), hook column on its centre line
+  edge_gap: 0.15       # derived: half the 0.3 gap; edges this far inside the slot rows
+  back_front_wall: 2.0 # as ../arc-drawer/params.yaml housing.back_front_wall: solid in front of the pocket floor's gable

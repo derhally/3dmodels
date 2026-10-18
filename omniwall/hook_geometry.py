@@ -121,10 +121,11 @@ def cross_slot_hook(panel, root):
     return keep_below_y(real, hook["panel_front_y"], hook["height"]) + front
 
 
-def one_slot_hook(panel, root):
-    """The one-slot hook as printed: measured body with a shorter cavity and a
-    thinner foot, plus the dovetail front."""
-    dm, hook = panel["dovetail_mount"], panel["one_slot_hook"]
+def one_slot_body(panel, root):
+    """The one-slot hook's measured body as printed, without its dovetail front or
+    rim notch: shorter cavity, thinner foot, chamfered finger. Hook coordinates,
+    the slot's bottom edge at z = 0."""
+    hook = panel["one_slot_hook"]
     real = import_step(str(root / hook["step"]))
     H, cav, pr = hook["height"], hook["cavity"], hook["printed"]
     y_c, r = pr["cavity_front_y"], cav["fillet"]
@@ -147,19 +148,60 @@ def one_slot_hook(panel, root):
         on_top_side = bb.min.X > t - eps
         top_corner = bb.max.X - bb.min.X > t - eps and bb.min.Z > hook["finger_top"] - eps
         return on_top_side or top_corner
-    body = chamfer([e for e in body.edges() if finger_edge(e)], pr["top_chamfer"])
-    # Foot below the slot, with a notch cut up into it for the slot's bottom rim.
-    # The back lip's bottom is one ramp from the top of the foot's lead-in to the
-    # notch's back edge, so pushing the bottom in rides it over the rim until it
-    # drops into the notch. The notch's front edge is chamfered to guide the rim in.
-    rn, li, yp = pr["rim_notch"], hook["foot_lead_in"], hook["panel_front_y"]
+    return chamfer([e for e in body.edges() if finger_edge(e)], pr["top_chamfer"])
+
+
+def rim_notch_foot(hook, z):
+    """Pieces that turn a foot whose bottom sits on a slot's bottom rim (at z) into
+    a snap: (added, cut). The foot reaches below the rim with a notch cut up into
+    it for the rim. The back lip's bottom is one ramp from the top of the foot's
+    lead-in to the notch's back edge, so pushing the bottom in rides it over the
+    rim until it drops into the notch. The notch's front edge is chamfered to
+    guide the rim in."""
+    pr, t = hook["printed"], hook["thickness"]
+    rn, li, yp, y_c = pr["rim_notch"], hook["foot_lead_in"], hook["panel_front_y"], pr["cavity_front_y"]
     d, y_n, c = rn["depth"], yp - rn["width"], rn["mouth_chamfer"]
     below = Plane.YZ * Polygon((0, li), (y_n, -d), (y_c, -d), (y_c, li), align=None)
     under_ramp = Plane.YZ * Polygon((-1, -d - 1), (y_n, -d - 1), (y_n, -d), (0, li), (-1, li), align=None)
     notch = Plane.YZ * Polygon((y_n, -d - 0.1), (yp + c, -d - 0.1), (yp + c, -d), (yp, -d + c),
                                (yp, 0), (y_n, 0), align=None)
-    body = body + extrude(below, t) - extrude(under_ramp, t) - extrude(notch, t)
+    return Pos(0, 0, z) * extrude(below, t), Pos(0, 0, z) * (extrude(under_ramp, t) + extrude(notch, t))
+
+
+def one_slot_hook(panel, root):
+    """The one-slot hook as printed: measured body with a shorter cavity and a
+    thinner foot, plus the dovetail front."""
+    dm, hook = panel["dovetail_mount"], panel["one_slot_hook"]
+    H, y_c, d = hook["height"], hook["printed"]["cavity_front_y"], hook["printed"]["rim_notch"]["depth"]
+    # Foot below the slot, with a notch for the slot's bottom rim.
+    added, cut = rim_notch_foot(hook, 0)
+    body = one_slot_body(panel, root) + added - cut
     # The dovetail front reaches down to the same bottom, keeping its top (and
     # so the snap) where it was.
     front, _ = hook_front(dm, H + d, hook["panel_front_y"], spine_start=y_c)
     return body + Pos(0, 0, -d) * front
+
+
+def two_slot_hook(panel, root):
+    """The one-slot hook carried on down into the next slot in line (Zeid's idea,
+    2026-10-18). The top is the one-slot hook's body filling the upper slot, resting
+    on that slot's bottom edge, with its finger behind the panel above it; no snap
+    there. One pitch lower, the one-slot hook's foot and rim-notch snap sit in the
+    lower slot. A spine in front of the panel joins them across the steel between
+    the slots, and one dovetail front runs the whole height, its top (and snap
+    notches) where the one-slot hook's are."""
+    dm, hook, ts = panel["dovetail_mount"], panel["one_slot_hook"], panel["two_slot_hook"]
+    H, yp, y_c, t = hook["height"], hook["panel_front_y"], hook["printed"]["cavity_front_y"], hook["thickness"]
+    d = hook["printed"]["rim_notch"]["depth"]
+    zl = -ts["lower_rim_below"]                       # the lower slot's bottom rim
+    # Lower foot: the one-slot hook's foot (bottom on the rim, thinned top), a
+    # cantilever off the spine so it flexes over the rim, with the rim notch below.
+    foot = Pos(0, 0, zl) * extrude(Plane.YZ * Polygon((0, 0), (y_c, 0), (y_c, hook["printed"]["foot_top"]),
+                                                      (0, hook["printed"]["foot_top"]), align=None), t)
+    added, cut = rim_notch_foot(hook, zl)
+    foot = foot + added - cut
+    # Spine across the steel and down the lower slot: from the panel's front face
+    # (the one-slot body fills the upper slot behind y_c).
+    fill = extrude(Plane.YZ * Polygon((yp, zl - d), (y_c, zl - d), (y_c, 0), (yp, 0), align=None), t)
+    front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c)
+    return one_slot_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front

@@ -126,3 +126,15 @@ one_slot_hook:
       mouth_chamfer: 0.3    # assumed: 45 deg chamfer on the front edge of the notch's mouth, to guide the rim in
                             # in front of the panel the foot and the dovetail front reach down to the same bottom (Zeid asked, 2026-10-17)
                             # the back lip's bottom is one ramp from the top of the foot's lead-in to the notch's back edge (about 25 deg), so it rides over the rim and drops straight in (Zeid, 2026-10-17)
+
+# Two-slot hook (Zeid's idea, 2026-10-18; not print-tested yet): the one-slot hook
+# carried on down into the next slot in line. Its body fills the upper slot and
+# rests on that slot's bottom edge, the finger behind the panel above it, so the
+# hook's top is the top of a slot: an object's seat then sits a fixed distance
+# below a horizontal slot row and its edges can line up with the slot rows. The
+# lower slot holds the one-slot hook's foot and rim-notch snap (none on the upper
+# body), so the hook grips two slots and resists tipping out at the bottom. Values
+# not here come from one_slot_hook. Built by two_slot_hook() in hook_geometry.py.
+two_slot_hook:
+  lower_rim_below: 25.4     # derived: pitch, the upper slot's bottom edge to the lower slot's (in-line slots)
+  top_to_slot_row: 4.95     # derived: pitch/2 - slot length/2, top of the upper slot to the horizontal slot row above it (assumes slots centred on the cell edge)
