@@ -226,7 +226,11 @@ def track_region():
     # Where the groove's ceiling meets the arc's outer wall, across from the stop, and
     # the nub between the arc's outer wall and the gate's lower wall.
     V = fillet_line_circle(V, (y_stop, z_pin + hw), (-1, 0), -1, piv, R + hw, TR["stop_round"])
-    V = fillet_circles(V, piv, R + hw, gate_c, R + hw, TR["nub_round"], (pin_end[0] - 3 * hw, pin_end[1]))
+    # The nub's round meets the gate's outer wall, or the hook's if the gate is too short.
+    near, rn = (pin_end[0] - 3 * hw, pin_end[1]), TR["nub_round"]
+    c = circles_meet(piv, R + hw + rn, gate_c, R + hw + rn, near)
+    on_gate = g1 <= math.degrees(math.atan2(c[1] - gate_c[1], c[0] - gate_c[0])) % 360 <= g0
+    V = fillet_circles(V, piv, R + hw, *((gate_c, R + hw) if on_gate else (hook_c, r_h + hw)), rn, near)
     return V
 
 
