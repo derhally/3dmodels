@@ -50,12 +50,12 @@ def plate():
     w, h = T["strip_width"], T["strip_height"]
     p = Pos(0, -FT6 / 2, Z_TOP - h / 2) * Box(w, FT6, h)
     for x in xs:
-        p = p - bore_y(tear(T["hole"] / 2), -FT6 - 1, 1, x, ZB)
+        p = p - bore_y(tear(T["hole"] / 2) & Rectangle(T["hole_width"], 20), -FT6 - 1, 1, x, ZB)
         p = p - bore_y(tear(T["counterbore"] / 2), -FT6 - 1, -FT6 + T["counterbore_depth"], x, ZB)
     return p
 
 
-def handle(notches):
+def handle():
     """Plate leaning `lean` out from the face, hung from a rib that stands it `standoff` off the
     face; the rib grows into a flat-topped boss at each end holding a socket for a snap pin."""
     W, L, t, so = T["width"], T["drop"], T["thickness"], T["standoff"]
@@ -90,39 +90,41 @@ def handle(notches):
     # Sockets: teardrops pointing down in use (up as printed); the shoulder at entry depth is vertical as printed
     flip = Rot(0, 0, 180)
     for x in xs:
-        h = h - bore_y(flip * tear(T["socket_entry"] / 2), -1, T["socket_entry_depth"] + 0.01, x, ZB)
+        h = h - bore_y(flip * (tear(T["socket_entry"] / 2) & Rectangle(T["hole_width"], 20)), -1, T["socket_entry_depth"] + 0.01, x, ZB)
         h = h - bore_y(flip * tear(T["socket_chamber"] / 2), T["socket_entry_depth"], T["socket_depth"], x, ZB)
-    # ID notches across the plate's bottom edge
-    for k in range(notches):
-        h = h - Pos(-3 + 3 * k, so, ZH) * Rot(T["lean"], 0, 0) * Pos(0, t / 2, -L) * Box(1.0, t + 1, 2.4)
     return h
 
 
 def pin(barb, notches):
-    """Snap pin, axis along +y from the head's back face at y = 0, lying on a flat."""
+    """Snap pin, axis along +y from the head's back face at y = 0, lying on a flat (as printed;
+    fitted turned a quarter turn, flats sideways, so the legs spring up and down)."""
     r, rb, hr, ht = T["shank"] / 2, barb / 2, T["head"] / 2, T["head_thick"]
-    ub = FT6 + T["socket_entry_depth"] + T["barb_slack"]
+    tr = math.tan(math.radians(T["barb_ramp"]))
+    rc = T["socket_entry"] / 2 + T["barb_preload"]   # ramp radius that sits on the shoulder edge
+    ub = FT6 + T["socket_entry_depth"] + (rb - rc) * tr   # barb's full radius starts here
+    ub0 = ub - (rb - r) * tr
     uf = ub + T["barb_flat"]
     ut = uf + (rb - T["tip"])
-    prof = Polygon((0, 0), (0, hr), (ht, hr), (ht, r), (ub, r), (ub, rb), (uf, rb), (ut, T["tip"]), (ut, 0), align=None)
+    prof = Polygon((0, 0), (0, hr), (ht, hr), (ht, r), (ub0, r), (ub, rb), (uf, rb), (ut, T["tip"]), (ut, 0), align=None)
     body = Rot(0, 0, 90) * revolve(Plane.XY * prof, Axis.X)
     body = body & Box(30, 60, T["flats"])
     body = body - Pos(0, (T["slot_start"] + ut + 1) / 2, 0) * Box(T["slot"], ut + 1 - T["slot_start"], 10)
-    for k in range(notches):
-        body = body - Pos(hr, 0.3 + 0.7 * k + 0.15, 0) * Box(1.0, 0.3, 10)
+    n = T["id_notch"]
+    for sx in (1, -1)[:notches]:                     # V notch through the head at one end (B) or both (C)
+        body = body - extrude(Polygon((sx * (hr + 1), -0.5), (sx * (hr - n), ht / 2), (sx * (hr + 1), ht + 0.5), align=None), 10, both=True)
     return body
 
 
 pl = plate()
-hds = [handle(i + 1) for i in range(3)]
-pins = [pin(b, i + 1) for i, b in enumerate(T["barbs"])]
+hds = [handle() for i in range(3)]
+pins = [pin(b, i) for i, b in enumerate(T["barbs"])]
 for name, s in [("plate", pl), ("handle", hds[0])] + [(f"pin {'ABC'[i]}", p) for i, p in enumerate(pins)]:
     bb = s.bounding_box()
     log(f"{name}: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f}, volume {s.volume:.1f} mm3, valid {s.is_valid}, solids {len(s.solids())}")
 log(f"handle vs plate: {(hds[0] & pl).volume:.3f} mm3")
 for i, (p, b) in enumerate(zip(pins, T["barbs"])):
-    asm = [Pos(x, -FT6, ZB) * p for x in xs]
-    log(f"pin {'ABC'[i]} installed: vs plate {sum((a & pl).volume for a in asm):.3f} mm3, vs handle {sum((a & hds[0]).volume for a in asm):.3f} mm3; "
+    asm = [Pos(x, -FT6, ZB) * Rot(0, 90, 0) * p for x in xs]
+    log(f"pin {'ABC'[i]} installed: vs plate {sum((a & pl).volume for a in asm):.3f} mm3, vs handle {sum((a & hds[0]).volume for a in asm):.3f} mm3 (the barb ramps pressing on the shoulder edges: the preload); "
         f"barbs {b} squeeze {b / 2 - T['hole'] / 2:.2f} per side through the {T['hole']} hole (slot allows {T['slot'] / 2:.2f}), "
         f"{T['socket_chamber'] / 2 - b / 2:.2f} clear in the chamber")
 
@@ -162,5 +164,5 @@ for i, p in enumerate(pin_p):
     for k in range(2):
         objs.append((f"pin {'ABC'[i]}{k + 1}", *shape_mesh(p, -25 + 20 * i + 8 * k, -35)))
 write_3mf(objs, OUT / "handle_test_all_parts.3mf")
-export_step(Compound(children=[pl, hds[1]] + [Pos(x, -FT6, ZB) * pins[1] for x in xs]), str(OUT / "handle_test_assembly.step"))
+export_step(Compound(children=[pl, hds[1]] + [Pos(x, -FT6, ZB) * Rot(0, 90, 0) * pins[1] for x in xs]), str(OUT / "handle_test_assembly.step"))
 (OUT / "handle_test_report.txt").write_text("\n".join(log_lines) + "\n")

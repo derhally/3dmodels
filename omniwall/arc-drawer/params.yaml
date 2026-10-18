@@ -134,20 +134,23 @@ handle_test:               # handle_test.py: a plate handle on a stand-off rib l
   taper: 5.0               # assumed: rib grows into each boss over this length (H2: 12; shorter here to leave the finger gap 18 mm clear at full depth)
   corner_radius: 5.0       # measured on H2: plate's lower corners
   top_chamfer: 2.0         # assumed: 45 deg on the plate's top corners, which sit on the bed as printed
-  socket_entry: 5.2        # assumed: socket in each boss, first part (teardrop, point down in use = up as printed)
+  socket_entry: 5.2        # assumed: socket in each boss, first part (teardrop, point down in use = up as printed), cut to hole_width across
   socket_entry_depth: 2.0  # assumed: shoulder here that the barbs catch behind
   socket_chamber: 6.8      # assumed: wider chamber the legs spring out in
   socket_depth: 5.5        # assumed: chamber end (the pin tip reaches 4.65 with barbs 6.4)
-  hole: 5.2                # assumed: through the face; teardrop, point up (it runs sideways when the drawer prints)
+  hole: 5.2                # assumed: through the face; teardrop, point up (it runs sideways when the drawer prints), cut to hole_width across
+  hole_width: 3.74         # derived: flats + 0.2, so the pin can't slide sideways (first test: pins lay flats-up in round holes and the handle moved 0.8 mm up and down, Zeid 2026-10-18)
   counterbore: 9.4         # assumed: for the pin head, on the inside of the face
   counterbore_depth: 2.0   # assumed: head sits flush
   shank: 5.0               # assumed: pin shank
   flats: 3.54              # derived: pin thickness between its two flats (shank radius x sin 45 x 2), so it prints lying on a flat with nothing flatter than 45 deg
   head: 9.0                # assumed
   head_thick: 2.0          # = counterbore_depth
-  slot: 1.4                # assumed: splits the shank into two legs that bend in the bed plane
+  slot: 1.4                # assumed: splits the shank into two legs that bend in the bed plane (up and down when fitted: the pin goes in flats sideways)
   slot_start: 4.0          # assumed: from the head's back face
-  barb_slack: 0.15         # assumed: head-to-barb length this much longer than counterbore floor to socket shoulder
+  barb_ramp: 30            # assumed: back of each barb slopes this far off square, so the legs pull the handle tight against the face (first test: 0.15 end play left the handle loose at the bottom)
+  barb_preload: 0.25       # assumed: seated, the ramp meets the shoulder edge with the legs still this much squeezed (takes up -0.14 / +0.1 to 0.2 of length error)
   barb_flat: 0.5           # assumed
   tip: 1.2                 # assumed: tip radius after the 45 deg lead-in
-  barbs: [5.8, 6.1, 6.4]   # assumed: pin variants A, B, C (1, 2, 3 notches on the head), across the barbs; the hole is 5.2
+  barbs: [6.0, 6.2, 6.4]   # assumed: pin variants A, B, C, across the barbs; the hole is 5.2. A has a plain head, B a notch at one end, C at both ends
+  id_notch: 1.5            # assumed: depth of the V notches that mark pins B and C (the first test's 0.3 mm notches couldn't be seen)
