@@ -37,11 +37,11 @@ drawer:
   wall: 2.0                # assumed: side and rear walls
   floor: 2.0               # assumed
   front_thickness: 6.0     # assumed: front plate (carries the lip and label holder; its bottom front edge pivots on the sill)
-  top_gap: 0.5              # given (Zeid, 2026-10-17: smaller gap above the face; was 1.0): plate top below the roof. Only matters while the plate is inside the housing (closed or sliding level); tilting and lifting happen with the plate outside
+  top_gap: 0.5              # given (Zeid, 2026-10-17: smaller gap above the face; was 1.0): plate top below the roof. Only matters while the plate is inside the housing (closed or sliding level); tilting and leaving happen with the plate outside
   corner_radius: 4.0       # given (Zeid, 2026-10-17, approved in SolidCraft): front plate's top two corners, cut along the whole drawer so the side walls' outer top edge follows the curve
-  headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or lifted are the lower shoulder)
-  shoulder_length: 30      # derived: rear walls lowered over this length; >= the drawer inside the housing when lifted at the notch (26.0) + margin
-  lift_clearance: 0.5      # assumed: lowered rear walls stay this far under the roof when lifted into the exit channel
+  headroom: 3.5            # assumed: side walls below the roof (the walls inside the housing while tilted or leaving are the lower shoulder)
+  shoulder_length: 30      # derived: rear walls lowered over this length (sized for the old lift notch; build.py checks the branch and exit clear)
+  lift_clearance: 0.5      # assumed: sets the lowered rear walls' height from the exit channel's height
 
 pins:                      # teardrop pins on the drawer's rear side faces, in the housing's track
   diameter: 3.0            # assumed
@@ -55,9 +55,11 @@ track:                     # groove in each housing side wall; same teardrop sec
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
   tilt: 30                 # assumed: the arc about the sill ends here
-  notch_back: 8.5          # assumed: lift notch centre behind the stop (Zeid: notch clear of the arc); tooth between them 5.0, so the 1.2 print ramp on its underside leaves >= 3.8
   exit_web: 2.0            # assumed: solid between the arc's top and the exit channel's underside (the pin can't escape from the arc)
-  # the groove, arc, notch and exit are all the same section, so the pin fits everywhere with 0.25 clearance
+  # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).
+  # The way out is a branch from the arc's end, back along the fully tilted drawer, to the exit channel: its length is derived
+  # (exit channel height - arc end height) / sin(tilt), 12.4 here.
+  # the groove, arc, branch and exit are all the same section, so the pin fits everywhere with 0.25 clearance
 
 front:
   pull: scoop              # given (Zeid, 2026-10-17): his scoop replaces the lip; "lip" brings the lip back
@@ -92,8 +94,8 @@ label:                     # U holder at the bottom of the face, open at the top
   top_clear: 0.45          # assumed: side rails above the label's top
   blend: 0                 # Zeid tried a 1.2 blend on the outside edges and prefers it without (2026-10-17)
 
-fit_test:                  # short sections to print first: pin/track fit, drop-in loading, lift-out, and one pocket in this print orientation
-  housing_length: 34       # assumed: front part of the housing with the arc, notch and exit
+fit_test:                  # short sections to print first: pin/track fit, drop-in loading, the way out, and one pocket in this print orientation
+  housing_length: 34       # assumed: front part of the housing with the arc, branch and exit
   drawer_length: 40        # assumed: rear part of the drawer with the pins and shoulder
   coupon_half_width: 6.0   # assumed: pocket coupon either side of the hook column
   coupon_bottom: 12.0      # assumed: coupon from here to the unit top (both ridge pairs and the seat)

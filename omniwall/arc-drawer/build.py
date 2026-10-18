@@ -91,7 +91,11 @@ pin_end = (piv[0] + R * math.cos(math.radians(a1)), piv[1] + R * math.sin(math.r
 arc_top = pin_end[1] + rv
 exit_z = arc_top + TR["exit_web"] + K * rv           # exit channel centre; its teardrop apex is exit_web above the arc
 lift = exit_z - z_pin
-notch_y = y_stop - TR["notch_back"]
+# Branch: from the arc's end the tilted drawer is pushed straight back along its own
+# bottom (still on the sill) until the pins reach the exit channel. Its weight pulls
+# it back down to the arc's end, and the groove has no opening above the pins.
+branch = (exit_z - pin_end[1]) / math.sin(math.radians(tilt))
+branch_top = (pin_end[0] - branch * math.cos(math.radians(tilt)), exit_z)
 body_top = z_roof - DR["headroom"]
 plate_top = z_roof - DR["top_gap"]
 shoulder_z = z_roof - lift - DR["lift_clearance"]
@@ -116,9 +120,10 @@ def rect2(u0, v0, u1, v1):
 
 def track_region():
     """The track as a 2D region in the y-z plane: straight groove to the stop, the
-    arc the pin sweeps while the drawer tilts about the sill, the lift notch behind
-    the stop, and the exit channel from the notch's top to the front. Every piece is
-    the pin's teardrop section swept, so the pin fits everywhere with the same
+    arc the pin sweeps while the drawer tilts about the sill, the branch from the
+    arc's end back along the tilted drawer, and the exit channel from the branch's
+    top to the front. Every piece is the pin's teardrop section swept (turned with
+    the drawer on the arc and the branch), so the pin fits everywhere with the same
     clearance."""
     V = rect2(plate_t, z_pin - K * rv, y_stop, z_pin + rv) + tear(rv, y_stop, z_pin)
     # Arc: the section turns with the drawer, so its sweep is the annular sector
@@ -127,11 +132,12 @@ def track_region():
     ang = lambda a: (piv[0] + L * math.cos(math.radians(a)), piv[1] + L * math.sin(math.radians(a)))
     wedge = Polygon(piv, ang(a1), ang(a0), align=None)
     annulus = Pos(*piv) * (Circle(R + rv) - Circle(R - rv))
-    end = Pos(*piv) * Rot(0, 0, -tilt) * Pos(-piv[0], -piv[1]) * tear(rv, y_stop, z_pin)
-    V = V + (annulus & wedge) + end
-    # Lift notch (section swept up) and exit channel (swept forward, open at the front).
-    V = V + rect2(notch_y - rv, z_pin, notch_y + rv, exit_z) + tear(rv, notch_y, exit_z)
-    V = V + rect2(notch_y, exit_z - K * rv, D + 1, exit_z + rv)
+    # Branch: in the drawer's frame it is the groove carried on behind the stop, turned
+    # with the drawer to the full tilt.
+    leg = rect2(y_stop - branch, z_pin - K * rv, y_stop, z_pin + rv) + tear(rv, y_stop - branch, z_pin) + tear(rv, y_stop, z_pin)
+    V = V + (annulus & wedge) + Pos(*piv) * Rot(0, 0, -tilt) * Pos(-piv[0], -piv[1]) * leg
+    # Exit channel (swept forward, open at the front).
+    V = V + tear(rv, branch_top[0], exit_z) + rect2(branch_top[0], exit_z - K * rv, D + 1, exit_z + rv)
     return V
 
 
@@ -327,18 +333,38 @@ def drawer():
     return d
 
 
+def exit_tilt(yp):
+    """Nose-down tilt of a drawer resting on the sill with its pins in the exit channel at y yp."""
+    h = z_pin - z_floor
+    gap = lambda t: (piv[0] - yp) * math.sin(t) + (piv[1] - exit_z) * math.cos(t) + h
+    lo, hi = 0.0, math.radians(89)
+    for _ in range(60):
+        m = (lo + hi) / 2
+        lo, hi = (m, hi) if gap(m) < 0 else (lo, m)
+    return math.degrees(lo)
+
+
 def drawer_at(d, state, angle=None, y=None):
     """closed; open (at the stop, level); tilted (at the stop, nose down `angle`,
-    default the full tilt); lifted (pushed back to the notch, raised into the exit
-    channel, pulled out by `y` from there)."""
+    default the full tilt); pushed (tilted fully, then pushed back `y` along its
+    bottom, default up the whole branch); exit (pins in the exit channel `y` in
+    front of the branch, resting on the sill); held (same, held level)."""
     if state == "closed":
         return d
     if state == "open":
         return Pos(0, travel, 0) * d
     if state == "tilted":
         return (Pos(0, travel, 0) * d).rotate(Axis((0, piv[0], piv[1]), (1, 0, 0)), -(tilt if angle is None else angle))
-    if state == "lifted":
-        return Pos(0, travel - TR["notch_back"] + (y or 0), lift) * d
+    if state == "pushed":
+        s = branch if y is None else y
+        a = math.radians(tilt)
+        return Pos(0, -s * math.cos(a), s * math.sin(a)) * drawer_at(d, "tilted")
+    if state in ("exit", "held"):
+        yp = branch_top[0] + (y or 0)
+        m = Pos(0, yp - y_pin, lift) * d
+        if state == "held":
+            return m
+        return m.rotate(Axis((0, yp, exit_z), (1, 0, 0)), -exit_tilt(yp))
     raise ValueError(state)
 
 
@@ -406,7 +432,7 @@ for part in (h, d):
             b2 = so.bounding_box()
             log(f"    solid volume {so.volume:.2f} at x {b2.min.X:.2f}..{b2.max.X:.2f} y {b2.min.Y:.2f}..{b2.max.Y:.2f} z {b2.min.Z:.2f}..{b2.max.Z:.2f}")
 log(f"back plate {plate_t:.3f}  pin closed y {y_pin:.3f}  travel {travel:.2f} ({travel / (D - y_back) * 100:.0f} % of the drawer)  "
-    f"arc radius {R:.2f}  arc top z {arc_top:.2f}  exit channel z {exit_z:.2f}  lift {lift:.2f}  shoulder z {shoulder_z:.2f}  "
+    f"arc radius {R:.2f}  arc top z {arc_top:.2f}  exit channel z {exit_z:.2f}  lift {lift:.2f}  branch {branch:.2f} to y {branch_top[0]:.2f}  shoulder z {shoulder_z:.2f}  "
     f"hook columns {[round(x, 2) for x in hook_cols]}  hook bottoms {[round(z, 2) for z in hook_rows]}  seat z {seat_z:.2f}")
 # Measured on the solids, not read from the code.
 seats = [f for f in faces_at_z(h, seat_z) if f.normal_at().Z < 0]
@@ -422,14 +448,18 @@ export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
 log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
-for state in ("closed", "open", "tilted", "lifted"):
+for state in ("closed", "open", "tilted", "pushed"):
     moved = drawer_at(d, state)
     moved.label = f"drawer {state}"
     log(f"{state}: drawer vs housing {overlap(h, moved):.3f} mm3, vs hooks {sum(overlap(moved, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"{NAME}_assembly_{state}.step"))
 log("tilt sweep (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
-log("lifted, pulled out from the notch by (mm: mm3): " + ", ".join(
-    f"{y}: {overlap(h, drawer_at(d, 'lifted', y=y)):.3f}" for y in (0, 5, 10, 15, 20, 24)))
+log("pushed back up the branch (mm: mm3): " + ", ".join(
+    f"{s:.1f}: {overlap(h, drawer_at(d, 'pushed', y=s)):.3f}" for s in (0, branch / 4, branch / 2, 3 * branch / 4, branch)))
+ex = [round(y, 1) for y in (0, 4, 8, 12, 16, D - branch_top[0] - 1)]
+log("pulled out along the exit, resting on the sill (mm: deg, mm3): " + ", ".join(
+    f"{y}: {exit_tilt(branch_top[0] + y):.0f}, {overlap(h, drawer_at(d, 'exit', y=y)):.3f}" for y in ex))
+log("pulled out along the exit, held level (mm: mm3): " + ", ".join(f"{y}: {overlap(h, drawer_at(d, 'held', y=y)):.3f}" for y in ex))
 log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
 
 # Print orientation: housing on its back, drawer upright.

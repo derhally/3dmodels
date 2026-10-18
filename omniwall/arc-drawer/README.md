@@ -20,7 +20,7 @@ Drawer lengths include the 7.1 mm scoop. All of them tilt to 30° at the end of
 their travel and have the same scoop and label holder. A size is a folder with a
 `params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
 everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
-moves the track's stop to depth − 15.5 (44.5), so the arc, notch and exit
+moves the track's stop to depth − 15.5 (44.5), so the arc, branch and exit
 channel sit the same distance from the front as in the 84 mm unit. Every pocket
 channel has a ridge pair for each hook row (three on a 3-row unit), one pitch
 apart.
@@ -79,17 +79,25 @@ column of the back plate to check this pocket before printing the housing.
   drawer rocks forward on the sill and the pins ride up the arc until it ends at
   30°. The arc is closed: the drawer cannot fall out. The face is already out
   of the housing when it tilts, so the 0.5 mm gap between the face and the roof
-  only has to clear the slide; a sweep through slide, tilt, lift and exit finds
+  only has to clear the slide; a sweep through slide, tilt, branch and exit finds
   no overlap. The drawer of the unit above, tilted the same way, clears this
   drawer's scoop.
-- **Removing.** Level the drawer, push it back 8.5 mm, lift its back 12.5 mm, pull
-  it out: a vertical notch there leads into an exit channel to the housing's
-  front face. The rear 30 mm of the drawer's side walls are 6 mm lower so the
-  back can rise that far under the roof. A 5 mm tooth separates the notch
-  from the arc, and 2 mm of wall separates the arc's top from the exit channel.
-- **Loading.** Hold the drawer level with its back 12.5 mm up, push it in until
-  the pins stop at the end of the exit channel, let go: the pins drop down the
-  notch onto the groove. Push home.
+- **Removing.** Pull the drawer out until it tips to 30°, push it straight back
+  about 12 mm at that angle, then pull it out. A branch leaves the end of the
+  arc and runs back and up along the tilted drawer's own bottom, so the drawer
+  slides on the sill and its pins climb 6.2 mm into the exit channel, which
+  runs to the housing's front face. The groove has no opening above it: the old
+  lift notch, 8.5 mm behind the stop, let a drawer that was let go as its pins
+  passed under it rise into it and fall out (Zeid's 2 × 2 print). Going up the
+  branch lifts the whole drawer, so its weight pushes it back down with about
+  half its weight; let go on the branch and it slides back to the end of the
+  arc. The rear 30 mm of the drawer's side walls are 6 mm lower so the back
+  clears the roof. 2 mm of wall separates the end of the arc from the exit
+  channel above it, tapering to a point 3.5 mm back where the branch opens into
+  the channel.
+- **Loading.** Tip the drawer nose-down, put its pins in the exit channel at
+  the face and push it in. At the end of the channel the pins drop down the
+  branch onto the end of the arc by themselves. Level the drawer and push home.
 - **Front.** The face's top two corners are rounded to 4 mm
   (`drawer.corner_radius`); the cut runs the length of the drawer, so the side
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
@@ -112,8 +120,8 @@ column of the back plate to check this pocket before printing the housing.
   `../../labels/bin-label`, which keeps the text clear of the returns.
 
 `build.py` checks the drawer against the housing in every position (closed,
-sliding, at the stop, every 5° of the tilt, lifted and pulled out along the
-exit channel) and the hooks against the housing; all overlaps are 0 mm³
+sliding, at the stop, every 5° of the tilt, pushed up the branch and pulled out
+along the exit channel, both resting on the sill and held level) and the hooks against the housing; all overlaps are 0 mm³
 (`report.txt`), apart from the hooks' intended 0.56 mm³ in total where the
 snap ridges squeeze the seated hooks.
 
@@ -133,16 +141,16 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
 
 - **Housing: on its back,** panel side on the bed, open front up. Floor, roof,
   walls and back plate all stand vertical, so no roof is bridged. The pockets
-  are trenches in the bed face with 45° gables; in the track groove, arc, notch
+  are trenches in the bed face with 45° gables; in the track groove, arc, branch
   and exit channel every face that would hang flat is a 45° ramp rising from the
   groove floor to the wall face, so each layer of it is attached to the outer
   wall (a two-sided tent left floating slivers at the wall face).
 - **Drawer: upright** on its floor. Pins (point down), scoop (45° rim and ceiling) and
   label holder (45° under the bottom rail) print without support.
 - **Fit test plate first** (`test-prints/arc_drawer_fit_test_plate.3mf`, one plate; `build.py` writes it, git ignores it): the
-  front 34 mm of the housing (arc, notch, exit) with the rear 40 mm of the drawer
+  front 34 mm of the housing (arc, branch, exit) with the rear 40 mm of the drawer
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
-  drop-in load, the lift-out, and the pocket with two hooks.
+  drop-in load, the way out up the branch, and the pocket with two hooks.
 - PLA or PETG, 0.2 mm layers, 3+ walls. `report.txt` lists every face flatter
   than 45° from vertical on each print part: only the drawer's scoop-lip bridge.
 
@@ -156,7 +164,7 @@ folder with its own `params.yaml`.
 
 (the build123d-mcp server's `execute()` sandbox blocks the os, pathlib and yaml imports, so the
 script runs in a plain build123d Python; `uv` fetches build123d and PyYAML the first time). It rewrites
-`step/` (housing, drawer, assemblies with hooks: closed, open, tilted, lifted),
+`step/` (housing, drawer, assemblies with hooks: closed, open, tilted, pushed up the branch),
 `print/` and `report.txt`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py print\arc_drawer_housing_print.step
@@ -171,7 +179,7 @@ change to the track or pockets.
 `solidcraft/` holds the same housing and drawer rebuilt in SolidCraft, from the
 same `params.yaml`. `arc_drawer_3x2.solidcraft` is the editable design;
 `arc_drawer_assembly_states.step` has the housing with the drawer closed, open,
-tilted and lifted; the `_print` files are in print orientation (one 3MF per part).
+tilted and lifted. It predates the branch (2026-10-18) and still has the old lift notch; the `_print` files are in print orientation (one 3MF per part).
 
 To rebuild it: run `build_solidcraft.py`, which writes
 `solidcraft/solidcraft_commands.json`, then send that command list to the
@@ -194,6 +202,6 @@ bounding boxes and centroids, no hook clash.
 ## Untested
 
 - Pin and groove fit (0.25 mm clearance) and the drop-in load.
-- Lift of 12.5 mm to remove: whether that feels deliberate enough.
+- The way out: whether pushing the tipped drawer 12 mm back up the branch feels natural, and whether it slides back down by itself.
 - The scoop's grip from below; the label fit (0.15 mm per side).
 - The drawer drops to 30° whenever it is pulled to the stop.

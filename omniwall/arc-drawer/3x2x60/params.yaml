@@ -6,4 +6,4 @@ unit:
   file_prefix: arc_drawer_3x2x60 # output files: arc_drawer_3x2x60_housing_print.3mf and so on
 
 track:
-  stop: 44.5                     # derived: depth - 15.5, the same as 68.5 in the 84 deep unit, so the arc, notch and exit sit the same distance from the front
+  stop: 44.5                     # derived: depth - 15.5, the same as 68.5 in the 84 deep unit, so the arc, branch and exit sit the same distance from the front
