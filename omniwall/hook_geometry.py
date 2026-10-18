@@ -133,10 +133,12 @@ def bridge_hook(panel, root, tall=False):
     return keep_below_y(real, hook["panel_front_y"], hook["height"]) + front
 
 
-def slot_hook_body(panel, root):
+def slot_hook_body(panel, root, fill_gap=False):
     """Slot hook 1's measured body as printed, without its dovetail front or
     rim notch: shorter cavity, thinner foot, chamfered finger. Hook coordinates,
-    the slot's bottom edge at z = 0."""
+    the slot's bottom edge at z = 0. fill_gap fills the cavity solid (slot hook
+    2's top body, which has no snap) before chamfering, so the chamfer runs on
+    down the back."""
     hook = panel["slot_hook_1"]
     real = import_step(str(root / hook["step"]))
     H, cav, pr = hook["height"], hook["cavity"], hook["printed"]
@@ -149,13 +151,19 @@ def slot_hook_body(panel, root):
     cove = Plane.YZ * (Pos(y_c - r / 2, r / 2) * Rectangle(r, r) - Pos(y_c - r, r) * Circle(r))
     cove = extrude(cove, hook["thickness"])
     body = body + Pos(0, 0, pr["foot_top"]) * cove + Pos(0, 0, cav["top"]) * mirror(cove, Plane.XY)
+    t, eps = hook["thickness"], 1e-3
+    z_low = cav["top"]
+    if fill_gap:
+        # 0.1 past the cut face, overlapping the spine.
+        body = body + extrude(Plane.YZ * Polygon((0, pr["foot_top"] - 0.1), (y_c + 0.1, pr["foot_top"] - 0.1),
+                                                 (y_c + 0.1, cav["top"] + 0.1), (0, cav["top"] + 0.1), align=None), t)
+        z_low = eps   # down to the foot's back corner, not its bottom (it rests on the steel)
     # Chamfer the finger and the body's top above the cavity: the edges on the top
     # side (x = thickness, up when printing) and the finger's top corners. None on
-    # the flat (bed) side.
-    t, eps = hook["thickness"], 1e-3
+    # the flat (bed) side, and none on the cut face at y_c, where the front joins.
     def finger_edge(e):
         bb = e.bounding_box()
-        if bb.min.Z < cav["top"] - eps or bb.max.Z < cav["top"] + eps or bb.max.Y > y_c + eps:
+        if bb.min.Z < z_low - eps or bb.max.Z < z_low + eps or bb.max.Y > y_c + eps or bb.min.Y > y_c - eps:
             return False
         on_top_side = bb.min.X > t - eps
         top_corner = bb.max.X - bb.min.X > t - eps and bb.min.Z > hook["finger_top"] - eps
@@ -228,17 +236,15 @@ def slot_hook_2(panel, root):
         sq = Pos(y - r / 2, z + sz * r / 2) * Rectangle(r, r)
         return extrude(Plane.YZ * (sq - Pos(y - r, z + sz * r) * Circle(r)), t)
     coves = cove(yp, zl + ft, fl["lower_foot_root"], 1)
-    if ts["fill_top_gap"]:
-        # The top body has no snap, so its gap needn't flex: fill it solid.
-        coves = coves + extrude(Plane.YZ * Polygon((0, ft - 0.1), (y_c + 0.1, ft - 0.1), (y_c + 0.1, cav["top"] + 0.1),
-                                                   (0, cav["top"] + 0.1), align=None), t)
-    else:
+    # The top body has no snap, so its gap needn't flex: fill_top_gap fills it
+    # solid (in slot_hook_body, so its back edge is chamfered all the way down).
+    if not ts["fill_top_gap"]:
         coves = coves + cove(y_c, cav["top"], fl["under_top_bar"], -1) + cove(y_c, ft, fl["top_foot"], 1)
     # Reliefs at the corners the panel's edges sit in (D: the finger's front face
     # meets the top; F: the top body's underside meets the spine, over the steel
     # between the slots): a fillet would push into the steel, so a round groove
     # is cut into the hook instead, which takes the sharp corner out of it.
-    out = slot_hook_body(panel, root) + foot + fill + coves + Pos(0, 0, zl - d) * front
+    out = slot_hook_body(panel, root, ts["fill_top_gap"]) + foot + fill + coves + Pos(0, 0, zl - d) * front
     for r, y, z in ((fl["d_relief"], hook["panel_back_y"], H), (fl["f_relief"], yp, 0.0)):
         if r > 0:
             out = out - extrude(Plane.YZ * Pos(y, z) * Circle(r), t)
