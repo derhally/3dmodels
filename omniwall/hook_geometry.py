@@ -39,10 +39,11 @@ def v_groove_prism(x_face, inward, zc, y0, y1, depth, flank_deg, radius, embed=0
     return extrude(pl * sk, amount=y1 - y0, dir=(0, 1, 0))
 
 
-def hook_front(dm, H, y_panel, spine_start=None):
+def hook_front(dm, H, y_panel, spine_start=None, notch_drops=(0.0,)):
     """Spine and dovetail head for a hook whose panel front is at y_panel and whose
     front is H tall. The spine runs from spine_start (default: the panel front) to
-    the neck, which always sits block_depth in front of the panel."""
+    the neck, which always sits block_depth in front of the panel. notch_drops:
+    how far below the top notch pair each pair of snap notches sits."""
     dv = dm["dovetail"]
     y0 = y_panel if spine_start is None else spine_start
     yb = y_panel + dv["block_depth"]
@@ -72,11 +73,12 @@ def hook_front(dm, H, y_panel, spine_start=None):
     # Snap notches across both sides of the head, stopping short of the front so
     # the head's strip on the bed stays in one piece.
     n = dv["notch"]
-    zc = H - n["below_top"]
     y_flank_end = yf - dv["head_flat"] - (hh - hn) * math.tan(math.radians(dv["flank_angle"]))
-    for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
-        head = head - v_groove_prism(x_face, inward, zc, y_flank_end, yf - n["front_land"],
-                                     n["depth"], n["flank_angle"], n["bottom_radius"])
+    for drop in notch_drops:
+        zc = H - n["below_top"] - drop
+        for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
+            head = head - v_groove_prism(x_face, inward, zc, y_flank_end, yf - n["front_land"],
+                                         n["depth"], n["flank_angle"], n["bottom_radius"])
     return block + head, (cx, yb, yf)
 
 
@@ -189,7 +191,9 @@ def two_slot_hook(panel, root):
     there. One pitch lower, the one-slot hook's foot and rim-notch snap sit in the
     lower slot. A spine in front of the panel joins them across the steel between
     the slots, and one dovetail front runs the whole height, its top (and snap
-    notches) where the one-slot hook's are."""
+    notches) where the one-slot hook's are. A second notch pair one pitch lower
+    sits where a one-slot hook's notches would be in the lower slot, so a housing
+    with ridges for two rows of one-slot hooks clicks onto this hook too."""
     dm, hook, ts = panel["dovetail_mount"], panel["one_slot_hook"], panel["two_slot_hook"]
     H, yp, y_c, t = hook["height"], hook["panel_front_y"], hook["printed"]["cavity_front_y"], hook["thickness"]
     d = hook["printed"]["rim_notch"]["depth"]
@@ -203,5 +207,5 @@ def two_slot_hook(panel, root):
     # Spine across the steel and down the lower slot: from the panel's front face
     # (the one-slot body fills the upper slot behind y_c).
     fill = extrude(Plane.YZ * Polygon((yp, zl - d), (y_c, zl - d), (y_c, 0), (yp, 0), align=None), t)
-    front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c)
+    front, _ = hook_front(dm, H - zl + d, yp, spine_start=y_c, notch_drops=(0.0, -zl))
     return one_slot_body(panel, root) + foot + fill + Pos(0, 0, zl - d) * front

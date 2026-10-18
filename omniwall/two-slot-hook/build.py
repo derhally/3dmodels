@@ -90,6 +90,13 @@ yb = yp + dv["block_depth"] + pk["spine_clearance"]
 chan = Polygon((cx - bw - e, yb), (cx + bw + e, yb), (cx, yb + bw + e), align=None)
 floor = Polygon((cx - hh - e, yf), (cx + hh + e, yf), (cx, yf + hh + e), align=None)
 seat = H + pk["top_clearance"]
+# A second ridge pair one pitch lower, as in the drawer housings (housing.second_ridges):
+# it clicks into a one-slot hook in the lower slot, or the two-slot hook's lower notches.
+r = pk["ridge"]
+y_ridge_end = yp + dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
+for zc in (seat - r["below_top"] - pitch,):
+    for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
+        void = void - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
 void = void + Pos(0, 0, z_lo) * extrude(chan, seat - z_lo) + Pos(0, 0, z_lo) * extrude(floor, seat - z_lo)
 cp = cp - void
 cp.label = "coupon"
@@ -120,6 +127,12 @@ log(f"coupon vs panel: {overlap(cp, pnl):.3f} mm3")
 log(f"hook vs coupon: {overlap(hk, cp):.3f} mm3 (the ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the head's flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
 for label, dz in (("coupon 3 mm higher (sliding down, ridges not yet over the notches)", 3.0),):
     log(f"hook vs {label}: {overlap(hk, Pos(0, 0, dz) * cp):.3f} mm3")
+# The same coupon on two one-slot hooks, one in each slot: the snaps must land in the same places.
+ones = [Pos(0, 0, z) * one_slot_hook(panel, ROOT) for z in (0.0, zl)]
+log(f"two one-slot hooks vs coupon: {sum(overlap(o, cp) for o in ones):.3f} mm3 (both ridge pairs in notches); "
+    f"3 mm higher: {sum(overlap(o, Pos(0, 0, 3.0) * cp) for o in ones):.3f} mm3; vs panel: {sum(overlap(o, pnl) for o in ones):.3f} mm3")
+for o in ones:
+    o.label = "one-slot hook"
 
 
 def bad_faces(part, limit=45.0):
@@ -150,6 +163,7 @@ OUT.mkdir(exist_ok=True)
 export_step(hk, str(OUT / "two_slot_hook.step"))
 export_step(cp, str(OUT / "two_slot_coupon.step"))
 export_step(Compound(children=[pnl, hk, cp]), str(OUT / "two_slot_assembly.step"))
+export_step(Compound(children=[pnl, *ones, copy.copy(cp)]), str(OUT / "one_slot_pair_assembly.step"))
 
 hp = to_bed(Rot(0, -90, 0) * hk)        # on its flat side, like the other hooks
 cpp = to_bed(Rot(90, 0, 0) * cp)        # on its back, like the drawer housings
@@ -160,7 +174,7 @@ for part, stem in ((hp, "two_slot_hook_print"), (cpp, "two_slot_coupon_print")):
     b = part.bounding_box()
     bad = bad_faces(part)
     log(f"{stem}: {b.size.X:.1f} x {b.size.Y:.1f} x {b.size.Z:.1f}, overhangs flatter than 45 deg: {len(bad)}"
-        + (" (the neck's 0.95 mm bridge 0.75 above the bed and the bed-side snap notch's 0.23 roof, both on the printed one-slot hook too)" if stem.endswith("hook_print") else ""))
+        + (" (the neck's 0.95 mm bridge 0.75 above the bed and the bed-side snap notches' 0.23 roofs, as on the printed one-slot hook)" if stem.endswith("hook_print") else ""))
     for x in sorted(bad, key=lambda t: -t[1])[:10]:
         log(f"    {x[0]:.1f} deg from vertical, area {x[1]} mm2, at ({x[2].X:.1f}, {x[2].Y:.1f}, {x[2].Z:.1f})")
 hb, cb = hp.bounding_box(), cpp.bounding_box()

@@ -13,9 +13,12 @@ coupon, to check that it goes on, snaps and holds before any drawer changes.
   notch sits in the lower slot and snaps over that slot's bottom rim.
 - **Front:** a spine joins the two across the steel between the slots, and one
   dovetail front runs the whole 45.7 mm. Its top and snap notches are where the
-  one-slot hook's are, so anything that hangs on the one-slot hook hangs on this.
+  one-slot hook's are, and a second notch pair one cell lower sits where a
+  one-slot hook's notches would be in the lower slot. So one housing fits both:
+  a pocket with ridges for two rows clicks onto two one-slot hooks or onto one
+  two-slot hook (Zeid, 2026-10-18).
 
-It is 2.95 × 11.15 × 45.7 mm, 826.7 mm³. The geometry is `two_slot_hook()` in
+It is 2.95 × 11.15 × 45.7 mm, 826.2 mm³. The geometry is `two_slot_hook()` in
 [hook_geometry.py](../hook_geometry.py), with its values in
 [panel.yaml](../panel.yaml) (`two_slot_hook`, and `one_slot_hook` for everything
 it shares).
@@ -23,7 +26,7 @@ it shares).
 ## The coupon
 
 A one-cell-wide slice (25.1 mm) of a 2-row housing back, 50.5 mm tall, with the
-drawer housings' print-tested pocket (`housing.pocket` in
+drawer housings' print-tested pocket and its second ridge pair one cell lower (`housing.pocket` in
 [arc-drawer/params.yaml](../arc-drawer/params.yaml)). The pocket's closed top
 rests on the hook's top, which puts the coupon's top and bottom edges 0.15 mm
 inside the horizontal slot rows above and below. That is the lining-up a drawer
@@ -39,6 +42,7 @@ local), plus `report.txt` here.
 | `test-prints/two_slot_test_plate.3mf` | Hook and coupon on one plate, in print orientation |
 | `test-prints/two_slot_hook_print.*`, `test-prints/two_slot_coupon_print.*` | Each part on its own (STEP, STL, 3MF) |
 | `test-prints/two_slot_assembly.step` | Hook and coupon hung on a stand-in for the panel |
+| `test-prints/one_slot_pair_assembly.step` | The same coupon on two one-slot hooks instead |
 | `test-prints/two_slot_hook.step`, `test-prints/two_slot_coupon.step` | Each part in hook coordinates |
 | `report.txt` | Sizes and the checks below |
 
@@ -54,12 +58,15 @@ from this folder.
   the last 3° (up to 2.0 mm³, about what the one-slot hook's snap does). Between
   14° and 6° the top body's lower back corner rubs the upper rim by up to 0.2 mm,
   so the hook lifts that much while it swings.
-- Coupon vs panel 0; hook vs coupon only the snap ridges in the head's notches;
-  sliding down 3 mm higher, no contact.
+- Coupon vs panel 0. On the two-slot hook and on two one-slot hooks the
+  coupon's overlap is the same 0.28 mm³: both ridge pairs sit in notches either
+  way. Sliding down onto the two-slot hook, the lower ridges ride the head's
+  flank on the way (that is the click); on one-slot hooks they ride over the
+  upper hook the same way.
 - Print: hook on its flat side, coupon on its back. No floating regions. The
   coupon has nothing flatter than 45°. The hook has the same two small bridges
   as the one-slot hook (the neck's 0.95 mm under the head, and the bed-side
-  notch's 0.23 mm roof).
+  notches' 0.23 mm roofs).
 
 ## Printing
 
@@ -77,3 +84,5 @@ is fine at 0.2 mm. No supports, no brim needed.
    slots.
 4. Pull and twist the coupon to see whether one hook in two slots feels steadier
    than the one-slot hook.
+5. If you have two one-slot hooks, hang them in the same two slots and check the
+   same coupon clicks onto them as well.
