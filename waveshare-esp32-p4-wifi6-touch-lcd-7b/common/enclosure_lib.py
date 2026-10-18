@@ -107,8 +107,12 @@ def facade_plate(g, W, L, s_g):
     mh = g.P["mic_holes"]
     for sx in (-1, 1):
         cx, cy = g.gx + sx * g.dp["mic_x"], s_g - g.ph / 2 - mh["below_opening"]
-        pts = [(cx, cy)] + [(cx + mh["pitch"] * math.cos(math.radians(a)),
-                             cy + mh["pitch"] * math.sin(math.radians(a))) for a in range(0, 360, 60)]
+        if mh.get("layout", "hex") == "row":        # one row across, at row_s above the plate's bottom
+            n = mh["count"]
+            pts = [(cx + (i - (n - 1) / 2) * mh["pitch"], mh["row_s"]) for i in range(n)]
+        else:                                       # 7-hole hex cluster
+            pts = [(cx, cy)] + [(cx + mh["pitch"] * math.cos(math.radians(a)),
+                                 cy + mh["pitch"] * math.sin(math.radians(a))) for a in range(0, 360, 60)]
         for px, py in pts:
             plate -= Pos(px, py, 0) * Cylinder(mh["diameter"] / 2, 3 * t)
     return plate
@@ -222,8 +226,12 @@ def body_shell(g, W, L, D, body_cut):
     up = P["usb_port"]
     if up["enabled"]:
         body = usb_port_mount(body, up, D, wall)
-    for i in range(9):   # vertical vent slots: short bridges print cleanly
-        body -= Pos((i - 4) * 8, D - wall / 2, Zc - 22) * Box(3, 3 * wall, 24)
+    vent_w, vent_h, vent_r = 3.0, 24.0, 1.5
+    for i in range(9):   # vertical vent slots with round ends: short arches print cleanly
+        vx = (i - 4) * 8
+        body -= Pos(vx, D - wall / 2, Zc - 22) * Box(vent_w, 3 * wall, vent_h - 2 * vent_r)
+        for vz in (Zc - 22 - vent_h / 2 + vent_r, Zc - 22 + vent_h / 2 - vent_r):
+            body -= Pos(vx, D - wall / 2, vz) * Cylinder(vent_r, 3 * wall, rotation=(90, 0, 0))
     ft = P["feet"]
     for fx in (-1, 1):
         for fy in (ft["inset"], D - ft["inset"]):
@@ -233,6 +241,40 @@ def body_shell(g, W, L, D, body_cut):
 
 
 def usb_port_mount(body, up, D, wall):
+    if up.get("style", "snap") == "screw":
+        return usb_screw_port_mount(body, up, D, wall)
+    return usb_snap_port_mount(body, up, D, wall)
+
+
+def usb_screw_port_mount(body, up, D, wall):
+    """Flanged panel USB-C connector screwed on from the outside.
+
+    The flange sits inside the back wall in a pocket deep enough that the wall
+    left at the socket equals the socket's protrusion, so its face ends flush
+    with the flat outside. The screw holes are teardrops (sideways on the bed).
+    """
+    x, z = up["x"], up["z"]
+    inner = D - wall
+    pocket = wall - up["protrusion"]
+    fl, fw = up["screw_flange"]
+    fc, sc = up["flange_clearance"], up["socket_clearance"]
+    sl, sw = up["socket"]
+    if pocket > 0:
+        with BuildSketch(Plane.XZ.offset(-(inner - 0.01))) as pk:
+            with Locations((x, z)):
+                SlotOverall(fl + 2 * fc, fw + 2 * fc)
+        body -= extrude(pk.sketch, amount=-(pocket + 0.01))
+    with BuildSketch(Plane.XZ.offset(-(D + 0.01))) as hole:
+        with Locations((x, z)):
+            SlotOverall(sl + 2 * sc, sw + 2 * sc)
+    body -= extrude(hole.sketch, amount=wall + 0.5)
+    for dx in (-1, 1):
+        body -= teardrop(Plane.XZ.offset(-(D + 0.01)), (x + dx * up["screw_pitch"] / 2, D + 0.01, z),
+                         up["screw_hole"] / 2, wall + 0.5, (0, 0, 1))
+    return body
+
+
+def usb_snap_port_mount(body, up, D, wall):
     """Rounded-rectangle cutout for a snap-in panel USB-C socket.
 
     The socket's clips latch on a panel of `panel_t`. If the back wall is thinner
@@ -309,6 +351,22 @@ def usb_port_stand_in(P, D):
     """Oval flange on the outside of the back wall, body and opened clips behind it."""
     up = P["usb_port"]
     x, z = up["x"], up["z"]
+    if up.get("style", "snap") == "screw":
+        wall = P["enclosure"]["wall"]
+        fl, fw = up["screw_flange"]
+        bw, bh, bl = up["screw_body"]
+        with BuildSketch(Plane.XZ.offset(-(D - up["protrusion"]))) as fs:
+            with Locations((x, z)):
+                SlotOverall(fl, fw)
+        port = extrude(fs.sketch, amount=wall - up["protrusion"])         # flange in its pocket
+        sl, sw = up["socket"]
+        with BuildSketch(Plane.XZ.offset(-D)) as ss:
+            with Locations((x, z)):
+                SlotOverall(sl, sw)
+        port += extrude(ss.sketch, amount=up["protrusion"])                 # socket, flush outside
+        port += Pos(x, D - wall, z) * Box(bw, bl, bh, align=(CENTER, MAX, CENTER))  # body behind
+        port.label = "usb_port"
+        return port
     fw, fh, ft = up["flange"]
     bw, bh, bl = up["body"]
     cw, cl = up["clip_span"]
@@ -345,7 +403,12 @@ def write(shape, path, formats):
     for fmt in formats:
         out = path.parent / f"{path.name}.{fmt}"
         if fmt == "step":
-            export_step(shape, str(out))
+            try:
+                export_step(shape, str(out))
+            except RuntimeError:
+                # build123d 0.13 refuses some boolean results that carry build
+                # history; a fresh wrapper of the same geometry exports fine.
+                export_step(type(shape)(shape.wrapped, label=shape.label), str(out))
         elif fmt == "stl":
             export_stl(shape, str(out))
         elif fmt == "3mf":

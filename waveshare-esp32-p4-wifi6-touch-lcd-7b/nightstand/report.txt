@@ -1,0 +1,27 @@
+== Clashes (overlap > 0.01 mm3) ==
+case parts with each other: none
+base parts with each other: none
+tilt  0 deg: no clashes; case bottom 21.4 above the table
+tilt 10 deg: no clashes; case bottom 24.6 above the table
+tilt 20 deg: no clashes; case bottom 29.0 above the table
+tilt 30 deg: no clashes; case bottom 34.5 above the table
+
+== Print orientation: overhangs flatter than 45 deg from vertical, bed fit ==
+front_plate (face down): 188.2 x 120.0 x 16.6, 1 solid, vol 40.6 cm3, fits, overhangs: 0
+back_shell (back panel down): 188.2 x 120.0 x 20.9, 1 solid, vol 78.2 cm3, fits, overhangs: 0
+case_hinge (plate down, knuckles up): 27.1 x 30.5 x 23.5, 1 solid, vol 7.2 cm3, fits, overhangs: 0
+knob (flat face down, pocket up): 23.9 x 24.0 x 9.0, 1 solid, vol 3.4 cm3, fits, overhangs: 0
+base (upright): 160.0 x 100.9 x 50.0, 1 solid, vol 101.9 cm3, fits, overhangs: 6
+    90.0 deg, 18.7 mm2 at (-23.2, 49.0, 13.8)
+    72.0 deg, 15.21 mm2 at (-39.9, 49.0, 13.6)
+    72.0 deg, 15.21 mm2 at (-20.1, 49.0, 13.6)
+    72.0 deg, 8.17 mm2 at (-26.6, 49.3, 11.3)
+    72.0 deg, 8.17 mm2 at (-33.4, 49.3, 11.3)
+    90.0 deg, 7.28 mm2 at (-27.8, 49.3, 11.4)
+deck_lid (top face down, snap arms up): 160.0 x 100.9 x 12.0, 1 solid, vol 17.7 cm3, fits, overhangs: 0
+tower_lid (underside down, knuckle up): 116.8 x 64.9 x 27.4, 1 solid, vol 21.6 cm3, fits, overhangs: 0
+clamp_tab (flat): 7.0 x 15.2 x 3.0, 1 solid, vol 0.2 cm3, fits, overhangs: 0
+
+== Mass and tip stability (display and speaker masses ASSUMED) ==
+tilt  0: total 601 g, centre of mass Y 28.0 Z 60.3 (feet Y 2.0..82.9); screen top at Y 0.0 Z 141.4; tips back with 2.29 N at the top, forward with 1.08 N; case 367 g, hinge holds 0.096 N m (forward)
+tilt 30: total 601 g, centre of mass Y 34.3 Z 67.3 (feet Y 2.0..82.9); screen top at Y 42.7 Z 150.9; tips back with 1.90 N at the top, forward with 1.26 N; case 367 g, hinge holds 0.059 N m (forward)

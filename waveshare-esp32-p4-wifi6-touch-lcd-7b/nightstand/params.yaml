@@ -1,0 +1,146 @@
+# Nightstand stand ("Stem"): the display in a near-upright case on a serrated
+# hinge, over a low base with a short tower behind the screen. The speaker lies
+# in the tower facing up, under a slot grille in the tower lid.
+# Merged over ../common/common.yaml; only variant-specific values here.
+# Units: mm, degrees. World: X across (+ right seen from the front), Y depth
+# (+ back, case face at Y = 0 when upright), Z up from the nightstand.
+
+enclosure:
+  angle: 90              # case modelled upright; tilt is applied about the hinge
+  border: 16.3           # even frame round the window, as the compact stand (the clamp
+                         # columns beside the pocket need it): case 188.2 x 120.0
+
+mic_holes:               # the glass sits only 7.8 above the case bottom here, too close for the
+                         # desk stands' 7-hole cluster 5 below it (it broke into the rounded
+                         # bottom edge): one row of holes instead
+  layout: row
+  count: 5               # 1.2 mm holes at the shared 2.0 pitch, centred on each mic
+  row_s: 5.8             # row centre above the case bottom: between the soft bottom edge (ends
+                         # 3.7 up) and the glass pocket (starts 7.8 up)
+
+clamps:
+  column_s: 6.0          # as compact: columns 7 across x 6 along the screen
+  column_shift: 0.5      # nudged away from the PCB's RESET button
+
+case:
+  rear_clearance: 2.0    # behind the clamp-tab screw heads (deepest part in the case)
+  bottom_gap: 3.0        # case bottom above the deck top when upright (design choice)
+  vent_slots: 9          # vertical slots near the top of the back panel, as compact
+  snaps_s: [25.0, 95.0]  # plate-to-shell snaps on each side wall, up the case (between the
+                         # clamp columns)
+  snaps_x: [-45.0, 45.0] # and on the bottom and top walls, across (clear of the mic holes)
+  corner_r: 8.0          # case corners seen from the front (design choice)
+  soft_edge: [1.2, 2.5]  # front and back perimeter: 45 deg chamfer on the bed side, then this
+                         # fillet radius between it and the sides, so it prints without overhang
+
+tilt:
+  min: 0                 # upright
+  max: 30                # back from vertical; the hinge locks at each tooth step
+
+hinge:                   # rosette joint: two knuckles side by side, one toothed pair between
+                         # them; loosening the knob lets the case knuckle slide off the teeth
+  height: 45.0           # axis above the case bottom (design choice, mockup)
+  knuckle_r: 11.0        # both knuckles
+  gap: 1.5               # case back to the tower knuckle (= tower gap), constant with tilt
+  tower_w: 14.0          # tower lid's knuckle, across (left of the pair)
+  case_w: 12.0           # case bracket's knuckle, across (right); the pair is centred
+  teeth: 36              # radial V teeth on the facing knuckle faces: 10 deg steps. 72 teeth
+                         # (5 deg) would be under 0.5 mm tall here, too fine for a 0.4 nozzle
+  tooth_r_in: 0.0        # teeth run from here to the knuckle edge (0: to the axis, so no
+                         # bore faces down in print)
+  face_gap: 0.1          # axial clearance between meshed tooth faces
+  bolt_hole: 4.4         # M4 clearance, teardrop
+  nut_af: 7.2            # M4 nut 7.0 across flats + 0.2, captured in the tower knuckle
+  nut_t: 3.2             # M4 nut thickness
+  nut_pocket: 7.4        # pocket depth from the tower knuckle's left face: the nut sits 4.2
+                         # deep, so the bolt end stays hidden in the pocket
+  bolt: [4, 30]          # M4 x 30 hex-head bolt (DIN 933), head in the knob: ends 1 mm inside
+                         # the pocket, 3 mm through the nut (still through it when loosened 1.5)
+  plate_t: 6.0           # case bracket plate on the case back
+  plate_corner_r: 3.0    # its corners seen from the back
+  plate_z: [-12.5, 18.0] # case bracket plate extent about the axis (stays 1.5 above the tower lid)
+  plate_screws: [[7.5, -7.0], [-9.0, 14.8], [9.0, 14.8]]   # X, Z about the axis: M3 x 8 pan
+                         # head from inside the case into the plate
+  pilot: 2.5             # M3 self-tapping
+  pilot_depth: 5.9       # 8 - 2.4 panel = 5.6 in; stays inside the 6 mm plate
+
+knob:
+  diameter: 24.0         # knurled thumb knob on the right end of the hinge bolt
+  thickness: 9.0
+  base_t: 4.0            # under the bolt head; sets where the bolt ends
+  head_af: 7.2           # M4 hex head 7.0 across flats + 0.2
+  knurls: 18
+  knurl_r: 1.2
+
+base:
+  width: 160.0           # deck width (design choice; the case is 188 wide)
+  front: -8.0            # deck front, Y: 8 mm in front of the upright screen face
+  wall: 2.4
+  corner_r: 6.0          # base corners seen from above
+  deck_h: 14.0           # deck interior height (floor top to deck lid underside)
+  deck_edge: [0.8, 1.8]  # deck top perimeter (the lid prints top down): chamfer, then fillet
+  floor_edge: [0.6, 1.5] # base bottom perimeter (on the bed): chamfer, then fillet
+  tower_corner_r: 2.0    # tower front corners seen from above
+  tower_lid_edge_r: 1.5  # tower lid top perimeter (prints top up)
+  deck_lid_t: 2.0        # deck top plate; printed top face down, its snap arms up
+  tower_gap: 1.5         # upright case back to the tower front face
+  tower_h: 50.0          # tower walls' top = tower lid underside (the lid stays 3 below the
+                         # hinge knuckles)
+  tower_side_room: 6.0   # each side of the speaker: the lid screw bosses, and keeps the
+                         # countersinks inside the lid's rounded top edge
+  tower_rear_room: 1.0   # behind the speaker
+  tower_lid_t: 2.4
+  lid_snaps_y: [8.0, 60.0]   # deck lid snaps on each side wall (Y)
+  lid_snaps_x: [-65.0, 65.0] # and on the front wall (X)
+  speaker_gasket: 1.0    # speaker face below the tower lid: foam tape on the face's rim,
+                         # compressed to this, seals it to the grille and stops rattles
+  tower_boss_d: 5.5      # tower lid screw bosses in the tower's four corners
+  pilot: 2.5             # M3 self-tapping
+  pilot_depth: 6.5
+
+grille:                  # slots through the tower lid over the speaker, running front to
+                         # back: the deck grille Zeid picked (11 x 4 mm, 4.4 mm bars) turned up
+  slots: 11
+  slot: 4.0
+  bar: 4.4
+  length: 28.0           # slot length (Y); the speaker is centred under the slots
+  clear: 2.0             # slots start this far behind the knob and the knuckles, so the
+                         # hinge never sits over them at any tilt
+
+wire:                    # USB-C cable and speaker lead from the tower into the case: through
+                         # facing holes in the tower front and the case back, across the
+                         # 1.5 mm gap; tilting to 30 deg opens it to ~16 mm, so leave ~20 mm
+                         # of slack inside the case
+  x: -36.0               # hole centre, seen from the front
+  z0: 33.0               # hole bottom above the table, upright
+  width: 7.0             # a PH2.0 plug (about 10 x 4.5, assumed) passes on its side
+  side: 10.0             # straight sides, then a 45 deg roof (prints without a bridge)
+  cable_d: 3.5           # USB-C cable stand-in (assumed)
+
+snap:                    # cantilever snaps with 45 deg barbs and ridges: every face prints
+                         # within 45 deg, and a firm pull releases them for service
+  arm_t: 1.6             # arm thickness (flexes this way)
+  arm_w: 8.0             # arm width
+  arm_l: 10.0            # root to barb tip: 1.4 % strain at the 0.6 mm deflection (PLA)
+  barb: 0.8              # barb height off the arm
+  ridge: 1.0             # ridge height off the wall
+  gap: 1.2               # arm to wall: the arm clears the ridge by 0.2; barb and ridge
+                         # overlap 0.6 (barb + ridge - gap)
+
+usb_port:                # snap-in panel USB-C socket in the tower's back wall, under the speaker
+  x: -30.0               # clear of the speaker posts
+  z: 9.4                 # centre height
+  panel_t: 2.5
+
+feet:
+  diameter: 10.0
+  depth: 0.0             # no recesses (their roofs would bridge): stick-on bumpers on the
+                         # flat floor
+  inset: 10.0
+
+mass:                    # for the tip check; PLA parts from their volume
+  pla_density: 1.24      # g/cm3
+  pla_fill: 0.85         # thin-walled parts at 3 walls print close to solid
+  display: 230           # g, ASSUMED: please weigh the display and board
+  speaker: 70            # g, ASSUMED: please weigh the speaker
+  hardware: 15           # g, screws, bolt, nut, port (estimate)
