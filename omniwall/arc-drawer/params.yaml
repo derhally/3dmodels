@@ -49,7 +49,7 @@ pins:                      # teardrop pins on the drawer's rear side faces, in t
   height: 14.0             # assumed: pin centre above the unit's bottom edge (groove centre)
   reach: 1.0               # assumed: into the 1.2 groove, 0.2 off its floor
   point_angle: 45          # derived: teardrop point downward so the pin prints upright on the drawer
-  flat_point: true         # Zeid, 2026-10-18 (narrower track): the point is cut flat at the pin's radius (a 1.24 wide flat), so the pin turns inside a 3.0 circle and the track is one pin + clearance wide (3.5, was 4.74)
+  flat_point: true         # Zeid, 2026-10-18 (narrower track): the point is cut flat at the pin's radius (a 1.24 wide flat), so the pin turns inside a 3.0 circle and the track is one pin + clearance wide (3.5, was 4.74); the flat is chamfered 45 deg from the drawer wall up to the pin's end (Zeid), so nothing faces flat down
 
 track:                     # channel in each housing side wall that the drawer's pins run in
   depth: 1.2               # assumed

@@ -408,6 +408,11 @@ def drawer():
                       (D + pr, plate_top), (D - 1, plate_top), align=None)
         lip = extrude(Plane.YZ.offset(x0) * lip, x1 - x0, dir=(1, 0, 0))
     pin = extrude(Plane.YZ.offset(s - PN["reach"]) * tear(PN["diameter"] / 2, y_pin, z_pin), x0 + 0.5 - (s - PN["reach"]), dir=(1, 0, 0))
+    if PN.get("flat_point"):
+        # Chamfer the flat under the pin at 45 deg, rising from the wall to the pin's end, so nothing faces flat down.
+        xt, zb = s - PN["reach"], z_pin - PN["diameter"] / 2
+        wedge = Polygon((x0, zb), (xt - 0.1, zb + x0 - xt + 0.1), (xt - 0.1, zb - 1), (x0, zb - 1), align=None)
+        pin = pin - Pos(0, y_pin, 0) * extrude(Plane.XZ * wedge, PN["diameter"], both=True)
     d = solid(body + plate + lip + label_holder((x0 + x1) / 2) + pin + mirror(pin, Plane.YZ.offset(W / 2)))
     if P["front"]["pull"] == "scoop" and SC["blend"] > 0:
         d, nc, nf = blend_scoop(d)
