@@ -6,20 +6,25 @@ tilts down 30° at the end of its travel and stays captive. Units tile edge to
 edge in any grid of widths and heights with 0.3 mm between them. `params.yaml`
 holds every dimension with its source, and `build.py` makes all the files from it.
 
-Two sizes so far, which tile together (same height and depth):
+Four sizes so far. Units of the same depth tile together; the 84 mm and 60 mm
+deep ones line up at the panel, not at the front.
 
-| | 3 cells × 2 rows (this folder) | 2 cells × 2 rows ([`2x2/`](2x2/)) |
-|---|---|---|
-| Housing W × D × H, mm | 75.9 × 84 × 50.5 | 50.5 × 84 × 50.5 |
-| Drawer, outside W × L × H | 73.1 × 80.5 × 45.0 | 47.7 × 80.5 × 45.0 |
-| Drawer inside | 66.5 wide × 65.5 long × 40 tall (walls 2, floor 2) | 41.1 wide, otherwise the same |
-| Hooks | 2 columns, 1 or 2 rows | 1 column on the centre line, 1 or 2 rows |
-| Files | `step/`, `print/arc_drawer_*` | `2x2/step/`, `2x2/print/arc_drawer_2x2_*` |
+| Size | Folder, file prefix | Housing W × D × H, mm | Drawer outside W × L × H | Drawer inside W × L × H | Hooks | Travel |
+|---|---|---|---|---|---|---|
+| 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 73.1 × 80.5 × 45.0 | 66.5 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
+| 2 × 2, 84 deep | [`2x2/`](2x2/), `arc_drawer_2x2_*` | 50.5 × 84 × 50.5 | 47.7 × 80.5 × 45.0 | 41.1 × 65.4 × 40 | 1 column on the centre line, 1 or 2 rows | 55.9 (76 %) |
+| 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 73.1 × 56.5 × 45.0 | 66.5 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
+| 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 73.1 × 56.5 × 70.4 | 66.5 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
 
-Both have 55.9 mm of travel, then tilt to 30°, and the same scoop and label
-holder. A size is a folder with a `params.yaml` that sets only what differs
-(`2x2/params.yaml` sets `cells: 2`); everything else comes from this folder's
-`params.yaml`.
+Drawer lengths include the 7.1 mm scoop. All of them tilt to 30° at the end of
+their travel and have the same scoop and label holder. A size is a folder with a
+`params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
+everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
+moves the track's stop to depth − 15.5 (44.5), so the arc, notch and exit
+channel sit the same distance from the front as in the 84 mm unit. On a 3-row
+unit the pocket channels have snap ridges for the top two hook rows; a hook in
+the bottom row slides into the same channel and holds the back to the panel
+without a click.
 
 ## Where it sits on the panel
 
@@ -122,7 +127,7 @@ writes the same kind of file with `../core_3mf.py`). Bambu Studio 2.x rejects th
 geometry, so there is one file per part instead; arrange plates in Bambu Studio.
 
 **Everything in one file:** `print/arc_drawer_all_parts.3mf` (and
-`2x2/print/arc_drawer_2x2_all_parts.3mf`) holds the housing and the drawer side
+`<size>/print/arc_drawer_<size>_all_parts.3mf` for the other sizes) holds the housing and the drawer side
 by side on one plate, already in print orientation, 10 mm apart. Open it in
 Bambu Studio and slice. The drawer label is a separate two-colour print in
 [labels/bin-label](../../labels/bin-label/README.md).
@@ -145,7 +150,8 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
 ## Regenerating
 
 `build.py` with no argument builds the 3 × 2 unit; `build.py 2x2` builds the
-2 × 2 into `2x2/`. Any new size is a new folder with its own `params.yaml`.
+2 × 2 into `2x2/`, and likewise `3x2x60` and `3x3x60`. Any new size is a new
+folder with its own `params.yaml`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 

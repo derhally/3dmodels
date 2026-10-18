@@ -430,7 +430,7 @@ for state in ("closed", "open", "tilted", "lifted"):
 log("tilt sweep (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
 log("lifted, pulled out from the notch by (mm: mm3): " + ", ".join(
     f"{y}: {overlap(h, drawer_at(d, 'lifted', y=y)):.3f}" for y in (0, 5, 10, 15, 20, 24)))
-log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (10, 25, 40, travel - 3)))
+log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
 
 # Print orientation: housing on its back, drawer upright.
 hp, dp = print_housing(h), to_bed(d)

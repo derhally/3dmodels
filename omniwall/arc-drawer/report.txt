@@ -13,7 +13,7 @@ tilted: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 lifted: drawer vs housing 0.000 mm3, vs hooks 0.000 mm3
 tilt sweep (deg: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 25: 0.000, 30: 0.000
 lifted, pulled out from the notch by (mm: mm3): 0: 0.000, 5: 0.000, 10: 0.000, 15: 0.000, 20: 0.000, 24: 0.000
-sliding (pin y: mm3): 23: 0.000, 38: 0.000, 53: 0.000, 66: 0.000
+sliding (pin y: mm3): 27: 0.000, 41: 0.000, 55: 0.000, 66: 0.000
 arc_drawer_housing_print: 75.9 x 50.5 x 84.0, faces 109, overhangs flatter than 45 deg: 0
 arc_drawer_drawer_print: 73.1 x 80.5 x 45.0, faces 59, overhangs flatter than 45 deg: 1
     90.0 deg from vertical, area 41.16 mm2, at (-5.8, 37.6, 36.0)
