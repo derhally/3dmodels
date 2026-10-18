@@ -133,10 +133,14 @@ for lx, ly in lug_spots:                            # floor bosses for the duct 
     body -= Pos(lx, ly, z_lug + 0.01) * Cylinder(
         du["lug_pilot"] / 2, z_lug - du["lug_pilot_skin"], align=(CENTER, CENTER, MAX))
 pitch = du["grille_slot"] + du["grille_bar"]
-n_slots = int((2 * xi - 2 + du["grille_bar"]) // pitch)
+n_slots = du.get("grille_count") or int((2 * xi - 2 + du["grille_bar"]) // pitch)
+slot_r, slot_h = du["grille_slot"] / 2, z_mt - z_fi
 for i in range(n_slots):                            # slot grille in the front lip
     x = (i - (n_slots - 1) / 2) * pitch
-    body -= Pos(x, wall / 2, z_fi) * Box(du["grille_slot"], 3 * wall, z_mt - z_fi, align=(CENTER, CENTER, MIN))
+    # vertical slots with round ends: printed standing up, each top is a short arch
+    body -= Pos(x, wall / 2, z_fi + slot_h / 2) * Box(du["grille_slot"], 3 * wall, slot_h - 2 * slot_r)
+    for zc in (z_fi + slot_r, z_mt - slot_r):
+        body -= Pos(x, wall / 2, zc) * Cylinder(slot_r, 3 * wall, rotation=(90, 0, 0))
 body.label = "body"
 
 # --- stand-ins ---------------------------------------------------------------------------
@@ -167,7 +171,7 @@ write(duct_print, print_dir / "p4_7b_compact_duct_print", ["step", "stl", "3mf"]
 tw = cp["tab_w"]
 write(on_bed(Compound(children=[Pos(i * (tw + 4), 0, 0) * tab for i in range(4)])),
       print_dir / "p4_7b_compact_clamp_tabs_print", ["step", "stl", "3mf"])
-write(facade_test_frame(g, W, L, s_g), print_dir / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
+write(facade_test_frame(g, W, L, s_g), out_dir / "test-prints" / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
 
 tb, db = tab_print.bounding_box(), duct_print.bounding_box()
 tab_x0 = db.size.X / 2 + 12 + tb.size.X / 2

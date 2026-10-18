@@ -189,10 +189,9 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
 
     <section id="before" aria-labelledby="h-before">
       <div class="eyebrow">Before you start</div>
-      <h2 id="h-before">Check two things</h2>
+      <h2 id="h-before">Check one thing</h2>
       <div class="note">
         <b>Not yet confirmed by a print</b>
-        <p><b style="color:inherit">USB-C socket cutout.</b> It's a 14.1 × 5.75 mm rounded rectangle (R1.3) in the 2.4 mm back wall, from your measurements. The clips are rated for a 2.5 mm panel, and a slightly thinner wall is fine for snap clips.</p>
         <p><b style="color:inherit">Speaker standoffs.</b> They're Ø7.5 mm and sit in the speaker's corner notches. The notches need to be at least 8 mm across.</p>
       </div>
       <p>The glass pocket and window are already confirmed with the facade test frame. If you're printing in a new material or on another printer, print <code>p4_7b_facade_test_frame</code> first. It takes a few minutes. Press the glass in from behind and check for an even sliver of black glass around the screen.</p>
@@ -208,7 +207,7 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
             <tr class="group"><td colspan="3">Electronics</td></tr>
             <tr><td class="qty">1</td><td>Waveshare ESP32-P4-WIFI6-Touch-LCD-7B<span class="sub">7" 1024 × 600 touch display, glass 164.28 × 99.17 mm</span></td><td>The display</td></tr>
             <tr><td class="qty">1</td><td>Box speaker, 100 × 45 × 20.75 mm<span class="sub">Two cones, four Ø6.2 mm corner ears 10 mm behind the cone face, centres 91.2 × 36.2 mm</span></td><td>Audio, into the board's PH2.0 <code>SPK</code> header</td></tr>
-            <tr><td class="qty">1</td><td>Snap-in panel USB-C socket<span class="sub">16.7 × 10.3 mm oval bezel, 14.1 × 5.75 mm panel cutout, 4 wires (V, D−, D+, G) to a PH2.0 plug</span></td><td>Power and data socket in the back wall, no screws</td></tr>
+            <tr><td class="qty">1</td><td>Flanged panel-mount USB-C connector<span class="sub">25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange</span></td><td>Power and data port in the back wall, two screws from outside</td></tr>
             <tr><td class="qty">1</td><td>Right-angle USB-C cable with a flat ribbon<span class="sub">Head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm</span></td><td>Board's middle <code>USB</code> port, spliced to the socket's wires</td></tr>
 
             <tr class="group"><td colspan="3">Screws</td></tr>
@@ -267,8 +266,8 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
           <h3>Connect the speaker</h3>
           <p>Plug the speaker lead into the PH2.0 <code>SPK</code> header at the top edge of the board. The lead needs about 12 cm to get there.</p></div></li>
         <li class="step" data-step="chin-5"><div class="num"><input type="checkbox" id="chin-5" aria-label="Step done"></div><div class="body">
-          <h3>Install the USB-C socket</h3>
-          <p>Feed the socket's wires through the cutout in the back wall from outside, then push the socket in until its clips snap behind the wall. Splice its wires to the right-angle cable (see <a href="#wiring">Wiring the USB-C port</a>).</p>
+          <h3>Install the USB-C connector</h3>
+          <p>Set the connector's flange into the pocket on the inside of the back wall, socket through the opening, then fit its two screws from outside. The socket face ends flush with the wall. Splice its wires to the right-angle cable (see <a href="#wiring">Wiring the USB-C port</a>).</p>
           <div class="parts"><span>USB-C socket</span></div></div></li>
         <li class="step" data-step="chin-6"><div class="num"><input type="checkbox" id="chin-6" aria-label="Step done"></div><div class="body">
           <h3>Plug in the right-angle cable</h3>
@@ -293,8 +292,8 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
           <p>Set the duct on the floor with its mouth pressed against the inside of the front lip, behind the slot grille. Screw its four lugs to the floor bosses.</p>
           <div class="parts"><span>4 × M3 × 8 pan</span></div></div></li>
         <li class="step" data-step="cmp-3"><div class="num"><input type="checkbox" id="cmp-3" aria-label="Step done"></div><div class="body">
-          <h3>Install the USB-C socket</h3>
-          <p>Feed the socket's wires through the cutout in the back wall from outside, then push the socket in until its clips snap behind the wall.</p>
+          <h3>Install the USB-C connector</h3>
+          <p>Set the connector's flange into the pocket on the inside of the back wall, socket through the opening, then fit its two screws from outside. The socket face ends flush with the wall.</p>
           <div class="parts"><span>USB-C socket</span></div></div></li>
         <li class="step" data-step="cmp-4"><div class="num"><input type="checkbox" id="cmp-4" aria-label="Step done"></div><div class="body">
           <h3>Seat the display in the pocket</h3>
@@ -414,9 +413,10 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
     if (v.speakerPlate) g += poly(slab(v.speakerPlate[0], v.speakerPlate[1], t, t + 20.75), "--part-speaker");
     if (v.duct) g += poly(pts(v.duct), "--part-duct", 'opacity="0.85"');
     if (v.speakerBack) g += rect(v.speakerBack.y[0], v.speakerBack.y[1], v.speakerBack.z[0], v.speakerBack.z[1], "--part-speaker");
-    // snap-in USB-C socket: oval bezel outside the back wall, body through the cutout
-    g += rect(v.D, v.D + 2, 10.85, 21.15, "--part-port");
-    g += rect(v.D - 12, v.D, 13.35, 18.65, "--part-port");
+    // flanged USB-C connector: flange in its pocket inside the back wall, socket flush, body behind
+    g += rect(v.D - 2.4, v.D - 1.3, 3.9, 12.1, "--part-port");
+    g += rect(v.D - 1.3, v.D, 6.3, 9.7, "--part-port");
+    g += rect(v.D - 17.4, v.D - 2.4, 5, 11, "--part-port");
     // desk line
     g += `<line x1="0" x2="${VB.w}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink-soft)" stroke-width="0.5" stroke-dasharray="2 2"/>`;
     return `<svg viewBox="0 0 ${VB.w} ${VB.h}" role="img" aria-label="Side section of the enclosure, drawn to scale">${g}</svg>`;

@@ -24,11 +24,8 @@ compact one is about a third smaller in depth and height.
 
 ## Before you start
 
-Two things haven't been confirmed by a print yet:
+One thing hasn't been confirmed by a print yet:
 
-- **USB-C socket cutout.** It's a 14.1 × 5.75 mm rounded rectangle (R1.3) in
-  the 2.4 mm back wall, from measurements. The socket's clips are rated for a
-  2.5 mm panel, and a slightly thinner wall is fine for snap clips.
 - **Speaker standoffs.** They're Ø7.5 mm and sit in the speaker's corner
   notches. The notches need to be at least 8 mm across.
 
@@ -45,7 +42,7 @@ behind and check for an even sliver of black glass around the screen.
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B (7" 1024 × 600, glass 164.28 × 99.17 mm) | The display |
 | 1 | Box speaker, 100 × 45 × 20.75 mm, two cones, four Ø6.2 mm corner ears 10 mm behind the cone face, centres 91.2 × 36.2 mm | Audio, into the board's PH2.0 `SPK` header |
-| 1 | Snap-in panel USB-C socket: 16.7 × 10.3 mm oval bezel, 14.1 × 5.75 mm panel cutout, 4 wires (V, D−, D+, G) to a PH2.0 plug | Power and data socket in the back wall, no screws |
+| 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with a flat ribbon (head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm) | Board's middle `USB` port, spliced to the socket's wires |
 
 ### Screws
@@ -108,9 +105,9 @@ Work with the front plate lying face-down on a soft cloth.
    *Uses 4 × clamp tab, 4 × M2.5 × 6, 4 × M3 × 8 pan.*
 4. **Connect the speaker.** Plug the speaker lead into the PH2.0 `SPK` header
    at the top edge of the board. The lead needs about 12 cm to get there.
-5. **Install the USB-C socket.** Feed the socket's wires through the cutout in
-   the back wall from outside, then push the socket in until its clips snap
-   behind the wall. Splice its wires to the right-angle cable (see
+5. **Install the USB-C connector.** Set the connector's flange into the pocket on the inside of the back wall,
+   socket through the opening, then fit its two screws from outside. The
+   socket face ends flush with the wall. Splice its wires to the right-angle cable (see
    [Wiring the USB-C port](#wiring-the-usb-c-port)).
 6. **Plug in the right-angle cable.** Plug its head into the board's middle
    `USB` port, on the left edge seen from the front, with the ribbon pointing
@@ -132,9 +129,9 @@ Work with the front plate lying face-down on a soft cloth.
    pressed against the inside of the front lip, behind the slot grille. Screw
    its four lugs to the floor bosses.
    *Uses 4 × M3 × 8 pan.*
-3. **Install the USB-C socket.** Feed the socket's wires through the cutout in
-   the back wall from outside, then push the socket in until its clips snap
-   behind the wall.
+3. **Install the USB-C connector.** Set the connector's flange into the pocket on the inside of the back wall,
+   socket through the opening, then fit its two screws from outside. The
+   socket face ends flush with the wall.
 4. **Seat the display in the pocket.** Lay the plate face-down and lower the
    display into the pocket from behind, glass first, until it rests against the
    facade. The wider black border goes to the bottom.

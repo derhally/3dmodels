@@ -22,5 +22,6 @@ duct:
   lug_hole: 3.4          # M3 x 8 into a 2.5 mm pilot in the floor boss
   lug_pilot: 2.5
   lug_pilot_skin: 0.6    # floor left under the pilot: 5.8 mm deep for the 5.5 mm an M3 x 8 needs
-  grille_slot: 4.0       # vertical slots in the front lip
-  grille_bar: 1.6
+  grille_slot: 3.5       # vertical slots in the front lip, round top and bottom
+  grille_bar: 1.5
+  grille_count: 9        # a centred group (44 mm wide); 0 = fill the whole mouth
