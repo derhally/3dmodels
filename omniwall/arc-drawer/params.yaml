@@ -114,27 +114,33 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   roof: 2.0                # assumed: solid above the seat
   mark_depth: 0.4          # assumed: ID grooves on the front face
 
-handle_test:               # handle_test.py: a separate bar handle that snaps onto the drawer face with two legs on its posts (Zeid's idea, 2026-10-18); test print first
-  plate_width: 60.0        # assumed: strip of drawer face for the test
-  plate_height: 24.0       # assumed
-  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
-  bar_width: 42.0          # assumed: handle overall width
-  post: 10.0               # assumed: post width across
-  height: 12.0             # assumed: handle height (posts, bar and snap tabs)
-  depth: 20.0              # assumed: handle front from the drawer face
-  bar: 8.0                 # assumed: bar front to back, leaving a 12 mm finger gap
-  round_out: 2.0           # assumed: outside corners in plan view
-  round_in: 1.0            # assumed: inside corners in plan view
-  top_round: 1.0           # assumed: top edges
-  bed_chamfer: 0.5         # assumed: bed edges (45 deg, so they print without supports)
-  # The handle prints on its bottom face, so it is a plan-view shape extruded upward: nothing overhangs, and the snap tabs'
-  # legs bend in the bed plane, along the layers (Zeid, 2026-10-18: plugs attached to the handle, fewer parts)
-  tab: 5.0                 # assumed: snap tab width across, behind each post; full handle height
-  slot: 1.4                # assumed: splits each tab into two legs
-  slot_into_post: 4.0      # assumed: slot runs this far into the post, so the legs are long enough to flex
-  barb_slack: 0.15         # assumed: barb's back face this far behind the face's back
-  barb_flat: 0.5           # assumed: barb's straight length
-  tip: 1.2                 # assumed: half width at the tip after the 45 deg lead-in
-  barbs: [5.8, 6.1, 6.4]   # assumed: handle variants A, B, C (1, 2, 3 notches on the bar's top), across the barbs
-  hole: 5.2                # assumed: slot in the face for each tab, across
-  hole_height: 12.4        # assumed: slot height to the start of its 45 deg pointed top (the face prints standing, so the slot's top can't be flat)
+handle_test:               # handle_test.py: Zeid's scoop as a separate part, held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
+  plate_width: 60.0        # assumed: strip of drawer face for the test (the top 22 mm of the face, where the scoop sits)
+  plate_height: 22.0       # assumed
+  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face; the scoop's shape is the scoop: section
+  # The scoop prints on its back (the face it sits on): its floor's underside is then 45 deg and its rims face up, so it needs no
+  # lip_flat and no supports; its open back sits against the drawer face as before. A boss on each side wall at the face holds a
+  # socket the pin snaps into, standing upright as printed.
+  boss: 10.0               # assumed: boss diameter, a cylinder out from the face
+  boss_length: 10.0        # assumed: out from the face (socket 5, its 45 deg end cone 3.4, 1.6 mm end), no further out than the scoop itself
+  boss_chamfer: 1.5        # assumed: 45 deg chamfer round the boss's outer end, so it reads as part of the scoop
+  boss_x: 22.5             # assumed: socket centres this far either side of the middle (the scoop's walls are +-20 at the face)
+  boss_reach: 5.5          # assumed: each boss is a stadium reaching this far in from its socket, into the side wall (clipped at the tray's inside)
+  boss_z: 3.0              # assumed: boss centres this far above the scoop's lowest edge at the face
+  socket_entry: 5.2        # assumed: socket in each boss, first part
+  socket_entry_depth: 2.0  # assumed: shoulder here that the barbs catch behind
+  socket_chamber: 6.8      # assumed: wider chamber the legs spring out in
+  socket_depth: 5.0        # assumed: to the start of the 45 deg end cone (chamber 3.0: barb section is at most 2.5 long)
+  hole: 5.2                # assumed: through the face; teardrop, point up (it runs sideways when the drawer prints)
+  counterbore: 9.4         # assumed: for the pin head, on the inside of the face
+  counterbore_depth: 2.0   # assumed: head sits flush
+  shank: 5.0               # assumed: pin shank
+  flats: 3.54              # derived: pin thickness between its two flats (shank radius x sin 45 x 2), so it prints lying on a flat with nothing flatter than 45 deg
+  head: 9.0                # assumed
+  head_thick: 2.0          # = counterbore_depth
+  slot: 1.4                # assumed: splits the shank into two legs that bend in the bed plane
+  slot_start: 4.0          # assumed: from the head's back face
+  barb_slack: 0.15         # assumed: head-to-barb length this much longer than counterbore floor to socket shoulder
+  barb_flat: 0.5           # assumed
+  tip: 1.2                 # assumed: tip radius after the 45 deg lead-in
+  barbs: [5.8, 6.1, 6.4]   # assumed: pin variants A, B, C (1, 2, 3 notches on the head), across the barbs; the hole is 5.2
