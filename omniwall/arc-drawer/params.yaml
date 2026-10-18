@@ -21,7 +21,7 @@ unit:
   depth: 84                # assumed: housing from the panel face to its front
 
 housing:
-  side: 2.4                # assumed: side wall; the 1.2 track groove leaves 1.2 (3 perimeters)
+  side: 3.2                # given (Zeid, 2026-10-18: the track showed through the 1.2 left behind the groove; was 2.4): side wall; the 1.2 track groove leaves 2.0 (5 perimeters)
   roof: 2.0                # assumed
   floor: 3.0               # assumed: the drawer slides on it; its front edge is the tilt pivot (sill)
   back_front_wall: 2.0     # assumed: solid in front of the pocket floor gable (back plate = 6.5 + 1.725 + 2.0 = 10.225)
@@ -55,6 +55,7 @@ track:                     # groove in each housing side wall; same teardrop sec
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
   tilt: 30                 # assumed: the arc about the sill ends here
+  stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc. Opens the ceiling 0.3 mm at most
   exit_web: 2.0            # assumed: solid between the arc's top and the exit channel's underside (the pin can't escape from the arc)
   # No opening above the groove (Zeid, 2026-10-18: a drawer let go as its pins passed the old lift notch rose into it and fell out).
   # The way out is a branch from the arc's end, back along the fully tilted drawer, to the exit channel: its length is derived

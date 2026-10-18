@@ -11,10 +11,10 @@ deep ones line up at the panel, not at the front.
 
 | Size | Folder, file prefix | Housing W × D × H, mm | Drawer outside W × L × H | Drawer inside W × L × H | Hooks | Travel |
 |---|---|---|---|---|---|---|
-| 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 73.1 × 80.5 × 45.0 | 66.5 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
-| 2 × 2, 84 deep | [`2x2/`](2x2/), `arc_drawer_2x2_*` | 50.5 × 84 × 50.5 | 47.7 × 80.5 × 45.0 | 41.1 × 65.4 × 40 | 1 column on the centre line, 1 or 2 rows | 55.9 (76 %) |
-| 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 73.1 × 56.5 × 45.0 | 66.5 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
-| 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 73.1 × 56.5 × 70.4 | 66.5 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
+| 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 71.5 × 80.5 × 45.0 | 64.9 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
+| 2 × 2, 84 deep | [`2x2/`](2x2/), `arc_drawer_2x2_*` | 50.5 × 84 × 50.5 | 46.1 × 80.5 × 45.0 | 39.5 × 65.4 × 40 | 1 column on the centre line, 1 or 2 rows | 55.9 (76 %) |
+| 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 71.5 × 56.5 × 45.0 | 64.9 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
+| 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 71.5 × 56.5 × 70.4 | 64.9 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
 
 Drawer lengths include the 7.1 mm scoop. All of them tilt to 30° at the end of
 their travel and have the same scoop and label holder. A size is a folder with a
@@ -73,11 +73,14 @@ column of the back plate to check this pocket before printing the housing.
 
 - **Slide.** The drawer sits on the housing floor and pulls out on a teardrop
   pin (Ø3, 45° point down) on each rear side face, running in a matching groove
-  1.2 mm deep in each housing wall, 0.25 mm clearance all round.
+  1.2 mm deep in each housing wall, 0.25 mm clearance all round. The side walls
+  are 3.2 mm, so 2 mm of wall is left behind the groove (with 1.2 mm the
+  track showed through on the outside of Zeid's 2 × 2 print).
 - **Stop and tilt.** 56 mm out, the pins reach the end of the groove. The groove
   continues as an arc centred on the sill (the floor's front edge), so the
   drawer rocks forward on the sill and the pins ride up the arc until it ends at
-  30°. The arc is closed: the drawer cannot fall out. The face is already out
+  30°. The corner where the groove's ceiling meets the arc, above the stop,
+  is rounded to 3 mm (`track.stop_round`). The arc is closed: the drawer cannot fall out. The face is already out
   of the housing when it tilts, so the 0.5 mm gap between the face and the roof
   only has to clear the slide; a sweep through slide, tilt, branch and exit finds
   no overlap. The drawer of the unit above, tilted the same way, clears this

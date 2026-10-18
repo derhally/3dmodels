@@ -138,6 +138,18 @@ def track_region():
     V = V + (annulus & wedge) + Pos(*piv) * Rot(0, 0, -tilt) * Pos(-piv[0], -piv[1]) * leg
     # Exit channel (swept forward, open at the front).
     V = V + tear(rv, branch_top[0], exit_z) + rect2(branch_top[0], exit_z - K * rv, D + 1, exit_z + rv)
+    # Round the sharp corner where the groove's ceiling meets the arc's outer edge, across
+    # from the stop (Zeid, 2026-10-18), like the arc's inner edge on the other side.
+    r = TR["stop_round"]
+    if r > 0:
+        zc = z_pin + rv
+        yc = piv[0] - math.sqrt((R + rv) ** 2 - (zc - piv[1]) ** 2)
+        faces = list(V.faces())
+        for i, f in enumerate(faces):
+            vs = [v for v in f.vertices() if abs(v.X - yc) < 0.01 and abs(v.Y - zc) < 0.01]
+            if vs:
+                faces[i] = f.fillet_2d(r, vs)
+        V = Compound(faces)
     return V
 
 
@@ -438,7 +450,7 @@ log(f"back plate {plate_t:.3f}  pin closed y {y_pin:.3f}  travel {travel:.2f} ({
 seats = [f for f in faces_at_z(h, seat_z) if f.normal_at().Z < 0]
 log(f"measured: pocket seats at z {sorted(round(f.center().Z, 3) for f in seats)} (expect {seat_z:.3f} x{len(hook_cols)})")
 xs = sorted({round(f.center().X, 3) for f in h.faces() if abs(abs(f.normal_at().X) - 1) < 1e-3 and 0.5 < f.center().Y < D - 0.5})
-log(f"measured: housing x faces at {xs} (groove floors expect {TR['depth']:.1f} and {W - TR['depth']:.1f}, bay walls {HS['side']} and {W - HS['side']})")
+log(f"measured: housing x faces at {xs} (groove floors expect {HS['side'] - TR['depth']:.1f} and {W - HS['side'] + TR['depth']:.1f}, bay walls {HS['side']} and {W - HS['side']})")
 pin_faces = sorted({round(f.center().X, 3) for f in d.faces() if abs(abs(f.normal_at().X) - 1) < 1e-3})
 log(f"measured: drawer x faces at {pin_faces} (pin tips expect {HS['side'] - PN['reach']:.1f} and {W - HS['side'] + PN['reach']:.1f})")
 for b_ in BLENDS:
