@@ -1,12 +1,12 @@
-# Test print for Zeid's scoop as a separate part held on the drawer face by two printed
-# snap pins: a strip of drawer face, three scoops and pins with three barb sizes, all in
-# print orientation. Values in params.yaml (handle_test; the scoop's shape from scoop).
+# Test print for a plate handle on a stand-off rib, like Zeid's HANDLE H2, held on the drawer
+# face by two printed snap pins: a strip of drawer face, the handle and pins with three barb
+# sizes, all in print orientation. Values in params.yaml (handle_test).
 # Run from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python handle_test.py
 # Writes test-prints/handle_test_* (STEP and STL per part, one 3MF with everything, the
 # assembly with pins B, and a report).
-# Use coordinates: x across the face (0 = middle of the scoop), y out of the face (face
-# front at y = 0), z up (the face's top at plate_top, as on the drawer).
+# Use coordinates: x across the face (0 = middle of the handle), y out of the face (face
+# front at y = 0), z up (the face's top at Z_TOP, as on the 3x2 drawer).
 import math
 from pathlib import Path
 
@@ -15,7 +15,7 @@ from build123d import *  # noqa: F403
 
 HERE = Path(__file__).resolve().parent
 P = yaml.safe_load((HERE / "params.yaml").read_text())
-T, SC, FT6 = P["handle_test"], P["scoop"], P["drawer"]["front_thickness"]
+T, FT6 = P["handle_test"], P["drawer"]["front_thickness"]
 exec((HERE.parent / "core_3mf.py").read_text())
 K = math.sqrt(2)
 OUT = HERE / "test-prints"
@@ -29,11 +29,9 @@ def log(s):
 
 
 Z_TOP = 48.0                                         # face top on the 3x2 drawer (only sets where the strip sits)
-ang = SC["angle"]
-s_, c_ = math.sin(math.radians(ang)), math.cos(math.radians(ang))
-Z0 = Z_TOP - SC["below_top"] - SC["depth"] * (s_ + c_)   # scoop's lowest edge at the face, as in build.py
+ZH = Z_TOP - T["below_top"]                          # handle top: rib top and plate top edge, the bed as printed
+ZB = ZH - T["socket_down"]                           # pin and socket axis height
 xs = (-T["boss_x"], T["boss_x"])
-ZB = Z0 + T["boss_z"]                                # pin and boss axis height
 
 
 def tear(r):
@@ -49,7 +47,7 @@ def bore_y(sec, y0, y1, x, z):
 
 def plate():
     """Top strip of the drawer face with a counterbored teardrop hole for each pin."""
-    w, h = T["plate_width"], T["plate_height"]
+    w, h = T["strip_width"], T["strip_height"]
     p = Pos(0, -FT6 / 2, Z_TOP - h / 2) * Box(w, FT6, h)
     for x in xs:
         p = p - bore_y(tear(T["hole"] / 2), -FT6 - 1, 1, x, ZB)
@@ -57,42 +55,47 @@ def plate():
     return p
 
 
-def scoop(notches):
-    """Zeid's scoop tray (walls tapering to the front wall, no back wall), its floor tilted
-    `angle` up and out from the face and opening downward, cut at the face; built in the
-    tray's own frame (u along the floor, v out of its open side towards the floor), then
-    turned into place."""
-    w, dp, h, t, fw = SC["width"], SC["depth"], SC["height"], SC["wall"], SC["front_width"]
-    fl, fr = (w - fw) / 2, (w + fw) / 2
-    a = t * math.hypot(fl, dp) / dp
-    b = fl * (dp - t) / dp + a
-    out = [(x - w / 2, u) for x, u in ((0, 0), (fl, dp), (fr, dp), (w, 0))]
-    walls_pl = [(x - w / 2, u) for x, u in ((0, 0), (fl, dp), (fr, dp), (w, 0), (w - a, 0), (w - b, dp - t), (b, dp - t), (a, 0))]
-    walls = extrude(Polygon(*walls_pl, align=None), h, dir=(0, 0, 1))
-    floor = Pos(0, 0, h - t) * extrude(Polygon(*out, align=None), t + dp, dir=(0, 0, 1))   # runs on into the face, as in build.py
-    tray = Pos(0, 0, Z0) * Rot(ang, 0, 0) * (walls + floor)
-    sc = tray & Pos(0, 20, Z0 - 20) * Box(80, 40, 80, align=(Align.CENTER, Align.CENTER, Align.MIN))   # cut at the face
-    # The open inside of the tray, so the bosses can't fill it
-    cavity = Pos(0, 0, Z0) * Rot(ang, 0, 0) * (extrude(Polygon(*out, align=None), h - t, dir=(0, 0, 1)) - walls)
+def handle(notches):
+    """Plate leaning `lean` out from the face, hung from a rib that stands it `standoff` off the
+    face; the rib grows into a flat-topped boss at each end holding a socket for a snap pin."""
+    W, L, t, so = T["width"], T["drop"], T["thickness"], T["standoff"]
+    lean = math.radians(T["lean"])
+    # Plate, built upright (x across, y its thickness, z up along it), then leaned out about its top inner edge
+    pl = Box(W, t, L + 3, align=(Align.CENTER, Align.MIN, Align.MAX))
+    pl = Pos(0, 0, 3) * pl
+    pl = fillet(pl.edges().filter_by(Axis.Y).filter_by(lambda e: e.center().Z < -L + 0.1), T["corner_radius"])
+    h = Pos(0, so, ZH) * Rot(T["lean"], 0, 0) * pl
+    # Rib, front-view section: middle bar, tapers tangent to the bosses, bosses flat on top and round below
+    r, rb, zc = T["boss"] / 2, T["rib"], T["boss_height"] - T["boss"] / 2   # zc: boss's round end's centre below the top
+    sec = Rectangle(2 * T["boss_x"], rb, align=(Align.CENTER, Align.MAX))
     for x in xs:
-        # Boss: a stadium out from the face, from inside the side wall to the socket, so the
-        # pull goes straight into the wall; clipped where it would enter the tray's inside
-        xw = math.copysign(abs(x) - T["boss_reach"], x)
-        st = Pos((x + xw) / 2, 0) * SlotCenterToCenter(abs(x - xw), T["boss"])
-        boss = bore_y(st, 0, T["boss_length"], 0, ZB)
-        L = T["boss_length"]
-        boss = chamfer(boss.edges().filter_by(lambda e: e.bounding_box().min.Y > L - 0.01), T["boss_chamfer"])
-        boss = boss - cavity
-        sc = sc + boss
-        sc = sc - bore_y(Circle(T["socket_entry"] / 2), -1, T["socket_entry_depth"], x, ZB)
-        sc = sc - bore_y(Circle(T["socket_chamber"] / 2), T["socket_entry_depth"], T["socket_depth"], x, ZB)
-        rc = T["socket_chamber"] / 2                  # 45 deg cone at the end: it is the socket's roof as printed
-        sc = sc - Pos(x, T["socket_depth"] - 0.01, ZB) * Rot(-90, 0, 0) * Cone(rc + 0.01, 0, rc + 0.01, align=(Align.CENTER, Align.CENTER, Align.MIN))
-    # ID notches across the front wall's rim (the open side, facing down in use)
+        sec = sec + Pos(x, -zc) * Circle(r) + Pos(x, 0) * Rectangle(2 * r, zc, align=(Align.CENTER, Align.MAX))
+        q = (abs(x) - T["taper"], -rb)               # taper starts here on the rib's underside
+        dx, dz = abs(x) - q[0], -zc - q[1]
+        d = math.hypot(dx, dz)
+        a = math.atan2(dz, dx) - math.asin(r / d)     # lower tangent from q to the boss circle
+        tx, tz = q[0] + math.sqrt(d * d - r * r) * math.cos(a), q[1] + math.sqrt(d * d - r * r) * math.sin(a)
+        sx = math.copysign(1, x)
+        sec = sec + Polygon((sx * q[0], q[1]), (sx * tx, tz), (sx * abs(x), -zc), (sx * abs(x), q[1]), align=None)
+    rib = Pos(0, 0, ZH) * extrude(Plane.XZ * sec, so + t, dir=(0, 1, 0))
+    h = h + rib
+    # Keep the rib inside the plate's outer face, and nothing above the top
+    h = h & (Pos(0, so, ZH) * Rot(T["lean"], 0, 0) * Box(200, 200, 200, align=(Align.CENTER, Align.MAX, Align.CENTER)).moved(Location((0, t, 0))))
+    h = h & Pos(0, 0, ZH) * Box(200, 200, 200, align=(Align.CENTER, Align.CENTER, Align.MAX))
+    # 45 deg chamfers on the top corners (on the bed as printed)
+    c = T["top_chamfer"]
+    for sx in (-1, 1):
+        tri = Polygon((sx * (W / 2 + 1), ZH + 1), (sx * (W / 2 + 1), ZH - c - 1), (sx * (W / 2 - c - 1), ZH + 1), align=None)
+        h = h - Pos(0, -1, 0) * extrude(Plane.XZ * tri, 40, dir=(0, 1, 0))
+    # Sockets: teardrops pointing down in use (up as printed); the shoulder at entry depth is vertical as printed
+    flip = Rot(0, 0, 180)
+    for x in xs:
+        h = h - bore_y(flip * tear(T["socket_entry"] / 2), -1, T["socket_entry_depth"] + 0.01, x, ZB)
+        h = h - bore_y(flip * tear(T["socket_chamber"] / 2), T["socket_entry_depth"], T["socket_depth"], x, ZB)
+    # ID notches across the plate's bottom edge
     for k in range(notches):
-        rim = Pos(0, 0, Z0) * Rot(ang, 0, 0) * Pos(-3 + 3 * k, dp - t / 2, 0) * Box(1.0, t + 1, 1.2)
-        sc = sc - rim
-    return sc
+        h = h - Pos(-3 + 3 * k, so, ZH) * Rot(T["lean"], 0, 0) * Pos(0, t / 2, -L) * Box(1.0, t + 1, 2.4)
+    return h
 
 
 def pin(barb, notches):
@@ -111,15 +114,15 @@ def pin(barb, notches):
 
 
 pl = plate()
-scs = [scoop(i + 1) for i in range(3)]
+hds = [handle(i + 1) for i in range(3)]
 pins = [pin(b, i + 1) for i, b in enumerate(T["barbs"])]
-for name, s in [("plate", pl), ("scoop", scs[0])] + [(f"pin {'ABC'[i]}", p) for i, p in enumerate(pins)]:
+for name, s in [("plate", pl), ("handle", hds[0])] + [(f"pin {'ABC'[i]}", p) for i, p in enumerate(pins)]:
     bb = s.bounding_box()
     log(f"{name}: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f}, volume {s.volume:.1f} mm3, valid {s.is_valid}, solids {len(s.solids())}")
-log(f"scoop vs plate: {(scs[0] & pl).volume:.3f} mm3")
+log(f"handle vs plate: {(hds[0] & pl).volume:.3f} mm3")
 for i, (p, b) in enumerate(zip(pins, T["barbs"])):
     asm = [Pos(x, -FT6, ZB) * p for x in xs]
-    log(f"pin {'ABC'[i]} installed: vs plate {sum((a & pl).volume for a in asm):.3f} mm3, vs scoop {sum((a & scs[0]).volume for a in asm):.3f} mm3; "
+    log(f"pin {'ABC'[i]} installed: vs plate {sum((a & pl).volume for a in asm):.3f} mm3, vs handle {sum((a & hds[0]).volume for a in asm):.3f} mm3; "
         f"barbs {b} squeeze {b / 2 - T['hole'] / 2:.2f} per side through the {T['hole']} hole (slot allows {T['slot'] / 2:.2f}), "
         f"{T['socket_chamber'] / 2 - b / 2:.2f} clear in the chamber")
 
@@ -143,21 +146,21 @@ def to_bed(s, dx=0.0, dy=0.0):
     return Pos(dx - bb.center().X, dy - bb.center().Y, -bb.min.Z) * s
 
 
-# Print poses: the strip standing up like the drawer face; the scoop on its back (the face
-# it sits on), so the sockets stand upright; the pins lying on a flat (as built).
+# Print poses: the strip standing up like the drawer face; the handle on its top; the pins
+# lying on a flat (as built).
 pl_p = to_bed(pl)
-sc_p = [to_bed(Rot(90, 0, 0) * s) for s in scs]
+hd_p = [to_bed(Rot(180, 0, 0) * s) for s in hds]
 pin_p = [to_bed(p) for p in pins]
-parts = [("handle_test_plate", pl_p)] + [(f"handle_test_scoop_{k + 1}", s) for k, s in enumerate(sc_p)] + [(f"handle_test_pin_{'abc'[i]}", p) for i, p in enumerate(pin_p)]
+parts = [("handle_test_plate", pl_p)] + [(f"handle_test_handle_{k + 1}", s) for k, s in enumerate(hd_p)] + [(f"handle_test_pin_{'abc'[i]}", p) for i, p in enumerate(pin_p)]
 for name, s in parts:
     export_step(s, str(OUT / f"{name}.step"))
     export_stl(s, str(OUT / f"{name}.stl"))
     bad = bad_faces(s)
     log(f"{name}: overhangs flatter than 45 deg: {len(bad)}" + "".join(f"\n    {f.area:.2f} mm2 at {tuple(round(v, 2) for v in f.center())}" for f in bad))
-objs = [("plate", *shape_mesh(pl_p, 0, 40))] + [(f"scoop {k + 1}", *shape_mesh(s, -50 + 50 * k, 0)) for k, s in enumerate(sc_p)]
+objs = [("plate", *shape_mesh(pl_p, 0, 40))] + [(f"handle {k + 1}", *shape_mesh(s, -50 + 50 * k, 0)) for k, s in enumerate(hd_p)]
 for i, p in enumerate(pin_p):
     for k in range(2):
         objs.append((f"pin {'ABC'[i]}{k + 1}", *shape_mesh(p, -25 + 20 * i + 8 * k, -35)))
 write_3mf(objs, OUT / "handle_test_all_parts.3mf")
-export_step(Compound(children=[pl, scs[1]] + [Pos(x, -FT6, ZB) * pins[1] for x in xs]), str(OUT / "handle_test_assembly.step"))
+export_step(Compound(children=[pl, hds[1]] + [Pos(x, -FT6, ZB) * pins[1] for x in xs]), str(OUT / "handle_test_assembly.step"))
 (OUT / "handle_test_report.txt").write_text("\n".join(log_lines) + "\n")

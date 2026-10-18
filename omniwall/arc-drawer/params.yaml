@@ -114,23 +114,30 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   roof: 2.0                # assumed: solid above the seat
   mark_depth: 0.4          # assumed: ID grooves on the front face
 
-handle_test:               # handle_test.py: Zeid's scoop as a separate part, held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
-  plate_width: 60.0        # assumed: strip of drawer face for the test (the top 22 mm of the face, where the scoop sits)
-  plate_height: 22.0       # assumed
-  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face; the scoop's shape is the scoop: section
-  # The scoop prints on its back (the face it sits on): its floor's underside is then 45 deg and its rims face up, so it needs no
-  # lip_flat and no supports; its open back sits against the drawer face as before. A boss on each side wall at the face holds a
-  # socket the pin snaps into, standing upright as printed.
-  boss: 10.0               # assumed: boss diameter, a cylinder out from the face
-  boss_length: 10.0        # assumed: out from the face (socket 5, its 45 deg end cone 3.4, 1.6 mm end), no further out than the scoop itself
-  boss_chamfer: 1.5        # assumed: 45 deg chamfer round the boss's outer end, so it reads as part of the scoop
-  boss_x: 22.5             # assumed: socket centres this far either side of the middle (the scoop's walls are +-20 at the face)
-  boss_reach: 5.5          # assumed: each boss is a stadium reaching this far in from its socket, into the side wall (clipped at the tray's inside)
-  boss_z: 3.0              # assumed: boss centres this far above the scoop's lowest edge at the face
-  socket_entry: 5.2        # assumed: socket in each boss, first part
+handle_test:               # handle_test.py: a plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
+  strip_width: 60.0        # assumed: strip of drawer face for the test
+  strip_height: 26.0       # assumed: the top 26 mm of the face, where the handle sits
+  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
+  # The handle prints on its top (the rib's top and the plate's top edge, flush): the plate then rises 15 deg off vertical,
+  # the sockets run sideways as teardrops and their snap shoulders are vertical, so nothing needs supports.
+  width: 40.0              # given (scoop.width): plate width, so it fits the 2x2 drawer too (H2: 80)
+  drop: 20.0               # assumed: plate length down from the handle's top, along the plate (H2: 20)
+  thickness: 3.0           # measured on H2: plate thickness
+  lean: 15                 # measured on H2: plate leans out this far from the face
+  standoff: 10.0           # assumed: rib length, face to the plate's inner face at the top (H2: 9); the finger gap
+  below_top: 2.0           # = scoop.below_top: handle top this far below the face top
+  rib: 6.0                 # measured on H2: rib height between the bosses
+  boss: 10.0               # measured on H2: boss width at each end of the rib (flat-topped here, round below)
+  boss_height: 12.0        # assumed: boss depth below the handle's top (H2: 10), so the chamber's teardrop point keeps 2.2 mm of wall
+  socket_down: 5.0         # assumed: socket axis this far below the handle's top (2.6 mm over the entry, 1.6 over the chamber)
+  boss_x: 14.0             # assumed: socket centres either side of the middle (bosses reach 19, the plate 20)
+  taper: 5.0               # assumed: rib grows into each boss over this length (H2: 12; shorter here to leave the finger gap 18 mm clear at full depth)
+  corner_radius: 5.0       # measured on H2: plate's lower corners
+  top_chamfer: 2.0         # assumed: 45 deg on the plate's top corners, which sit on the bed as printed
+  socket_entry: 5.2        # assumed: socket in each boss, first part (teardrop, point down in use = up as printed)
   socket_entry_depth: 2.0  # assumed: shoulder here that the barbs catch behind
   socket_chamber: 6.8      # assumed: wider chamber the legs spring out in
-  socket_depth: 5.0        # assumed: to the start of the 45 deg end cone (chamber 3.0: barb section is at most 2.5 long)
+  socket_depth: 5.5        # assumed: chamber end (the pin tip reaches 4.65 with barbs 6.4)
   hole: 5.2                # assumed: through the face; teardrop, point up (it runs sideways when the drawer prints)
   counterbore: 9.4         # assumed: for the pin head, on the inside of the face
   counterbore_depth: 2.0   # assumed: head sits flush
