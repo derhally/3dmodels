@@ -147,5 +147,6 @@ slot_hook_2:
   fillets:                  # inside corners where the bars meet the front, for strength (Zeid, 2026-10-18; A, C, E on the side-profile diagram)
     under_top_bar: 3.0      # assumed (A): under the top bar with the finger; was slot hook 1's 0.2
     top_foot: 3.0           # assumed (C): on the top body's foot (no snap up there); was 0.2
+    d_relief: 0.5           # assumed (D): round groove cut into the corner the panel's edge sits in (finger front meets the top); a fillet there would hit the steel
     lower_foot_root: 1.5    # assumed (E): root of the lower foot; kept small, the foot flexes to snap over the rim
   top_to_slot_row: 4.95     # derived: pitch/2 - slot length/2, top of the upper slot to the horizontal slot row above it (assumes slots centred on the cell edge)

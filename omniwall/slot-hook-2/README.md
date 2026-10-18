@@ -23,9 +23,12 @@ foot) is filled solid, since the top has no snap and needn't flex
 (`slot_hook_2.fill_top_gap`; false gives 3 mm fillets in its corners instead).
 The lower foot's root has a 1.5 mm fillet, kept small so the foot still flexes
 to snap. Filling the gap adds no contact with the panel while swinging the hook
-on, checked about four pivot points.
+on, checked about four pivot points. The corner the panel's edge sits in (the
+finger's front face meets the top) can't take a fillet, since it would push into
+the steel, so it has a 0.5 mm round relief groove cut into it instead, which
+takes the sharp corner out (`fillets.d_relief`).
 
-It is 2.95 × 11.15 × 45.7 mm, 990.5 mm³. The geometry is `slot_hook_2()` in
+It is 2.95 × 11.15 × 45.7 mm, 988.9 mm³. The geometry is `slot_hook_2()` in
 [hook_geometry.py](../hook_geometry.py), with its values in
 [panel.yaml](../panel.yaml) (`slot_hook_2`, and `slot_hook_1` for everything
 it shares).

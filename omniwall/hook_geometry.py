@@ -234,4 +234,10 @@ def slot_hook_2(panel, root):
                                                    (0, cav["top"] + 0.1), align=None), t)
     else:
         coves = coves + cove(y_c, cav["top"], fl["under_top_bar"], -1) + cove(y_c, ft, fl["top_foot"], 1)
-    return slot_hook_body(panel, root) + foot + fill + coves + Pos(0, 0, zl - d) * front
+    # Relief at the corner the panel's edge sits in (D: the finger's front face
+    # meets the top): a fillet would push into the steel, so a round groove is
+    # cut into the hook instead, which takes the sharp corner out of it.
+    rd = fl["d_relief"]
+    relief = extrude(Plane.YZ * Pos(hook["panel_back_y"], H) * Circle(rd), t) if rd > 0 else None
+    out = slot_hook_body(panel, root) + foot + fill + coves + Pos(0, 0, zl - d) * front
+    return out - relief if relief is not None else out
