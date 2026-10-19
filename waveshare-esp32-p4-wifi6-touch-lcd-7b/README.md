@@ -8,6 +8,7 @@ the back. Two variants share the same front facade, display mounting and port.
 |---|---|---|---|
 | [chin-speaker](chin-speaker/) | 186 × 136 × 137 mm | In the chin under the screen, firing up and forward through a slotted grille | Front plate, body, 4 clamp tabs |
 | [compact-ducted](compact-ducted/) | 188 × 95 × 111 mm | Stands at the back of the base; a duct carries the sound forward to a slot grille in the front lip | Front plate, body, duct, 4 clamp tabs |
+| [nightstand](nightstand/) | 188 × 101 × 141 mm | Face up in a tower behind the screen, under an 11-slot grille in the tower lid. The case tilts 0 to 30° on a toothed hinge | Front plate, back shell, case hinge, knob, base, deck lid, tower lid, 4 clamp tabs |
 
 The chin version sounds best: the speaker points straight at you. The compact
 version is about a third smaller in depth and height; the duct narrows the sound
@@ -35,9 +36,12 @@ side sections and a step checklist. Download it and open it in a browser.
   bed is a teardrop, with a 45° point toward print-up, so its roof doesn't droop.
   That covers the side-wall screw holes and countersinks, the plate's side-boss
   pilots and the duct's lug holes. Screws only bear on the round part.
-- **USB-C port.** A snap-in panel USB-C socket clips into a 14.1 × 5.75 mm
-  rounded cutout (R1.3) in the 2.4 mm back wall, with its oval bezel on the
-  outside. It needs no screws. Its four wires (V, D−, D+, G) end in a PH2.0 plug
+- **USB-C port.** A flanged panel-mount USB-C connector sits inside the 2.4 mm
+  back wall: its 25.2 × 8.2 mm flange drops into a 1.1 mm pocket, so the 1.3 mm
+  wall left at the socket matches how far the socket stands proud and its face
+  ends flush with the flat outside. Two screws go in from the outside through
+  2.7 mm holes 17 mm apart (fit confirmed with a printed test plate). The old
+  snap-in socket cutout is still available with `usb_port.style: snap`. Its four wires (V, D−, D+, G) end in a PH2.0 plug
   and are spliced inside to the right-angle cable that plugs into the board's
   USB-C port. Don't plug that PH2.0 into the board's 4-pin headers: they're
   I2C/UART/CAN/RS485, not USB.

@@ -73,10 +73,23 @@ screws:
   side_pilot: 2.5        # M3 self-tapping into plate bosses
   side_clear: 3.4
 
-usb_port:                # snap-in panel-mount USB-C socket, 4 wires to a PH2.0 plug (V, D-, D+, G)
+usb_port:                # panel-mount USB-C port in the back wall
   enabled: true
-  x: -60.0               # centre, seen from the front (negative = left)
-  z: 16.0                # centre height above the desk
+  style: screw           # screw: flanged connector screwed on from outside; snap: snap-in socket
+  x: -75.0               # centre, seen from the front (negative = left); clear of the speaker
+  z: 8.0                 # centre height above the desk: flange pocket 1.2 above the inside floor
+  # style: screw. Flange inside the wall in a pocket, two screws from the outside,
+  # flat outside face. Flange and holes from the seller drawing, protrusion measured;
+  # fit confirmed with a printed test plate.
+  screw_flange: [25.2, 8.2]  # rounded-end flange
+  screw_pitch: 17.0      # screw hole centres
+  screw_hole: 2.7        # clearance for the screws through the 2.5 flange holes
+  socket: [9.0, 3.4]     # socket body through the wall
+  socket_clearance: 0.3  # per side
+  flange_clearance: 0.3  # per side around the flange pocket
+  protrusion: 1.3        # socket face beyond the flange: wall left at the socket, so it ends flush
+  screw_body: [12.0, 6.0, 15.0]  # behind the flange: width, height, depth (stand-in only, assumed)
+  # style: snap
   cutout: [14.1, 5.75]   # panel hole (measured)
   corner_r: 1.3
   panel_t: 2.5           # panel thickness the clips latch on (measured); the wall is

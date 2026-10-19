@@ -40,7 +40,7 @@ USB-C port and how the files were made.
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
 | 1 | Box speaker 100 × 45 × 20.75 mm, four Ø6.2 mm corner ears 10 mm behind the cone face | Audio, into the board's PH2.0 `SPK` header (lead ~10 cm) |
-| 1 | Snap-in panel USB-C socket, 14.1 × 5.75 mm panel cutout, 4 wires (V, D−, D+, G) to a PH2.0 plug | Power and data in the back wall, no screws |
+| 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with flat ribbon | Board's middle `USB` port, spliced to the socket's four wires |
 | 4 | M2.5 × 6 screw | Clamp tabs into the display's standoffs |
 | 12 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 4 speaker ears onto the duct's standoffs, 4 duct lugs into the floor bosses |
@@ -65,8 +65,8 @@ PLA or PETG, 0.2 mm layers, 3+ walls.
    standoff spigot, M3 × 8 and washer from behind.
 2. Set the duct in the body with its mouth against the front lip and screw its
    four lugs to the floor bosses (M3 × 8).
-3. Push the USB-C socket into the cutout in the back wall from outside until its
-   clips snap.
+3. Set the USB-C connector's flange into the pocket inside the back wall and fit
+   its two screws from outside.
 4. Lay the plate face-down and set the display into the pocket from behind. At
    each corner, a clamp tab goes across the standoff and the column beside it:
    M2.5 × 6 into the standoff, M3 × 8 into the column.
