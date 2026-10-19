@@ -66,7 +66,7 @@ track:                     # channel in each housing side wall that the drawer's
   # + clearance (4.74 wide), so the pin fits however the drawer turns and every wall is a line or an arc.
 
 front:
-  pull: scoop              # given (Zeid, 2026-10-17): his scoop replaces the lip; "lip" brings the lip back
+  pull: handle             # given (Zeid, 2026-10-19): the plate handle (handle:) with snap pins replaces his scoop; "scoop" and "lip" bring those back
 
 scoop:                     # Zeid's scoop_prototype.scad (E:\source\openscad\omniwall\drawers), turned 180 deg so it opens downward
   width: 40.0              # given (scad width): side walls' span at the drawer face
@@ -114,17 +114,14 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   roof: 2.0                # assumed: solid above the seat
   mark_depth: 0.4          # assumed: ID grooves on the front face
 
-handle_test:               # handle_test.py: a plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
-  strip_width: 44.0        # assumed: strip of drawer face for the test, just wider than the handle (one per set: strip, handle, a pin pair)
-  strip_height: 16.0       # assumed: the top 16 mm of the face, enough round the pin holes
-  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
+handle:                    # front.pull: handle. A plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); handle_geometry.py
   # The handle prints on its top (the rib's top and the plate's top edge, flush): the plate then rises 15 deg off vertical,
   # the sockets run sideways as teardrops and their snap shoulders are vertical, so nothing needs supports.
   width: 40.0              # given (scoop.width): plate width, so it fits the 2x2 drawer too (H2: 80)
   drop: 20.0               # assumed: plate length down from the handle's top, along the plate (H2: 20)
   thickness: 3.0           # measured on H2: plate thickness
   lean: 15                 # measured on H2: plate leans out this far from the face
-  standoff: 10.0           # assumed: rib length, face to the plate's inner face at the top (H2: 9); the finger gap
+  standoff: 6.0            # given (Zeid, 2026-10-19: the 10 mm test handle reached out too far; his finger is 8.8 thick): rib length, face to the plate's inner face at the top (H2: 9). The gap widens with the lean to 11.2 at the plate's bottom edge and is over 8.8 for its lower 9 mm; the handle reaches 14.1 out (was 18.1)
   below_top: 2.0           # = scoop.below_top: handle top this far below the face top
   rib: 6.0                 # measured on H2: rib height between the bosses
   boss: 10.0               # measured on H2: boss width at each end of the rib (flat-topped here, round below)
@@ -152,5 +149,11 @@ handle_test:               # handle_test.py: a plate handle on a stand-off rib l
   barb_preload: 0.25       # assumed: seated, the ramp meets the shoulder edge with the legs still this much squeezed (takes up -0.14 / +0.1 to 0.2 of length error)
   barb_flat: 0.5           # assumed
   tip: 1.2                 # assumed: tip radius after the 45 deg lead-in
+  barb: 6.4                # given (Zeid, 2026-10-19): pin C of the handle test held best
+
+handle_test:               # handle_test.py: test print of the handle (handle: section) on strips of drawer face, one set per pin variant
+  strip_width: 44.0        # assumed: strip of drawer face for the test, just wider than the handle (one per set: strip, handle, a pin pair)
+  strip_height: 16.0       # assumed: the top 16 mm of the face, enough round the pin holes
+  # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
   barbs: [6.0, 6.2, 6.4]   # assumed: pin variants A, B, C, across the barbs; the hole is 5.2. A has a plain head, B a notch at one end, C at both ends
   id_notch: 1.5            # assumed: depth of the V notches that mark pins B and C (the first test's 0.3 mm notches couldn't be seen)

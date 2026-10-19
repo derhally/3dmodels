@@ -31,6 +31,7 @@ if HERE != SRC:
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
+exec((SRC / "handle_geometry.py").read_text())
 
 _export_step = export_step
 
@@ -51,7 +52,8 @@ dv, pk = dm["dovetail"], dm["pocket"]
 pk["spine_clearance"] = HS["pocket"]["spine_clearance"]   # housing pocket from the print-tested coupon 3
 pk["flank_gap"] = HS["pocket"]["flank_gap"]
 pk["ridge"]["height"] = HS["pocket"]["ridge_height"]
-SC = P["scoop"]
+SC, HD = P["scoop"], P["handle"]
+PULL = P["front"]["pull"]                            # handle (separate part on snap pins), scoop or lip
 NAME = U.get("file_prefix", "arc_drawer")             # start of every output file name
 K = math.sqrt(2)
 
@@ -400,8 +402,10 @@ def drawer():
     body = body - Pos(x0 - 1, y_back - 1, shoulder_z) * Box(x1 - x0 + 2, DR["shoulder_length"] + 1, body_top, align=Align.MIN)
     body = body - Pos(x0 + w, y_back + w, z_floor + fl) * Box(x1 - x0 - 2 * w, y_front - y_back - w, body_top, align=Align.MIN)
     plate = Pos(x0, y_front, z_floor) * Box(x1 - x0, ft, plate_top - z_floor, align=Align.MIN)
-    if P["front"]["pull"] == "scoop":
+    if PULL == "scoop":
         lip = scoop()
+    elif PULL == "handle":
+        lip = None                                   # a separate part: only its pin holes are cut, below
     else:
         pr, fh = LP["proud"], LP["front_height"]
         lip = Polygon((D - 1, plate_top - pr - fh - 1), (D, plate_top - pr - fh), (D + pr, plate_top - fh),
@@ -413,8 +417,9 @@ def drawer():
         xt, zb = s - PN["reach"], z_pin - PN["diameter"] / 2
         wedge = Polygon((x0, zb), (xt - 0.1, zb + x0 - xt + 0.1), (xt - 0.1, zb - 1), (x0, zb - 1), align=None)
         pin = pin - Pos(0, y_pin, 0) * extrude(Plane.XZ * wedge, PN["diameter"], both=True)
-    d = solid(body + plate + lip + label_holder((x0 + x1) / 2) + pin + mirror(pin, Plane.YZ.offset(W / 2)))
-    if P["front"]["pull"] == "scoop" and SC["blend"] > 0:
+    d = body + plate + label_holder((x0 + x1) / 2) + pin + mirror(pin, Plane.YZ.offset(W / 2))
+    d = solid(d + lip if lip is not None else d)
+    if PULL == "scoop" and SC["blend"] > 0:
         d, nc, nf = blend_scoop(d)
         BLENDS.append(f"scoop blend r {SC['blend']}: {nc} front corners; at the face: {nf}")
     if LB["blend"] > 0:
@@ -429,6 +434,8 @@ def drawer():
             arc = Pos(xc, y_back - 1 + L / 2, plate_top - r) * Rot(90, 0, 0) * Cylinder(r, L + 2)
             d = solid(d - (block - arc))
         BLENDS.append(f"front top corners r {r}")
+    if PULL == "handle":
+        d = solid(d - Pos((x0 + x1) / 2, D, plate_top - HD["below_top"]) * handle_face_cut(HD, ft))
     d.label = "drawer"
     return d
 
@@ -478,8 +485,13 @@ def hooks(rows=None):
 
 
 def overlap(a, b):
-    r = a & b
-    return sum(s.volume for s in (r if isinstance(r, (list, ShapeList)) else [r]) if s is not None)
+    """Volume shared by a and b, solid by solid (booleans on a whole compound proved unreliable)."""
+    v = 0.0
+    for sa in a.solids():
+        for sb in b.solids():
+            r = sa & sb
+            v += sum(s.volume for s in (r if isinstance(r, (list, ShapeList)) else [r]) if s is not None)
+    return v
 
 
 def to_bed(s):
@@ -519,6 +531,18 @@ log = lines.append
 
 h = housing()
 d = drawer()
+if PULL == "handle":
+    # The handle and its two pins, fitted; the motion checks below move them with the drawer
+    xm = W / 2
+    zh = plate_top - HD["below_top"]
+    hd = Pos(xm, D, zh) * handle_part(HD)
+    hpin = handle_pin(HD, DR["front_thickness"], HD["barb"])
+    fitted = [Pos(xm + sx * HD["boss_x"], D - DR["front_thickness"], zh - HD["socket_down"]) * Rot(0, 90, 0) * hpin for sx in (-1, 1)]
+    hd.label = "handle"
+    da = Compound(children=[d, hd, *fitted])        # what moves
+    da.label = "drawer"
+else:
+    da = d
 for sub in ("step", "print"):
     (HERE / sub).mkdir(exist_ok=True)
 for part in (h, d):
@@ -546,7 +570,7 @@ export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
 log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
-cgv = d.center()
+cgv = da.center()
 
 
 def cg_z(s_):
@@ -562,20 +586,30 @@ k_hang = next(k for k in range(1, 400) if cz[k] <= cz[k - 1] and cz[k] < cz[k + 
 s_hang = ss[k_hang]
 cg_lift = max(cz[k_hang:]) - cz[k_hang]
 for state in ("closed", "open", "tilted", "pushed"):
-    moved = drawer_at(d, state)
+    moved = drawer_at(da, state)
     moved.label = f"drawer {state}"
     log(f"{state}: drawer vs housing {overlap(h, moved):.3f} mm3, vs hooks {sum(overlap(moved, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"{NAME}_assembly_{state}.step"))
-log("tilt sweep on the arc (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(d, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
+log("tilt sweep on the arc (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(da, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
 log(f"hangs open at {rest_tilt(*path_point(s_hang)):.1f} deg, {s_hang - arc_len:.1f} mm past the arc's end; pushing it out over the top lifts its centre of gravity {cg_lift:.2f} mm")
 log("along the gate and hook, resting on the sill (mm from the arc's end: deg, mm3): " + ", ".join(
-    f"{s_ - arc_len:.1f}: {rest_tilt(*path_point(s_)):.1f}, {overlap(h, drawer_at(d, 'pushed', y=s_)):.3f}"
+    f"{s_ - arc_len:.1f}: {rest_tilt(*path_point(s_)):.1f}, {overlap(h, drawer_at(da, 'pushed', y=s_)):.3f}"
     for s_ in (arc_len + (gate + hook_len) * k / 10 for k in range(11))))
 ex = [round((D - branch_top[0] - 1) * k / 4, 1) for k in range(5)]
 log("pulled out along the exit, resting on the sill (mm: deg, mm3): " + ", ".join(
-    f"{y}: {exit_tilt(branch_top[0] + y):.0f}, {overlap(h, drawer_at(d, 'exit', y=y)):.3f}" for y in ex))
-log("pulled out along the exit, held level (mm: mm3): " + ", ".join(f"{y}: {overlap(h, drawer_at(d, 'held', y=y)):.3f}" for y in ex))
-log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * d):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
+    f"{y}: {exit_tilt(branch_top[0] + y):.0f}, {overlap(h, drawer_at(da, 'exit', y=y)):.3f}" for y in ex))
+log("pulled out along the exit, held level (mm: mm3): " + ", ".join(f"{y}: {overlap(h, drawer_at(da, 'held', y=y)):.3f}" for y in ex))
+log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * da):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
+if True:
+    # The drawer of the unit above, moving through its own states, against what stands proud of this drawer's face
+    proud = hd if PULL == "handle" else solid(d & Pos(0, D + 0.01, 0) * Box(W, 50, H, align=Align.MIN))
+    above = Pos(0, 0, U["rows"] * pitch)
+    st_ = [("closed", None), ("open", None), ("tilted", None), ("pushed", None)] + [(f"exit {y}", ("exit", y)) for y in ex] + [(f"held {y}", ("held", y)) for y in ex]
+    res = []
+    for name_, spec in st_:
+        m = above * (drawer_at(da, spec[0], y=spec[1]) if spec else drawer_at(da, name_))
+        res.append(f"{name_}: {overlap(m, proud):.3f}, {m.distance_to(proud):.2f}")
+    log(f"drawer of the unit above vs this drawer's {PULL} (state: mm3, clearance mm): " + "; ".join(res))
 
 # Print orientation: housing on its back, drawer upright.
 hp, dp = print_housing(h), to_bed(d)
@@ -589,7 +623,12 @@ htp, dtp, cpp = print_housing(ht), to_bed(dt), print_housing(cp)
 plates = []
 TEST = HERE / "test-prints"                          # fit tests: local only (git-ignored)
 TEST.mkdir(exist_ok=True)
-for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{NAME}_drawer_print", HERE / "print"),
+extra = []
+if PULL == "handle":
+    # Handle on its top (rib top and plate top edge on the bed), pin lying on a flat
+    hdp, pnp = to_bed(Rot(180, 0, 0) * handle_part(HD)), to_bed(hpin)
+    extra = [(hdp, f"{NAME}_handle_print", HERE / "print"), (pnp, f"{NAME}_handle_pin_print", HERE / "print")]
+for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{NAME}_drawer_print", HERE / "print"), *extra,
                         (htp, f"{NAME}_fit_test_housing_print", TEST), (dtp, f"{NAME}_fit_test_drawer_print", TEST),
                         (cpp, f"{NAME}_pocket_coupon_print", TEST)):
     export_step(part, str(out / f"{stem}.step"))
@@ -608,8 +647,12 @@ gap = 10.0
 hb, db = hp.bounding_box(), dp.bounding_box()
 hx = -(hb.size.X + gap + db.size.X) / 2 - hb.min.X
 dx = hx + hb.max.X + gap - db.min.X
-write_3mf([("housing", *shape_mesh(hp, hx, -hb.center().Y)), ("drawer", *shape_mesh(dp, dx, -db.center().Y))],
-          HERE / "print" / f"{NAME}_all_parts.3mf")
-log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}")
+objs = [("housing", *shape_mesh(hp, hx, -hb.center().Y)), ("drawer", *shape_mesh(dp, dx, -db.center().Y))]
+if PULL == "handle":
+    # The handle and its two pins in a row in front of them
+    yr = -max(hb.size.Y, db.size.Y) / 2 - gap - hdp.bounding_box().size.Y / 2
+    objs += [("handle", *shape_mesh(hdp, -15, yr)), ("pin 1", *shape_mesh(pnp, 15, yr)), ("pin 2", *shape_mesh(pnp, 30, yr))]
+write_3mf(objs, HERE / "print" / f"{NAME}_all_parts.3mf")
+log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}" + (", the handle and two pins in front" if PULL == "handle" else ""))
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
-result = Compound(children=[h, d, *hks])
+result = Compound(children=[h, da, *hks])
