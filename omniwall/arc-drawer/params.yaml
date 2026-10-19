@@ -117,7 +117,7 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
 handle:                    # front.pull: handle. A plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); handle_geometry.py
   # The handle prints on its top (the rib's top and the plate's top edge, flush): the plate then rises 15 deg off vertical,
   # the sockets run sideways as teardrops and their snap shoulders are vertical, so nothing needs supports.
-  width: 40.0              # given (scoop.width): plate width, so it fits the 2x2 drawer too (H2: 80)
+  width: 40.0              # given (scoop.width): plate width, so it fits the 2x2x60 drawer too (H2: 80)
   drop: 20.0               # assumed: plate length down from the handle's top, along the plate (H2: 20)
   thickness: 3.0           # measured on H2: plate thickness
   lean: 15                 # measured on H2: plate leans out this far from the face
@@ -154,7 +154,7 @@ handle:                    # front.pull: handle. A plate handle on a stand-off r
 scoop_pins:                # front.pull: scoop_pins. Zeid's scoop look (scoop:) as a separate part on the plate handle's snap pins (Zeid, 2026-10-19: the scoop looked nicer); values here override handle:
   kind: scoop_pins
   # The old scoop stands 7 out, too shallow for a socket (8.5 behind the handle's back), so this one is deeper and wider at the front.
-  width: 46.0              # given (Zeid, 2026-10-19: wider at the back so the sides show more, lip unchanged; was 40): at the face. The 2x2 keeps 40 (its face is only 43.5 wide; see 2x2/params.yaml)
+  width: 46.0              # given (Zeid, 2026-10-19: wider at the back so the sides show more, lip unchanged; was 40): at the face. The 2x2x60 is 40 with a 24 lip, the same side angle (its face is only 43.5 wide; see 2x2x60/params.yaml)
   front_width: 30.0        # assumed: at the lip (old scoop 16); wide enough that the socket tubes stay inside the tapering sides
   reach: 11.0              # assumed: lip this far out from the face (old scoop 7.07, plate handle 14.1)
   height: 16.5             # assumed: back's height; its bottom stays 11.6 above the label holder so a label (10.85) still drops in from above

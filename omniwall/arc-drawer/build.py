@@ -4,8 +4,8 @@
 # Python (the build123d-mcp server's execute() blocks the os, pathlib and yaml imports):
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py [unit folder]
 # With no argument it builds the 3 x 2 unit from params.yaml here. A unit folder
-# (such as 2x2) holds a params.yaml whose sections override this one's key by key.
-# It writes the unit folder's step/, print/ (STEP, STL and plain 3MF per part) and
+# (such as 2x2x60) holds a params.yaml whose sections override this one's key by key.
+# It writes the unit folder's step/, print/ (STEP and STL per part, one all-parts 3MF) and
 # report.txt, and leaves the closed assembly in `result`.
 # Unit coordinates: x across from the left outer face, y out from the panel face
 # (housing back face at y = 0), z up from the unit's bottom edge.
@@ -635,7 +635,8 @@ for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{N
                         (cpp, f"{NAME}_pocket_coupon_print", TEST)):
     export_step(part, str(out / f"{stem}.step"))
     export_stl(part, str(out / f"{stem}.stl"))
-    write_3mf([(stem, *shape_mesh(part))], out / f"{stem}.3mf")
+    if out == TEST:                                  # print/ gets one 3MF only, the all-parts plate (Zeid, 2026-10-19)
+        write_3mf([(stem, *shape_mesh(part))], out / f"{stem}.3mf")
     bad = bad_faces(part)
     bb = part.bounding_box()
     log(f"{stem}: {bb.size.X:.1f} x {bb.size.Y:.1f} x {bb.size.Z:.1f}, faces {len(part.faces())}, overhangs flatter than 45 deg: {len(bad)}")

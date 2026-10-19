@@ -12,13 +12,13 @@ deep ones line up at the panel, not at the front.
 | Size | Folder, file prefix | Housing W × D × H, mm | Drawer outside W × L × H | Drawer inside W × L × H | Hooks | Travel |
 |---|---|---|---|---|---|---|
 | 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 71.5 × 75.8 × 45.0 | 64.9 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
-| 2 × 2, 84 deep | [`2x2/`](2x2/), `arc_drawer_2x2_*` | 50.5 × 84 × 50.5 | 46.1 × 75.8 × 45.0 | 39.5 × 65.4 × 40 | 1 column on the centre line, 1 or 2 rows | 55.9 (76 %) |
+| 2 × 2, 60 deep | [`2x2x60/`](2x2x60/), `arc_drawer_2x2x60_*` | 50.5 × 60 × 50.5 | 46.1 × 51.8 × 45.0 | 39.5 × 41.4 × 40 | 1 column on the centre line, 1 or 2 rows | 31.9 (65 %) |
 | 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 71.5 × 51.8 × 45.0 | 64.9 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
 | 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 71.5 × 51.8 × 70.4 | 64.9 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
 
 Drawer lengths include the label holder; the scoop stands 11 mm further out. All of them tilt to 30° at the end of
 their travel and have the same scoop and label holder. A size is a folder with a
-`params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
+`params.yaml` that sets only what differs (`2x2x60/params.yaml` sets `cells: 2` and `depth: 60`);
 everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
 moves the track's stop to depth − 15.5 (44.5), so the arc, gate, hook and exit
 channel sit the same distance from the front as in the 84 mm unit. Every pocket
@@ -116,8 +116,8 @@ column of the back plate to check this pocket before printing the housing.
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
   the housing roof (`drawer.top_gap`). The pull (`front.pull: scoop_pins`,
   `scoop_pins:` in params.yaml, `handle_geometry.py`) is Zeid's scoop look as a
-  separate part on two snap pins: a hollow hood, open below, 46 mm wide (40 on the 2 × 2) at the
-  face and 30 at its lip, its top sloping 45° down to the lip 11 mm out, every
+  separate part on two snap pins: a hollow hood, open below, 46 mm wide at the
+  face and 30 at its lip (40 and 24 on the 2 × 2, whose face is narrower, so the sides keep the same angle), its top sloping 45° down to the lip 11 mm out, every
   visible edge rounded 1 mm. Its back plate sits in a 2 mm recess in the face
   (the recess's top is 45°, so the drawer still prints upright). The pins (barbs
   6.4 mm and the legs of pin C from the handle test, the neck 2 mm shorter to
@@ -144,16 +144,15 @@ snap ridges squeeze the seated hooks.
 
 ## Printing
 
-Everything in `print/` is in print orientation, as STEP, STL and plain 3MF
-(written by build123d's `Mesher` through the build123d-mcp server; `build.py`
-writes the same kind of file with `../core_3mf.py`). Bambu Studio 2.x rejects the multi-plate projects written by
-`../bambu_project.py` as "created by an old version" and keeps only their
-geometry, so there is one file per part instead; arrange plates in Bambu Studio.
+`step/` holds the parts as designed, in their places in the assembly, for
+CAD. `print/` holds the same parts turned to the way they lie on the bed, as
+STEP and STL per part, plus one plain 3MF for the printer (written with
+`../core_3mf.py`; Bambu Studio 2.x keeps only the geometry of the multi-plate
+projects `../bambu_project.py` writes, so it is a plain one-plate 3MF).
 
-**Everything in one file:** `print/arc_drawer_all_parts.3mf` (and
-`<size>/print/arc_drawer_<size>_all_parts.3mf` for the other sizes) holds the housing and the drawer side
-by side on one plate, already in print orientation, 10 mm apart. Open it in
-Bambu Studio and slice. The drawer label is a separate two-colour print in
+**The one 3MF:** `print/arc_drawer_all_parts.3mf` (and
+`<size>/print/arc_drawer_<size>_all_parts.3mf` for the other sizes) holds the housing, the drawer, the scoop and
+its two pins on one plate, already in print orientation. Open it in Bambu Studio and slice. The drawer label is a separate two-colour print in
 [labels/bin-label](../../labels/bin-label/README.md).
 
 - **Housing: on its back,** panel side on the bed, open front up. Floor, roof,
@@ -178,8 +177,8 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
 
 ## Regenerating
 
-`build.py` with no argument builds the 3 × 2 unit; `build.py 2x2` builds the
-2 × 2 into `2x2/`, and likewise `3x2x60` and `3x3x60`. Any new size is a new
+`build.py` with no argument builds the 3 × 2 unit; `build.py 2x2x60` builds the
+2 × 2 into `2x2x60/`, and likewise `3x2x60` and `3x3x60`. Any new size is a new
 folder with its own `params.yaml`.
 
     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
