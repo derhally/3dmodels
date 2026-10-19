@@ -16,8 +16,8 @@ deep ones line up at the panel, not at the front.
 | 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 71.5 × 51.8 × 45.0 | 64.9 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
 | 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 71.5 × 51.8 × 70.4 | 64.9 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
 
-Drawer lengths include the label holder; the handle stands 14.1 mm further out. All of them tilt to 30° at the end of
-their travel and have the same handle and label holder. A size is a folder with a
+Drawer lengths include the label holder; the scoop stands 11 mm further out. All of them tilt to 30° at the end of
+their travel and have the same scoop and label holder. A size is a folder with a
 `params.yaml` that sets only what differs (`2x2/params.yaml` sets `cells: 2`);
 everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
 moves the track's stop to depth − 15.5 (44.5), so the arc, gate, hook and exit
@@ -89,9 +89,10 @@ column of the back plate to check this pocket before printing the housing.
   of the housing when it tilts, so the 0.5 mm gap between the face and the roof
   only has to clear the slide; a sweep through slide, tilt, gate, hook and exit finds
   no overlap. The drawer of the unit above, tilted or pushed back the same way,
-  clears this drawer's handle by 1.7 mm; pulled out along its exit channel and
-  let rest on its sill, its nose comes down onto this handle (`report.txt`
-  lists each state), so hold it up as it comes out.
+  clears this drawer's scoop by 6.2 mm (3 × 2); pulled out along its exit channel and
+  let rest on its sill, its nose touches the scoop only in the last couple of
+  millimetres before it comes free (`report.txt` lists each state), so hold it
+  up as it comes out.
 - **Removing.** Pull the drawer out until it tips to 30°, push it back about
   6 mm, then pull it out. From the end of the arc (the apex) the gate runs back
   and up, curving with the arc's own 19 mm radius: the arc mirrored at the apex
@@ -113,20 +114,23 @@ column of the back plate to check this pocket before printing the housing.
 - **Front.** The face's top two corners are rounded to 4 mm
   (`drawer.corner_radius`); the cut runs the length of the drawer, so the side
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
-  the housing roof (`drawer.top_gap`). The handle (`handle:` in params.yaml, `handle_geometry.py`) is a separate part,
-  after Zeid's HANDLE H2: a 40 × 20 × 3 mm plate leaning out 15°, hung from a
-  rib that stands it 6 mm off the face, its top 2 mm below the face top. The
-  gap behind the plate widens to 11.2 mm at its bottom edge (Zeid's finger is
-  8.8 mm thick); the handle reaches 14.1 mm out. Two printed snap pins (barbs
-  6.4 mm, pin C of the handle test, 2026-10-19) push through the face from
-  inside, flats sideways, and click into sockets in the rib's end bosses; the
-  backs of their barbs slope 30° and stay 0.25 mm squeezed, so they pull the
-  handle tight against the face. The pin holes are cut to the pin's width with
-  a counterbore for the head, so it sits flush inside the drawer.
-  `handle_test.py` writes the test print (strips of face, handles, three pin
-  sizes) to `test-prints/`. `front.pull: scoop` brings back Zeid's scoop
-  (`scoop:`, built into the face) and `front.pull: lip` the old 8 mm
-  lip. The label holder
+  the housing roof (`drawer.top_gap`). The pull (`front.pull: scoop_pins`,
+  `scoop_pins:` in params.yaml, `handle_geometry.py`) is Zeid's scoop look as a
+  separate part on two snap pins: a hollow hood, open below, 46 mm wide (40 on the 2 × 2) at the
+  face and 30 at its lip, its top sloping 45° down to the lip 11 mm out, every
+  visible edge rounded 1 mm. Its back plate sits in a 2 mm recess in the face
+  (the recess's top is 45°, so the drawer still prints upright). The pins (barbs
+  6.4 mm and the legs of pin C from the handle test, the neck 2 mm shorter to
+  suit the recess) push through the face from inside, flats sideways, and click
+  into socket tubes in the scoop's back corners, leaving 17.7 mm (2 × 2: 14.7) between them
+  for a finger; the backs of their barbs slope 30° and stay 0.25 mm squeezed, so
+  they pull the scoop tight against the face. The pin holes are cut to the pin's
+  width with a counterbore for the head, so it sits flush inside the drawer.
+  The scoop's bottom stays 11.6 mm above the label holder, so a label still
+  drops in from above. `scoop_test.py` writes its test print (a strip of face,
+  the scoop, four pins) to `test-prints/`. `front.pull: handle` is the plate
+  handle after Zeid's HANDLE H2 (`handle:`, `handle_test.py`), `scoop` his
+  original scoop built into the face, and `lip` the old 8 mm lip. The label holder
   is a U at the bottom of the face, open at the top: the 34.7 × 10.85 × 0.9 mm
   bin label (`../../labels/bin-label`) drops in from above and sits behind
   1.5 mm returns. Make its labels with the `arc-drawer` size in
@@ -161,11 +165,10 @@ Bambu Studio and slice. The drawer label is a separate two-colour print in
 - **Drawer: upright** on its floor. Pins (chamfered point down), the face's
   teardrop pin holes and the label holder (45° under the bottom rail) print
   without support.
-- **Handle: on its top** (the rib's top and the plate's top edge, flush), so
-  the plate rises 15° off vertical and the sockets run sideways as teardrops;
-  its top corners are chamfered 45° for the bed. **Pins** lie on a flat; print
-  two per drawer (`*_handle_pin_print`). The all-parts 3MF has the handle and
-  both pins.
+- **Scoop: on its back** (`*_handle_print`), so the socket tubes stand upright
+  with 45° cones closing the chambers, and the hood's 45° roof needs no support.
+  **Pins** lie on a flat; print two per drawer (`*_handle_pin_print`). The
+  all-parts 3MF has the scoop and both pins.
 - **Fit test plate first** (`test-prints/arc_drawer_fit_test_plate.3mf`, one plate; `build.py` writes it, git ignores it): the
   front 34 mm of the housing (arc, gate, hook, exit) with the rear 40 mm of the drawer
   (pins, shoulder), plus the pocket coupon. Checks the pin in the groove, the
@@ -223,5 +226,5 @@ bounding boxes and centroids, no hook clash.
 - Pin and groove fit (0.25 mm clearance) and the drop-in load.
 - The way out: whether pushing the tipped drawer 6 mm back through the curved gate feels natural, whether it slides back down by itself, and whether the gate's 2 mm rise keeps a tipped drawer in when it is pushed by accident.
 - The narrower 3.5 mm track and the chamfered pins: how they slide and how the chamfer prints.
-- The handle at 6 mm stand-off (the test print was 10); the label fit (0.15 mm per side).
+- The scoop on its pins: the shorter-necked pin and the recess (`test-prints/scoop_test_all_parts.3mf`); the label fit (0.15 mm per side).
 - The drawer drops to 30° whenever it is pulled to the stop.

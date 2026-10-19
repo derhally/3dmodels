@@ -154,7 +154,7 @@ handle:                    # front.pull: handle. A plate handle on a stand-off r
 scoop_pins:                # front.pull: scoop_pins. Zeid's scoop look (scoop:) as a separate part on the plate handle's snap pins (Zeid, 2026-10-19: the scoop looked nicer); values here override handle:
   kind: scoop_pins
   # The old scoop stands 7 out, too shallow for a socket (8.5 behind the handle's back), so this one is deeper and wider at the front.
-  width: 46.0              # given (Zeid, 2026-10-19: wider at the back so the sides show more, lip unchanged; was 40): at the face. The most the 2x2 face allows: its r4 top corners leave the recess 0.2 to spare
+  width: 46.0              # given (Zeid, 2026-10-19: wider at the back so the sides show more, lip unchanged; was 40): at the face. The 2x2 keeps 40 (its face is only 43.5 wide; see 2x2/params.yaml)
   front_width: 30.0        # assumed: at the lip (old scoop 16); wide enough that the socket tubes stay inside the tapering sides
   reach: 11.0              # assumed: lip this far out from the face (old scoop 7.07, plate handle 14.1)
   height: 16.5             # assumed: back's height; its bottom stays 11.6 above the label holder so a label (10.85) still drops in from above
@@ -170,6 +170,11 @@ scoop_pins:                # front.pull: scoop_pins. Zeid's scoop look (scoop:) 
   tube_end: 6.0            # assumed: tube end, out from the face
   chamber_past_barbs: 0.5  # assumed: straight chamber this far past the barbs' flat, then a 45 deg cone
   slot_start: 2.0          # derived: the leg slot starts at the head (was 4), so the legs and barbs are pin C's, only the neck is 2 shorter
+
+scoop_test:                # scoop_test.py: test print of the scoop on its pins (scoop_pins: section)
+  strip_width: 56.0        # assumed: strip of drawer face, wide enough for the recess (46) and 5 mm either side
+  strip_height: 24.0       # assumed: from the face top down, 5.5 below the scoop's bottom
+  pins: 4                  # two to fit, two spare
 
 handle_test:               # handle_test.py: test print of the handle (handle: section) on strips of drawer face, one set per pin variant
   strip_width: 44.0        # assumed: strip of drawer face for the test, just wider than the handle (one per set: strip, handle, a pin pair)

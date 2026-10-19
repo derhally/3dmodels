@@ -7,3 +7,6 @@ unit:
   cells: 2                    # given: 2 cells wide
   rows: 2                     # given: 2 rows tall
   file_prefix: arc_drawer_2x2 # output files: arc_drawer_2x2_housing_print.3mf and so on
+scoop_pins:
+  width: 40.0                 # the 2x2 face is only 43.5 wide and its r4 top corners leave 41.4 at the recess top, so the scoop keeps 40 here (46 on the 3-cell drawers); lip stays 30
+  boss_x: 11.75               # sockets in with the sides: 14.7 clear between the tubes for a finger
