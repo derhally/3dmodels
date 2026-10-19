@@ -84,36 +84,6 @@ parts:
       - omniwall/hook/print/bridge_hook_1u.step
       - omniwall/hook/step/bridge_hook_1u.step
 
-  - id: bridge-hook-2u
-    kind: hook
-    category: hooks
-    name: Bridge hook 2U
-    file: bridge_hook_2u
-    was: tall bridge hook
-    status: test print
-    summary: >-
-      Bridge hook 1U with its front raised 12 mm to the top of the upper slot,
-      so it fits 2-row housings made for slot hooks.
-    how: >-
-      Goes on like Bridge hook 1U. The part behind the panel is the same; the
-      dovetail front rises to the upper slot's top, with a second notch pair one
-      cell lower. The front has to run down to the foot (it's the only link to
-      it), so only one fits per column of a housing: a second one, or a Slot hook
-      1U, one row below would overlap it by 4.3 mm.
-    specs:
-      Size: 2.95 × 11.1 × 29.7 mm
-      Volume: 609.1 mm³
-      Slots used: 2, in one column
-      Snap rows: 2
-      Fits: 2-row housings with the seat at the slot's top (one per column)
-    print: On its flat side, no supports, like Bridge hook 1U.
-    folder: omniwall/slot-hook-2u
-    downloads:
-      - omniwall/hook/print/bridge_hook_2u.3mf
-      - omniwall/hook/print/bridge_hook_2u.stl
-      - omniwall/hook/print/bridge_hook_2u.step
-      - omniwall/hook/step/bridge_hook_2u.step
-
   - id: slot-hook-1u
     kind: hook
     category: hooks

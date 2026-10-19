@@ -111,31 +111,32 @@ housing rows the hook's dovetail front spans (one snap notch pair per row).
 | Name | Was | What it is |
 |---|---|---|
 | **Bridge hook 1U** | bridge hook, cross-slot hook | Clamps the steel bridge between two in-line slots, its top bar resting on the upper slot's bottom edge. |
-| **Bridge hook 2U** | tall bridge hook | Bridge hook 1U with its front raised 12.0 mm to the upper slot's top and a second notch pair one cell lower. |
 | **Slot hook 1U** | slot hook 1, one-slot hook, the 1u hook | Fills one slot and hooks a finger over its top edge, with a rim-notch snap at the bottom. |
 | **Slot hook 2U** | slot hook 2, two-slot hook | Slot hook 1U carried down into the next slot in line, snapping in the lower slot. Test print in `slot-hook-2u/`. |
 
 All of them carry the same dovetail front, so one pocket fits any of them. For
 one housing to take every hook, the snaps must sit in the same places: Slot hook
-2U has a second notch pair one cell lower, and Bridge hook 2U has its front
-raised 12.0 mm (`bridge_hook(size=2)`, tested in `slot-hook-2u/`). In a 2-row
-housing each hook column then takes two Slot hook 1Us, one Slot hook 2U, or one
-Bridge hook 2U. Bridge hook 1U's top sits 12.0 mm lower, so it fits housings
-made for it (today's arc drawers) and not those.
+2U has a second notch pair one cell lower. In a 2-row housing each hook column
+then takes two Slot hook 1Us or one Slot hook 2U. Bridge hook 1U's top sits
+12.0 mm lower, so it fits housings made for it (today's arc drawers) and not
+those. A Bridge hook 2U (Bridge hook 1U with its front raised 12.0 mm to the
+slot's top) was tried and retired on 2026-10-19: tilting it on to get the
+finger behind the panel swings the raised front into the steel above the slot
+(see `slot-hook-2u/README.md`).
 
 ## Official hooks
 
-`hook/build_hooks.py` builds all four hooks from [panel.yaml](panel.yaml):
+`hook/build_hooks.py` builds all three hooks from [panel.yaml](panel.yaml):
 `hook/print/<name>.step/.stl/.3mf` lying on their flat side with no supports,
 and `hook/step/<name>.step` as mounted (z up from the upper slot's bottom edge,
 the panel's front face at y = 4.95), with the names `bridge_hook_1u`,
-`bridge_hook_2u`, `slot_hook_1u` and `slot_hook_2u`. Run it from `hook/` with
+`slot_hook_1u` and `slot_hook_2u`. Run it from `hook/` with
 `uv run --no-project --python 3.12 --with build123d --with pyyaml python build_hooks.py`.
 
 Bridge hook 1U and Slot hook 1U were printed with the test plate
 (`pocket-test/`) on 2026-10-17 and fit, snap and hold. Slot hook 2U was
 printed with the coupon in `slot-hook-2u/` on 2026-10-18, its lower-foot snap
-picked from two rounds of variants; Bridge hook 2U is in the same test print.
+picked from two rounds of variants.
 The two 1U hooks are also in the Bambu Studio project `test-prints/omniwall_test_parts.3mf` (built locally by `build_bambu_project.py`). Earlier versions are kept in
 `hook/old-finger-snap/` and `hook/old-offset-head/` for reference only. Objects
 take the pocket in `dovetail_mount.pocket`, built by `pocket_void()` in

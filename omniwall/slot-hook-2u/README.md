@@ -64,16 +64,16 @@ It is 2.95 × 11.15 × 45.8 mm, 988.5 mm³. The geometry is `slot_hook_2u()` in
 [panel.yaml](../panel.yaml) (`slot_hook_2u`, and `slot_hook_1u` for everything
 it shares).
 
-## Bridge hook 2U
+## Bridge hook 2U (retired)
 
-Bridge hook 1U's top sits 12.0 mm lower than Slot hook 1U's in the same slot, so
-its snap misses the ridges of a housing made for slot hooks. Bridge hook 2U
-raises its dovetail front 12.0 mm, to the upper slot's top, with a second notch
-pair one cell lower; the part behind the panel is unchanged. 2.95 × 11.1 × 29.7
-mm, 609.1 mm³. The front still has to run down to the foot (it's the only link
-to it), so two Bridge hook 2Us, or a Bridge hook 2U over a Slot hook 1U,
-can't go one row apart in the same column: they overlap by 4.3 mm. Swinging it
-on clashes no more than Bridge hook 1U does.
+This test print also carried a Bridge hook 2U: Bridge hook 1U with its dovetail
+front raised 12.0 mm to the upper slot's top. It was retired on 2026-10-19
+because it can't go on the panel. To get its finger behind the steel, a bridge
+hook tilts about 23° and lifts about 4.7 mm, and that swings the raised front
+into the steel above the upper slot (Zeid found it). A side-view simulation of
+each hook going on put the worst overlap with the steel at 0.9 mm² for Bridge
+hook 1U and 0.87 for Slot hook 2U (both go on by flexing that much), against
+2.6 for Bridge hook 2U at best. Slot hook 2U does the same job.
 
 ## The coupon
 
@@ -91,11 +91,10 @@ local), plus `report.txt` here.
 
 | File | What |
 |---|---|
-| `test-prints/slot_hook_2u_test_plate.3mf` | Slot hook 2U, the Bridge hook 2U and the coupon on one plate, in print orientation |
+| `test-prints/slot_hook_2u_test_plate.3mf` | Slot hook 2U and the coupon on one plate, in print orientation |
 | `test-prints/slot_hook_2u_print.*`, `test-prints/slot_hook_2u_coupon_print.*` | Each part on its own (STEP, STL, 3MF) |
 | `test-prints/slot_hook_2u_assembly.step` | Hook and coupon hung on a stand-in for the panel |
 | `test-prints/slot_hook_1u_pair_assembly.step` | The same coupon on a Slot hook 1U in each slot instead |
-| `test-prints/bridge_hook_2u_assembly.step`, `test-prints/bridge_hook_2u_print.*` | The Bridge hook 2U on the same coupon, and on its own for printing |
 | `test-prints/slot_hook_2u.step`, `test-prints/slot_hook_2u_coupon.step` | Each part in hook coordinates |
 | `report.txt` | Sizes and the checks below |
 
@@ -139,7 +138,5 @@ is fine at 0.2 mm. No supports, no brim needed.
    slots.
 4. Pull and twist the coupon to see whether one hook in two slots feels steadier
    than Slot hook 1U.
-5. Do the same with the Bridge hook 2U (its top bar on the upper slot's bottom
-   edge, foot under the lower slot's top edge).
-6. If you have two Slot hook 1Us, hang one in each of the same two slots and check the
+5. If you have two Slot hook 1Us, hang one in each of the same two slots and check the
    same coupon clicks onto them as well.

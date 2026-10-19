@@ -119,18 +119,11 @@ def keep_below_y(shape, y, h):
     return shape & Pos(10, y / 2 - 5, h / 2) * Box(40, y + 10, h + 10)
 
 
-def bridge_hook(panel, root, size=1):
-    """A bridge hook as printed: measured back half plus the dovetail front.
-    size=1: Bridge hook 1U, the measured height. size=2: Bridge hook 2U, the
-    front moved up (bridge_hook.front_2u) so its top and snap notches sit where
-    Slot hook 1U's do, and housings take either hook."""
+def bridge_hook(panel, root):
+    """Bridge hook 1U as printed: measured back half plus the dovetail front."""
     dm, hook = panel["dovetail_mount"], panel["bridge_hook"]
     real = import_step(str(root / hook["step"]))
     H = hook["height"]
-    if size == 2:
-        # The front still runs down to the foot (it is the only link to it); its
-        # notches repeat a pitch lower, where a housing's next ridges sit.
-        H += hook["front_2u"]["rise"]
     front, _ = hook_front(dm, H, hook["panel_front_y"], pitch=panel["pitch"])
     return keep_below_y(real, hook["panel_front_y"], hook["height"]) + front
 

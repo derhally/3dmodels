@@ -1,4 +1,4 @@
-# Builds the four official hooks from ../panel.yaml and ../hook_geometry.py.
+# Builds the three official hooks from ../panel.yaml and ../hook_geometry.py.
 # Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build_hooks.py
 # Every printed hook carries the same dovetail front (spine and symmetric head
@@ -25,8 +25,7 @@ bh, s1 = panel["bridge_hook"], panel["slot_hook_1u"]
 to_slot_frame = Pos(0, s1["panel_front_y"] - bh["panel_front_y"], -bh["bar_bottom"])
 
 HOOKS = {
-    "bridge_hook_1u": ("Bridge hook 1U", lambda: to_slot_frame * bridge_hook(panel, ROOT, size=1)),
-    "bridge_hook_2u": ("Bridge hook 2U", lambda: to_slot_frame * bridge_hook(panel, ROOT, size=2)),
+    "bridge_hook_1u": ("Bridge hook 1U", lambda: to_slot_frame * bridge_hook(panel, ROOT)),
     "slot_hook_1u": ("Slot hook 1U", lambda: slot_hook_1u(panel, ROOT)),
     "slot_hook_2u": ("Slot hook 2U", lambda: slot_hook_2u(panel, ROOT)),
 }

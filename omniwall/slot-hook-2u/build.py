@@ -1,5 +1,4 @@
-# Slot hook 2U test print: the hook (../panel.yaml slot_hook_2u), Bridge hook 2U
-# (bridge_hook.front_2u) and a housing
+# Slot hook 2U test print: the hook (../panel.yaml slot_hook_2u) and a housing
 # coupon that slides down onto it, with a stand-in for the panel to check that
 # everything clears. Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
@@ -93,7 +92,7 @@ floor = Polygon((cx - hh - e, yf), (cx + hh + e, yf), (cx, yf + hh + e), align=N
 seat = H + pk["top_clearance"]
 # A ridge pair every pitch lower, one per row, as in the drawer housings
 # (housing.ridges_every_row): it clicks into a Slot hook 1U in the lower slot, or
-# into the lower notches of Slot hook 2U and the Bridge hook 2U.
+# into the lower notches of Slot hook 2U.
 r = pk["ridge"]
 y_ridge_end = yp + dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
 for zc in (seat - r["below_top"] - k * pitch for k in range(1, CP["rows"])):
@@ -138,18 +137,6 @@ log(f"Slot hook 1U in each slot vs coupon: {sum(overlap(o, cp) for o in ones):.3
     f"3 mm higher: {sum(overlap(o, Pos(0, 0, 3.0) * cp) for o in ones):.3f} mm3; vs panel: {sum(overlap(o, pnl) for o in ones):.3f} mm3")
 for o in ones:
     o.label = "Slot hook 1U"
-# Bridge hook 2U: Bridge hook 1U with its front raised (bridge_hook.front_2u): its top
-# bar on the upper slot's bottom edge, its foot under the lower slot's top edge.
-cs = panel["bridge_hook"]
-place_cs = lambda s: Pos(0, yp - cs["panel_front_y"], -cs["bar_bottom"]) * s
-tall = place_cs(bridge_hook(panel, ROOT, size=2))
-tall.label = "Bridge hook 2U"
-tb = tall.bounding_box()
-log(f"Bridge hook 2U: {tb.size.X:.2f} x {tb.size.Y:.2f} x {tb.size.Z:.2f} mm (z {tb.min.Z:.2f} to {tb.max.Z:.2f}), volume {tall.volume:.1f} mm3, solids {len(tall.solids())}, valid {tall.is_valid}")
-log(f"Bridge hook 2U vs coupon: {overlap(tall, cp):.3f} mm3 (both ridge pairs in notches, as on the slot hooks); "
-    f"Bridge hook 1U: {overlap(place_cs(bridge_hook(panel, ROOT)), cp):.3f} mm3 (its top is {cs['front_2u']['rise']} lower, so the ridges pinch its flank)")
-log(f"Bridge hook 2U stacked one row below another: {overlap(tall, Pos(0, 0, -pitch) * tall):.1f} mm3, "
-    f"over a Slot hook 1U in the slot below: {overlap(tall, ones[1]):.1f} mm3 (one per column)")
 
 
 def bad_faces(part, limit=45.0):
@@ -181,12 +168,10 @@ export_step(hk, str(OUT / "slot_hook_2u.step"))
 export_step(cp, str(OUT / "slot_hook_2u_coupon.step"))
 export_step(Compound(children=[pnl, hk, cp]), str(OUT / "slot_hook_2u_assembly.step"))
 export_step(Compound(children=[pnl, *ones, copy.copy(cp)]), str(OUT / "slot_hook_1u_pair_assembly.step"))
-export_step(Compound(children=[copy.copy(pnl), tall, copy.copy(cp)]), str(OUT / "bridge_hook_2u_assembly.step"))
 
 hp = to_bed(Rot(0, -90, 0) * hk)        # on its flat side, like the other hooks
-tp = to_bed(Rot(0, -90, 0) * tall)
 cpp = to_bed(Rot(90, 0, 0) * cp)        # on its back, like the drawer housings
-for part, stem in ((hp, "slot_hook_2u_print"), (tp, "bridge_hook_2u_print"), (cpp, "slot_hook_2u_coupon_print")):
+for part, stem in ((hp, "slot_hook_2u_print"), (cpp, "slot_hook_2u_coupon_print")):
     export_step(part, str(OUT / f"{stem}.step"))
     export_stl(part, str(OUT / f"{stem}.stl"))
     write_3mf([(stem, *shape_mesh(part))], OUT / f"{stem}.3mf")
@@ -196,9 +181,8 @@ for part, stem in ((hp, "slot_hook_2u_print"), (tp, "bridge_hook_2u_print"), (cp
         + (" (the neck's 0.95 mm bridge 0.75 above the bed and the bed-side snap notches' 0.23 roofs, as on the printed hooks)" if stem.endswith("hook_print") else ""))
     for x in sorted(bad, key=lambda t: -t[1])[:10]:
         log(f"    {x[0]:.1f} deg from vertical, area {x[1]} mm2, at ({x[2].X:.1f}, {x[2].Y:.1f}, {x[2].Z:.1f})")
-hb, cb, tb = hp.bounding_box(), cpp.bounding_box(), tp.bounding_box()
-write_3mf([("Slot hook 2U", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp)),
-           ("Bridge hook 2U", *shape_mesh(tp, -(cb.size.X / 2 + 8 + hb.size.X / 2), hb.size.Y / 2 + 6 + tb.size.Y / 2))],
+hb, cb = hp.bounding_box(), cpp.bounding_box()
+write_3mf([("Slot hook 2U", *shape_mesh(hp, -(cb.size.X / 2 + 8 + hb.size.X / 2), 0)), ("coupon", *shape_mesh(cpp))],
           OUT / "slot_hook_2u_test_plate.3mf")
 
 # Lower-foot snap: how much has to give for the foot to ride over the rim, and

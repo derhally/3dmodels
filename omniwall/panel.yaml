@@ -46,11 +46,10 @@ bridge_hook:
   foot_top: 4.0             # measured: top of the foot, sits under the lower slot's top edge
   foot_back: 0.9            # measured: foot runs y 0.9-4.9, z 0-4.0
   web_grip: 10.2            # measured: bar_bottom - foot_top, against the 9.9 inline_end_gap (0.3 play; 0.2 fillets in the corners)
-  front_2u:                 # Bridge hook 2U: front moved up so housings take this hook and Slot hook 1Us alike (Zeid, 2026-10-18)
-    rise: 12.0              # derived: slot length 15.5 - (height - bar_bottom) 3.5; top = the upper slot's top, as on Slot hook 1U
-    # The front still runs down to the foot (its only link to the bar), so two of
-    # these can't stack one row apart in a column: the upper one's front would
-    # overlap the lower one's raised top by 4.3 mm. One per column, like Slot hook 2U.
+  # Bridge hook 2U (this hook with its front raised 12.0 to the upper slot's top)
+  # was retired 2026-10-19: to get the finger behind the panel the hook tilts
+  # ~23 deg and lifts ~4.7, which swings the raised front into the steel above
+  # the slot (Zeid). Slot hook 2U fills that role.
   tongue:                   # original half-dovetail tongue, plan profile, constant over the full height except the 0.5 chamfers (printed hooks use `dovetail_mount` instead)
     stem_width: 2.95        # measured
     depth: 10.9             # measured: y of the flat face

@@ -8,16 +8,13 @@ swing in, 10 deg out: 0.45 mm3 0.45 at z -0.2..0.0
 swing in,  8 deg out: 0.24 mm3 0.24 at z -0.2..0.0
 swing in,  6 deg out: 0.10 mm3 0.10 at z -0.1..0.0
 swing in,  4 deg out: 0.36 mm3 0.33 at z -25.7..-25.4, 0.03 at z -0.0..0.0
-swing in,  3 deg out: 1.47 mm3 0.01 at z -0.0..0.0, 1.46 at z -26.1..-25.4
+swing in,  3 deg out: 1.47 mm3 1.46 at z -26.1..-25.4, 0.01 at z -0.0..0.0
 swing in,  2 deg out: 3.01 mm3 3.01 at z -26.3..-25.4
 swing in,  1 deg out: 2.03 mm3 2.03 at z -26.3..-25.4
 coupon vs panel: 0.000 mm3
 hook vs coupon: 0.279 mm3 (the ridges reach 0.280 past the head's flank into its 0.23 notches: a small overlap is expected)
 hook vs coupon 3 mm higher (sliding down, ridges not yet over the notches): 0.574 mm3
 Slot hook 1U in each slot vs coupon: 0.279 mm3 (both ridge pairs in notches); 3 mm higher: 0.000 mm3; vs panel: 0.233 mm3
-Bridge hook 2U: 2.95 x 11.10 x 29.70 mm (z -14.20 to 15.50), volume 609.1 mm3, solids 1, valid True
-Bridge hook 2U vs coupon: 0.279 mm3 (both ridge pairs in notches, as on the slot hooks); Bridge hook 1U: 0.574 mm3 (its top is 12.0 lower, so the ridges pinch its flank)
-Bridge hook 2U stacked one row below another: 67.4 mm3, over a Slot hook 1U in the slot below: 99.9 mm3 (one per column)
 slot_hook_2u_print: 45.8 x 11.2 x 3.0, overhangs flatter than 45 deg: 7
     90.0 deg from vertical, area 39.71 mm2, at (-14.7, 2.0, 0.8)
     90.0 deg from vertical, area 0.87 mm2, at (-16.1, 4.9, 0.2)
@@ -26,13 +23,5 @@ slot_hook_2u_print: 45.8 x 11.2 x 3.0, overhangs flatter than 45 deg: 7
     62.0 deg from vertical, area 0.57 mm2, at (-15.9, 4.9, 0.2)
     62.0 deg from vertical, area 0.57 mm2, at (8.8, 4.9, 0.1)
     62.0 deg from vertical, area 0.57 mm2, at (9.5, 4.9, 0.2)
-bridge_hook_2u_print: 29.7 x 11.1 x 3.0, overhangs flatter than 45 deg: 7
-    90.0 deg from vertical, area 28.22 mm2, at (-11.9, 2.7, 0.8)
-    90.0 deg from vertical, area 0.87 mm2, at (13.3, 4.9, 0.2)
-    90.0 deg from vertical, area 0.87 mm2, at (-12.1, 4.9, 0.2)
-    62.0 deg from vertical, area 0.57 mm2, at (13.6, 4.9, 0.2)
-    62.0 deg from vertical, area 0.57 mm2, at (12.9, 4.9, 0.1)
-    62.0 deg from vertical, area 0.57 mm2, at (-11.8, 4.9, 0.2)
-    62.0 deg from vertical, area 0.57 mm2, at (-12.5, 4.9, 0.1)
 slot_hook_2u_coupon_print: 25.1 x 50.5 x 10.1, overhangs flatter than 45 deg: 0
 lower-foot snap {'foot_top': 4.0, 'rim_notch': {'width': 1.45, 'tip_land': 0.4, 'depth': 0.9}}: swing-in peak 3.01 mm3, seated vs panel 0.266 mm3 (the grip on the rim)
