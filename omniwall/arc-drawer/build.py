@@ -53,6 +53,8 @@ pk["spine_clearance"] = HS["pocket"]["spine_clearance"]   # housing pocket from 
 pk["flank_gap"] = HS["pocket"]["flank_gap"]
 pk["ridge"]["height"] = HS["pocket"]["ridge_height"]
 SC, HD = P["scoop"], P["handle"]
+SEP = P["front"]["pull"] in ("handle", "scoop_pins")   # a separate part on two snap pins
+PT = {**HD, **P["scoop_pins"]} if P["front"]["pull"] == "scoop_pins" else HD
 PULL = P["front"]["pull"]                            # handle (separate part on snap pins), scoop or lip
 NAME = U.get("file_prefix", "arc_drawer")             # start of every output file name
 K = math.sqrt(2)
@@ -404,7 +406,7 @@ def drawer():
     plate = Pos(x0, y_front, z_floor) * Box(x1 - x0, ft, plate_top - z_floor, align=Align.MIN)
     if PULL == "scoop":
         lip = scoop()
-    elif PULL == "handle":
+    elif SEP:
         lip = None                                   # a separate part: only its pin holes are cut, below
     else:
         pr, fh = LP["proud"], LP["front_height"]
@@ -434,8 +436,8 @@ def drawer():
             arc = Pos(xc, y_back - 1 + L / 2, plate_top - r) * Rot(90, 0, 0) * Cylinder(r, L + 2)
             d = solid(d - (block - arc))
         BLENDS.append(f"front top corners r {r}")
-    if PULL == "handle":
-        d = solid(d - Pos((x0 + x1) / 2, D, plate_top - HD["below_top"]) * handle_face_cut(HD, ft))
+    if SEP:
+        d = solid(d - Pos((x0 + x1) / 2, D, plate_top - PT["below_top"]) * pull_face_cut(PT, ft))
     d.label = "drawer"
     return d
 
@@ -531,13 +533,13 @@ log = lines.append
 
 h = housing()
 d = drawer()
-if PULL == "handle":
+if SEP:
     # The handle and its two pins, fitted; the motion checks below move them with the drawer
     xm = W / 2
-    zh = plate_top - HD["below_top"]
-    hd = Pos(xm, D, zh) * handle_part(HD)
-    hpin = handle_pin(HD, DR["front_thickness"], HD["barb"])
-    fitted = [Pos(xm + sx * HD["boss_x"], D - DR["front_thickness"], zh - HD["socket_down"]) * Rot(0, 90, 0) * hpin for sx in (-1, 1)]
+    zh = plate_top - PT["below_top"]
+    hd = Pos(xm, D, zh) * pull_part(PT)
+    hpin = handle_pin(PT, DR["front_thickness"] - PT.get("recess", 0), PT["barb"])
+    fitted = [Pos(xm + sx * PT["boss_x"], D - DR["front_thickness"], zh - PT["socket_down"]) * Rot(0, 90, 0) * hpin for sx in (-1, 1)]
     hd.label = "handle"
     da = Compound(children=[d, hd, *fitted])        # what moves
     da.label = "drawer"
@@ -602,7 +604,7 @@ log("pulled out along the exit, held level (mm: mm3): " + ", ".join(f"{y}: {over
 log("sliding (pin y: mm3): " + ", ".join(f"{y_pin + t:.0f}: {overlap(h, Pos(0, t, 0) * da):.3f}" for t in (travel * 0.25, travel * 0.5, travel * 0.75, travel - 3)))
 if True:
     # The drawer of the unit above, moving through its own states, against what stands proud of this drawer's face
-    proud = hd if PULL == "handle" else solid(d & Pos(0, D + 0.01, 0) * Box(W, 50, H, align=Align.MIN))
+    proud = hd if SEP else solid(d & Pos(0, D + 0.01, 0) * Box(W, 50, H, align=Align.MIN))
     above = Pos(0, 0, U["rows"] * pitch)
     st_ = [("closed", None), ("open", None), ("tilted", None), ("pushed", None)] + [(f"exit {y}", ("exit", y)) for y in ex] + [(f"held {y}", ("held", y)) for y in ex]
     res = []
@@ -624,9 +626,9 @@ plates = []
 TEST = HERE / "test-prints"                          # fit tests: local only (git-ignored)
 TEST.mkdir(exist_ok=True)
 extra = []
-if PULL == "handle":
-    # Handle on its top (rib top and plate top edge on the bed), pin lying on a flat
-    hdp, pnp = to_bed(Rot(180, 0, 0) * handle_part(HD)), to_bed(hpin)
+if SEP:
+    # Plate handle on its top (rib top and plate top edge on the bed), scoop on its back, pin lying on a flat
+    hdp, pnp = to_bed(pull_print_rot(PT) * pull_part(PT)), to_bed(hpin)
     extra = [(hdp, f"{NAME}_handle_print", HERE / "print"), (pnp, f"{NAME}_handle_pin_print", HERE / "print")]
 for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{NAME}_drawer_print", HERE / "print"), *extra,
                         (htp, f"{NAME}_fit_test_housing_print", TEST), (dtp, f"{NAME}_fit_test_drawer_print", TEST),
@@ -648,11 +650,11 @@ hb, db = hp.bounding_box(), dp.bounding_box()
 hx = -(hb.size.X + gap + db.size.X) / 2 - hb.min.X
 dx = hx + hb.max.X + gap - db.min.X
 objs = [("housing", *shape_mesh(hp, hx, -hb.center().Y)), ("drawer", *shape_mesh(dp, dx, -db.center().Y))]
-if PULL == "handle":
+if SEP:
     # The handle and its two pins in a row in front of them
     yr = -max(hb.size.Y, db.size.Y) / 2 - gap - hdp.bounding_box().size.Y / 2
     objs += [("handle", *shape_mesh(hdp, -15, yr)), ("pin 1", *shape_mesh(pnp, 15, yr)), ("pin 2", *shape_mesh(pnp, 30, yr))]
 write_3mf(objs, HERE / "print" / f"{NAME}_all_parts.3mf")
-log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}" + (", the handle and two pins in front" if PULL == "handle" else ""))
+log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}" + (", the handle and two pins in front" if SEP else ""))
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[h, da, *hks])

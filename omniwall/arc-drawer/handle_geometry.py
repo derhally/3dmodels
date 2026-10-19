@@ -88,3 +88,66 @@ def handle_pin(T, ft, barb, notches=0):
     for sx in (1, -1)[:notches]:                     # V notch through the head at one end (B) or both (C)
         body = body - extrude(Polygon((sx * (hr + 1), -0.5), (sx * (hr - n), ht / 2), (sx * (hr + 1), ht + 0.5), align=None), 10, both=True)
     return body
+
+
+def scoop_pins_part(T):
+    """Zeid's scoop look as a separate part on the same snap pins: a hollow hood, open below,
+    whose top slopes 45 deg down from the face to a front lip and whose sides taper from
+    `width` at the face to `front_width` at the lip. Its back is a plate that sits `recess`
+    deep in the face. The sockets are tubes in the hood's back corners, out of the finger's way.
+    T is the plate handle's section with params.yaml scoop_pins: on top."""
+    W0, WF, L, H, rec, t, lip = T["width"], T["front_width"], T["reach"], T["height"], T["recess"], T["wall"], T["lip"]
+    k = t * math.sqrt(2)                             # wall thickness measured vertically under the 45 deg top
+    plan = Polygon((-W0 / 2, -rec), (W0 / 2, -rec), (W0 / 2, 0), (WF / 2, L), (-WF / 2, L), (-W0 / 2, 0), align=None)
+    # The back plate's top edge is cut back 45 deg, continuing the top's slope into the face, so the
+    # recess's ceiling in the face is 45 deg too (the drawer prints upright)
+    side = Polygon((-rec, -rec), (0, 0), (L, -L), (L, -L - lip), (0, -H), (-rec, -H), align=None)
+    outer = (Pos(0, 0, -H - 1) * extrude(plan, H + 2)) & extrude(Plane.YZ * side, W0 / 2 + 1, both=True)
+    r = T.get("round", 0)
+    if r > 0:
+        # Round every edge that shows (out from the face); the back plate in the recess keeps its edges
+        outer = outer.fillet(r, outer.edges().filter_by(lambda e: e.center().Y > 0.05))
+    # Hollow: side walls `wall` thick (along x), roof `wall` thick under the 45 deg top, open below and at the lip
+    a = t * math.hypot(W0 - WF, 2 * L) / (2 * L)
+    cplan = Polygon((-W0 / 2 + a, 0), (W0 / 2 - a, 0), (WF / 2 - a, L + 1), (-WF / 2 + a, L + 1), align=None)
+    cside = Polygon((0, -k), (L + 2, -L - 2 - k), (L + 2, -H - 5), (0, -H - 5), align=None)
+    cav = (Pos(0, 0, -H - 6) * extrude(cplan, H + 8)) & extrude(Plane.YZ * cside, W0 / 2 + 1, both=True)
+    h = outer - cav
+    # Socket tubes, kept inside the hood's outline, then the sockets: entry cut to the pin's width,
+    # the shoulder at the face plane, a chamber just past the barbs, closed by a 45 deg cone
+    # (the tubes stand upright as printed, so the cone is the chamber's roof)
+    za, ent = -T["socket_down"], T["socket_entry_depth"]
+    tr = math.tan(math.radians(T["barb_ramp"]))
+    rc = T["socket_entry"] / 2 + T["barb_preload"]
+    cyl = (T["barb"] / 2 - rc) * tr + T["barb_flat"] + T["chamber_past_barbs"]
+    rch = T["socket_chamber"] / 2
+    for x in (-T["boss_x"], T["boss_x"]):
+        tube = bore_y(Circle(T["tube"] / 2), -rec, T["tube_end"], x, za) & outer
+        h = h + tube
+    for x in (-T["boss_x"], T["boss_x"]):
+        y0 = -rec + ent
+        h = h - bore_y(Circle(T["socket_entry"] / 2) & Rectangle(T["hole_width"], 20), -rec - 1, y0 + 0.01, x, za)
+        prof = Polygon((0, y0 - 0.01), (rch, y0 - 0.01), (rch, y0 + cyl), (0, y0 + cyl + rch), align=None)
+        h = h - Pos(x, 0, za) * revolve(Plane.XY * prof, Axis.Y)
+    return h
+
+
+def scoop_pins_face_cut(T, ft):
+    """The pin holes and counterbores (as for the plate handle) and the recess the scoop's back sits in."""
+    c, rec, H = T["recess_clearance"], T["recess"], T["height"]
+    k = c * math.sqrt(2)                             # ceiling at 45 deg, `c` clear of the scoop's cut-back top edge
+    prof = Polygon((1, k + 1), (-rec, k - rec), (-rec, -H - c), (1, -H - c), align=None)
+    return handle_face_cut(T, ft) + extrude(Plane.YZ * prof, T["width"] / 2 + c, both=True)
+
+
+def pull_part(T):
+    return scoop_pins_part(T) if T.get("kind") == "scoop_pins" else handle_part(T)
+
+
+def pull_face_cut(T, ft):
+    return scoop_pins_face_cut(T, ft) if T.get("kind") == "scoop_pins" else handle_face_cut(T, ft)
+
+
+def pull_print_rot(T):
+    """Print orientation: the scoop on its back, the plate handle on its top."""
+    return Rot(90, 0, 0) if T.get("kind") == "scoop_pins" else Rot(180, 0, 0)

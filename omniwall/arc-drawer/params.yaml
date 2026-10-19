@@ -66,7 +66,7 @@ track:                     # channel in each housing side wall that the drawer's
   # + clearance (4.74 wide), so the pin fits however the drawer turns and every wall is a line or an arc.
 
 front:
-  pull: handle             # given (Zeid, 2026-10-19): the plate handle (handle:) with snap pins replaces his scoop; "scoop" and "lip" bring those back
+  pull: scoop_pins         # given (Zeid, 2026-10-19): his scoop's look on the plate handle's snap pins (scoop_pins:); "handle" is the plate handle, "scoop" and "lip" are moulded on
 
 scoop:                     # Zeid's scoop_prototype.scad (E:\source\openscad\omniwall\drawers), turned 180 deg so it opens downward
   width: 40.0              # given (scad width): side walls' span at the drawer face
@@ -150,6 +150,26 @@ handle:                    # front.pull: handle. A plate handle on a stand-off r
   barb_flat: 0.5           # assumed
   tip: 1.2                 # assumed: tip radius after the 45 deg lead-in
   barb: 6.4                # given (Zeid, 2026-10-19): pin C of the handle test held best
+
+scoop_pins:                # front.pull: scoop_pins. Zeid's scoop look (scoop:) as a separate part on the plate handle's snap pins (Zeid, 2026-10-19: the scoop looked nicer); values here override handle:
+  kind: scoop_pins
+  # The old scoop stands 7 out, too shallow for a socket (8.5 behind the handle's back), so this one is deeper and wider at the front.
+  width: 40.0              # = scoop.width: at the face
+  front_width: 30.0        # assumed: at the lip (old scoop 16); wide enough that the socket tubes stay inside the tapering sides
+  reach: 11.0              # assumed: lip this far out from the face (old scoop 7.07, plate handle 14.1)
+  height: 16.5             # assumed: back's height; its bottom stays 11.6 above the label holder so a label (10.85) still drops in from above
+  below_top: 1.5           # assumed: top this far below the face top (1.35 of face left above the recess)
+  lip: 1.5                 # assumed: front lip's height below the 45 deg top
+  wall: 2.0                # = scoop.wall
+  recess: 2.0              # assumed: the back plate sits this deep in the face; the pin's neck is shorter by the same amount
+  recess_clearance: 0.15   # assumed: per side around the back plate
+  round: 1.0               # assumed: rounds every edge that shows (Zeid likes polished, rounded corners)
+  boss_x: 11.75            # assumed: socket centres either side of the middle; 14.7 clear between the tubes for a finger
+  socket_down: 11.75       # assumed: socket axis below the top: tube top 1.35 under the 45 deg top, bottom 0.35 over the hood's bottom
+  tube: 8.8                # assumed: socket tube, chamber 6.8 + 1.0 walls
+  tube_end: 6.0            # assumed: tube end, out from the face
+  chamber_past_barbs: 0.5  # assumed: straight chamber this far past the barbs' flat, then a 45 deg cone
+  slot_start: 2.0          # derived: the leg slot starts at the head (was 4), so the legs and barbs are pin C's, only the neck is 2 shorter
 
 handle_test:               # handle_test.py: test print of the handle (handle: section) on strips of drawer face, one set per pin variant
   strip_width: 44.0        # assumed: strip of drawer face for the test, just wider than the handle (one per set: strip, handle, a pin pair)
