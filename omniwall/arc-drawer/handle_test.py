@@ -159,10 +159,14 @@ for name, s in parts:
     export_stl(s, str(OUT / f"{name}.stl"))
     bad = bad_faces(s)
     log(f"{name}: overhangs flatter than 45 deg: {len(bad)}" + "".join(f"\n    {f.area:.2f} mm2 at {tuple(round(v, 2) for v in f.center())}" for f in bad))
-objs = [("plate", *shape_mesh(pl_p, 0, 40))] + [(f"handle {k + 1}", *shape_mesh(s, -50 + 50 * k, 0)) for k, s in enumerate(hd_p)]
-for i, p in enumerate(pin_p):
-    for k in range(2):
-        objs.append((f"pin {'ABC'[i]}{k + 1}", *shape_mesh(p, -25 + 20 * i + 8 * k, -35)))
+# One set per pin variant: strip, handle and the pin pair, laid out in a column each
+objs = []
+for k, p in enumerate(pin_p):
+    x0 = -60 + 60 * k
+    objs.append((f"strip {'ABC'[k]}", *shape_mesh(pl_p, x0, 45)))
+    objs.append((f"handle {'ABC'[k]}", *shape_mesh(hd_p[k], x0, 5)))
+    for j in range(2):
+        objs.append((f"pin {'ABC'[k]}{j + 1}", *shape_mesh(p, x0 - 7 + 14 * j, -30)))
 write_3mf(objs, OUT / "handle_test_all_parts.3mf")
 export_step(Compound(children=[pl, hds[1]] + [Pos(x, -FT6, ZB) * Rot(0, 90, 0) * pins[1] for x in xs]), str(OUT / "handle_test_assembly.step"))
 (OUT / "handle_test_report.txt").write_text("\n".join(log_lines) + "\n")

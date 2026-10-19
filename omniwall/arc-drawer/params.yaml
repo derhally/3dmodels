@@ -115,8 +115,8 @@ pocket_variants:           # pocket_variants.py: back-down pocket coupons to pic
   mark_depth: 0.4          # assumed: ID grooves on the front face
 
 handle_test:               # handle_test.py: a plate handle on a stand-off rib like Zeid's HANDLE H2 (C:\Users\zeidd\Downloads\obj_20_HANDLE H2.stl), held on the drawer face by two printed snap pins (Zeid, 2026-10-18); test print first
-  strip_width: 60.0        # assumed: strip of drawer face for the test
-  strip_height: 26.0       # assumed: the top 26 mm of the face, where the handle sits
+  strip_width: 44.0        # assumed: strip of drawer face for the test, just wider than the handle (one per set: strip, handle, a pin pair)
+  strip_height: 16.0       # assumed: the top 16 mm of the face, enough round the pin holes
   # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
   # The handle prints on its top (the rib's top and the plate's top edge, flush): the plate then rises 15 deg off vertical,
   # the sockets run sideways as teardrops and their snap shoulders are vertical, so nothing needs supports.
@@ -128,8 +128,8 @@ handle_test:               # handle_test.py: a plate handle on a stand-off rib l
   below_top: 2.0           # = scoop.below_top: handle top this far below the face top
   rib: 6.0                 # measured on H2: rib height between the bosses
   boss: 10.0               # measured on H2: boss width at each end of the rib (flat-topped here, round below)
-  boss_height: 12.0        # assumed: boss depth below the handle's top (H2: 10), so the chamber's teardrop point keeps 2.2 mm of wall
-  socket_down: 5.0         # assumed: socket axis this far below the handle's top (2.6 mm over the entry, 1.6 over the chamber)
+  boss_height: 12.7        # assumed: boss depth below the handle's top (H2: 10), so the chamber's teardrop point keeps 2.2 mm of wall
+  socket_down: 5.7         # assumed: socket axis this far below the handle's top (2.3 mm over the chamber), so the face's counterbore teardrop point stays 1 mm under the face top
   boss_x: 14.0             # assumed: socket centres either side of the middle (bosses reach 19, the plate 20)
   taper: 5.0               # assumed: rib grows into each boss over this length (H2: 12; shorter here to leave the finger gap 18 mm clear at full depth)
   corner_radius: 5.0       # measured on H2: plate's lower corners
