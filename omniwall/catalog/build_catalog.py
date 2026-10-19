@@ -129,7 +129,9 @@ def hooks(r, built):
         frame = dict(center=[cx, 5.5, -4.5], halfHeight=27)        # every hook at the same scale
         imgs = [
             (r.shot(idir / "hook.png", [blue], w=640, h=800, view=[1, 1.3, 0.7], **frame), "The hook: dovetail front on the right, finger and foot on the left go through the panel"),
-            (r.shot(idir / "front.png", [blue, dict(stl=piece, **steel)], w=640, h=800, view=[0.7, 1.6, 0.8], **frame), "On the panel, from the front: objects slide down onto the dovetail"),
+            # see-through: the front covers the slot exactly, so solid it hides which steel it grips
+            (r.shot(idir / "front.png", [dict(blue, opacity=0.45), dict(stl=piece, **steel)], w=640, h=800, view=[0.7, 1.6, 0.8], **frame),
+             "On the panel, from the front, the hook drawn see-through so the steel behind it shows. Objects slide down onto the dovetail"),
             (r.shot(idir / "back.png", [blue, dict(stl=piece, **steel)], w=640, h=800, view=[0.7, -1.6, 0.6], **frame), "From behind the panel"),
             (r.shot(idir / "side.png", [blue, dict(stl=strip, **steel)], w=640, h=800, view=[1, 0, 0], **frame), "Side view: wall on the left, steel in grey"),
             (r.shot(idir / "print.png", [dict(stl=flat, color=COL["hook"])], w=800, h=500, view=[0.35, -1, 0.9], pad=1.2), "As printed: on its flat side, no supports"),
