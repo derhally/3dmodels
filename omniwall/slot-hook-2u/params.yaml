@@ -1,5 +1,5 @@
-# Slot hook 2 test print (Zeid asked 2026-10-18). The hook itself is in
-# ../panel.yaml (slot_hook_2) and ../hook_geometry.py. This builds it with a
+# Slot hook 2U test print (Zeid asked 2026-10-18). The hook itself is in
+# ../panel.yaml (slot_hook_2u) and ../hook_geometry.py. This builds it with a
 # housing coupon: a one-cell-wide slice of a 2-row housing back whose pocket seat
 # sits under the hook's top, so its top and bottom edges line up with horizontal
 # slot rows. The pocket's fit values come from ../arc-drawer/params.yaml
@@ -13,14 +13,14 @@ coupon:
 # Firmer lower-foot snap test (Zeid, 2026-10-18: the bed-chamfered hook printed
 # fine but its lower foot pops out of the rim too easily; more force to put it
 # on is fine, and the foot can be taller). Each variant overrides the lower foot
-# (../panel.yaml slot_hook_2.lower_foot) and is printed bed-side chamfered, with
+# (../panel.yaml slot_hook_2u.lower_foot) and is printed bed-side chamfered, with
 # 1 to 3 marks (marks:) on its top side to tell them apart. All assumed, to be picked by
 # test print.
 # Round 1 (A, B, C) printed 2026-10-18: A (foot 4.0, notch 1.45 = 0.10 grip, 0.4
 # tip land, depth 0.8) held best of the three, and Zeid wanted slightly more.
 # Round 2: each a single small step past A, to see which lever helps. Zeid printed
 # them 2026-10-18 and picked E (most satisfying snap, enough grip): it is now
-# slot_hook_2.lower_foot in ../panel.yaml, and the list is empty so build.py
+# slot_hook_2u.lower_foot in ../panel.yaml, and the list is empty so build.py
 # skips the variants. Round 2 as tested, to restore if needed:
 #   - name: D                # A with a bit more grip on the steel
 #     foot_top: 4.0

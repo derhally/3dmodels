@@ -1,7 +1,8 @@
 # build123d script for create_model (params = pocket-test/params.yaml).
 # Builds the test plate: two dovetail pockets with snap ridges, one or more cells
 # apart, that slide down onto two identical hooks of either kind. MODE =
-# "assembly" gives the plate with two hooks (HOOK = "bridge" or "slot_1")
+# "assembly" gives the plate with two hooks (HOOK = "bridge" for Bridge hook 1U or
+# "slot_1u" for Slot hook 1U)
 # in place for a clash check; "print" gives the plate alone, upside down (closed
 # pocket tops on the bed, so nothing overhangs). Pocket and hooks come from
 # ../panel.yaml through ../hook_geometry.py.
@@ -41,9 +42,9 @@ if MODE == "print":
     result = Pos(-bb.min.X, -bb.min.Y, -bb.min.Z) * p
 else:
     # Stand-ins: the printed hooks in both slots, their tops against the pocket tops.
-    h1 = bridge_hook(panel, ROOT) if HOOK == "bridge" else slot_hook_1(panel, ROOT)
-    h1 = Pos(0, hook["panel_front_y"] - panel[HOOK + "_hook"]["panel_front_y"],
-             H - panel[HOOK + "_hook"]["height"]) * h1
+    h1 = bridge_hook(panel, ROOT) if HOOK == "bridge" else slot_hook_1u(panel, ROOT)
+    hk = panel["bridge_hook" if HOOK == "bridge" else "slot_hook_1u"]
+    h1 = Pos(0, hook["panel_front_y"] - hk["panel_front_y"], H - hk["height"]) * h1
     h1.label = "hook left"
     h2 = place_right(h1)
     h2.label = "hook right"

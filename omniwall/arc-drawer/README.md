@@ -1,6 +1,6 @@
 # Omniwall arc-pocket drawer
 
-A drawer unit that hangs on the printed bridge hooks (`../hook/`): a housing
+A drawer unit that hangs on printed Bridge hook 1Us (`../hook/`): a housing
 with a floor, roof and side walls, and a drawer that slides out on two rear pins,
 tilts down 30° at the end of its travel and stays captive. Units tile edge to
 edge in any grid of widths and heights with 0.3 mm between them. `params.yaml`
@@ -27,7 +27,7 @@ apart.
 
 ## Where it sits on the panel
 
-A bridge hook straddles the horizontal slot row, so it sits at a crossing of
+A Bridge hook 1U straddles the horizontal slot row, so it sits at a crossing of
 the slot grid. Sideways the unit's edges sit on vertical slot columns, as the bins
 do, so every slot column inside the unit takes a hook: 2 for 3 cells (3 for 4
 cells). Vertically the unit's bottom edge sits on a peg-hole row, so both hook
