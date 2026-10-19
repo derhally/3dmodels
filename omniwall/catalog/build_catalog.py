@@ -23,6 +23,7 @@ OW = HERE.parent                       # omniwall/
 REPO = OW.parent
 DOCS = REPO / "docs"
 SITE = DOCS / "omniwall"
+CACHE = HERE / "cache"                 # meshes only the renders use (git-ignored)
 CAT = yaml.safe_load((HERE / "catalog.yaml").read_text(encoding="utf-8"))
 panel = yaml.safe_load((OW / "panel.yaml").read_text())
 P, SL = panel["pitch"], panel["slot"]
@@ -114,7 +115,7 @@ def hooks(r, built):
     z0, z1 = -P - 16, SL["length"] + 16                           # two slots of one column, a little more
     shared = SITE / "models" / "panel"
     piece = write_mesh(panel_sheet(cx, 0, yf, cx - 0.9 * P, cx + 0.9 * P, z0, z1), shared / "hook_panel.stl")
-    strip = write_mesh(panel_sheet(cx, 0, yf, cx - 1.4, cx + 1.4, z0, z1), shared / "hook_panel_strip.stl")
+    strip = write_mesh(panel_sheet(cx, 0, yf, cx - 1.4, cx + 1.4, z0, z1), CACHE / "hook_panel_strip.stl")
     steel = dict(color=COL["panel"], metalness=0.15, roughness=0.5)
     for part in CAT["parts"]:
         if part.get("kind") != "hook":
@@ -168,7 +169,8 @@ def drawers(r, built):
         hooks_ = write_mesh(Compound(children=fixed["hook"]), mdir / "hooks.stl", tol=0.03)
         moving = {}
         for s, rl in roles.items():
-            moving[s] = [dict(stl=write_mesh(Compound(children=rl[k]), mdir / f"{k}_{s}.stl", tol=0.05), color=COL[k])
+            where = mdir if s == "open" else CACHE / pid             # the 3D view shows it open
+            moving[s] = [dict(stl=write_mesh(Compound(children=rl[k]), where / f"{k}_{s}.stl", tol=0.05), color=COL[k])
                          for k in ("drawer", "handle", "pin")]
         # The panel behind: the hooks' column and the upper slot they hang from.
         hb = fixed["hook"][0].bounding_box()
@@ -176,7 +178,7 @@ def drawers(r, built):
         b = fixed["housing"][0].bounding_box()
         sheet = panel_sheet((hb.min.X + hb.max.X) / 2, hz + bh["bar_bottom"], 0.0,
                             b.min.X - 0.75 * P, b.max.X + 0.75 * P, b.min.Z - 0.75 * P, b.max.Z + 0.75 * P)
-        pnl = write_mesh(sheet, mdir / "panel.stl")
+        pnl = write_mesh(sheet, CACHE / pid / "panel.stl")
         base = [dict(stl=housing, color=COL["housing"]), dict(stl=hooks_, color=COL["hook_on_drawer"])]
         wall = [dict(stl=pnl, color=COL["panel"], metalness=0.15, roughness=0.5, noFit=True)]
         # Print parts side by side, as on the bed.
@@ -239,8 +241,8 @@ def page(title, body, depth=1, scripts=""):
 </head>
 <body>
 <header class="top"><div class="wrap">
-<a class="brand" href="{up}omniwall/index.html">Omniwall parts</a>
-<nav>{"".join(f'<a href="{up}omniwall/index.html#{c["id"]}">{E(c["name"])}</a>' for c in CAT["categories"])}</nav>
+<a class="brand" href="index.html">Omniwall parts</a>
+<nav>{"".join(f'<a href="index.html#{c["id"]}">{E(c["name"])}</a>' for c in CAT["categories"])}</nav>
 </div></header>
 <main class="wrap">
 {body}
