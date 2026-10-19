@@ -5,6 +5,9 @@ the panel's slot and peg-hole geometry, the values that follow from it, and what
 is still unknown. Designs that mount to the panel should take their numbers from
 [panel.yaml](panel.yaml) rather than retyping them.
 
+The [parts catalog](catalog/README.md) lists every Omniwall part with renders
+and a 3D view; it is generated into `docs/` for GitHub Pages.
+
 ## What the panel is
 
 A flat panel with a repeating 25.4 mm (1 inch) grid. Each grid cell is boxed in

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- Loaded by build_catalog.py in a headless browser, which serves the repo
+     at http://catalog.local/. window.renderShot(shot) returns a PNG data URL. -->
+<script type="importmap">{"imports": {"three": "/docs/vendor/three/three.module.min.js"}}</script>
+</head>
+<body style="margin:0">
+<script type="module">
+import * as THREE from 'three';
+import { loadParts, makeLights, fitCamera } from '/docs/assets/scene.js';
+
+// shot: {w, h, scale, view, up, center, halfHeight, pad, bg, parts: [{stl, color, ...}]}
+window.renderShot = async (shot) => {
+  const W = shot.w || 800, H = shot.h || 600;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true });
+  renderer.setPixelRatio(shot.scale || 2);
+  renderer.setSize(W, H);
+  renderer.setClearColor(shot.bg || '#ffffff', shot.bg ? 1 : 0);
+  const scene = new THREE.Scene();
+  const { group, box } = await loadParts(shot.parts);
+  scene.add(group);
+  const place = makeLights(scene);
+  const { cam, target } = fitCamera(box, shot.view, shot.up || [0, 0, 1], W, H, shot);
+  place(cam, target);
+  renderer.render(scene, cam);
+  const url = renderer.domElement.toDataURL('image/png');
+  renderer.dispose();
+  return url;
+};
+window.rendererReady = true;
+</script>
+</body>
+</html>

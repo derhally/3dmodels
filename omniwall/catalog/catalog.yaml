@@ -1,0 +1,335 @@
+# Omniwall parts catalog: what build_catalog.py puts on each page.
+# Numbers are copied from the parts' params files and READMEs; the files and
+# renders come from the parts themselves.
+
+title: Omniwall parts
+intro: >-
+  Printed parts for the Omniwall steel pegboard (25.4 mm grid of 3.0 × 15.5 mm
+  slots and 6.2 mm peg holes, 18 ga steel). Hooks go into the panel's slots;
+  everything else slides down onto the hooks through dovetail pockets in its
+  back and clicks into place.
+repo: https://github.com/derhally/3dmodels
+branch: main
+
+colors:
+  hook: "#3b74d4"
+  hook_on_drawer: "#e8a33d"
+  panel: "#9aa1aa"
+  housing: "#e6e8ec"
+  drawer: "#3b74d4"
+  handle: "#2b5fb3"
+  pin: "#e8a33d"
+  label_plate: "#f4f4f2"
+  label_text: "#1d1f22"
+
+categories:
+  - id: hooks
+    name: Hooks
+    blurb: >-
+      Every hook carries the same dovetail front, so any object's pocket fits
+      any hook. Two families, named for how they hold the panel, and a size in U:
+      the number of housing rows the hook's front spans, with one snap notch pair
+      per row.
+  - id: drawers
+    name: Drawers
+    blurb: >-
+      Arc drawers: a housing that hangs on the hooks and a drawer that slides
+      out on two rear pins and tilts down 30° at the end of its travel. Units
+      tile edge to edge with 0.3 mm between them.
+  - id: labels
+    name: Labels
+    blurb: Two-colour labels for bins and drawers, printed face down.
+  - id: reference
+    name: Panel reference
+    blurb: The panel geometry every part takes its numbers from.
+
+parts:
+  - id: bridge-hook-1u
+    kind: hook
+    category: hooks
+    name: Bridge hook 1U
+    file: bridge_hook_1u
+    was: bridge hook, cross-slot hook
+    status: print-tested
+    summary: >-
+      Clamps the steel bridge between two slots in line. The hook today's arc
+      drawers hang on.
+    how: >-
+      The top bar goes through the upper slot and rests on its bottom edge, with
+      a finger hanging behind the panel. The finger leaves a 1.5 mm gap for the
+      1.55 mm steel, so the hook clamps the panel and doesn't wobble. The foot
+      goes through the slot below and sits under that slot's top edge, so a bump
+      from underneath can't lift the mount off. Put it on by putting the finger
+      through the upper slot and swinging the foot into the lower one.
+    specs:
+      Size: 2.95 × 11.1 × 17.7 mm
+      Volume: 414.2 mm³
+      Slots used: 2, in one column
+      Snap rows: 1 (notch pair 2.75 mm below the top)
+      Fits: arc drawers (all sizes)
+      Source: Zeid's Shapr3D model, measured; dovetail front from the Kong 3D Skadis mount
+    print: >-
+      On its flat side, no supports. 0.12 mm layers, Arachne walls, 5+ walls or
+      100% infill.
+    folder: omniwall/hook
+    downloads:
+      - omniwall/hook/print/bridge_hook_1u.3mf
+      - omniwall/hook/print/bridge_hook_1u.stl
+      - omniwall/hook/print/bridge_hook_1u.step
+      - omniwall/hook/step/bridge_hook_1u.step
+
+  - id: bridge-hook-2u
+    kind: hook
+    category: hooks
+    name: Bridge hook 2U
+    file: bridge_hook_2u
+    was: tall bridge hook
+    status: test print
+    summary: >-
+      Bridge hook 1U with its front raised 12 mm to the top of the upper slot,
+      so it fits 2-row housings made for slot hooks.
+    how: >-
+      Goes on like Bridge hook 1U. The part behind the panel is the same; the
+      dovetail front rises to the upper slot's top, with a second notch pair one
+      cell lower. The front has to run down to the foot (it's the only link to
+      it), so only one fits per column of a housing: a second one, or a Slot hook
+      1U, one row below would overlap it by 4.3 mm.
+    specs:
+      Size: 2.95 × 11.1 × 29.7 mm
+      Volume: 609.1 mm³
+      Slots used: 2, in one column
+      Snap rows: 2
+      Fits: 2-row housings with the seat at the slot's top (one per column)
+    print: On its flat side, no supports, like Bridge hook 1U.
+    folder: omniwall/slot-hook-2u
+    downloads:
+      - omniwall/hook/print/bridge_hook_2u.3mf
+      - omniwall/hook/print/bridge_hook_2u.stl
+      - omniwall/hook/print/bridge_hook_2u.step
+      - omniwall/hook/step/bridge_hook_2u.step
+
+  - id: slot-hook-1u
+    kind: hook
+    category: hooks
+    name: Slot hook 1U
+    file: slot_hook_1u
+    was: slot hook 1, one-slot hook
+    status: print-tested
+    summary: >-
+      Fills a single slot and snaps over its bottom rim, so an object can sit
+      within one cell.
+    how: >-
+      A finger goes up behind the panel above the slot, and the body fills the
+      slot's full 15.5 mm height. A cavity open to the back lets the foot flex:
+      push the bottom in, the 25° ramp rides over the slot's bottom rim, and the
+      foot drops with the rim in its notch.
+    specs:
+      Size: 2.95 × 11.15 × 20.3 mm
+      Volume: 363.7 mm³
+      Slots used: 1
+      Snap rows: 1
+      Fits: housings with the seat at the slot's top; two per column in a 2-row housing
+      Source: Zeid's "Omniwall Hook 1u" Shapr3D model, measured
+    print: On its flat side, no supports, like Bridge hook 1U.
+    folder: omniwall/hook
+    downloads:
+      - omniwall/hook/print/slot_hook_1u.3mf
+      - omniwall/hook/print/slot_hook_1u.stl
+      - omniwall/hook/print/slot_hook_1u.step
+      - omniwall/hook/step/slot_hook_1u.step
+
+  - id: slot-hook-2u
+    kind: hook
+    category: hooks
+    name: Slot hook 2U
+    file: slot_hook_2u
+    was: slot hook 2, two-slot hook
+    status: print-tested
+    summary: >-
+      Slot hook 1U carried down into the next slot in line: one hook held in two
+      slots, steadier against tipping out.
+    how: >-
+      The top fills the upper slot like Slot hook 1U, with no snap of its own.
+      One pitch lower, a firmer foot snaps over the lower slot's bottom rim
+      (snap E: 4.0 mm foot, 0.10 mm grip on the steel, 0.9 mm lip with a 0.4 mm
+      flat tip). One dovetail front runs the whole 45.7 mm, with notch pairs
+      where two Slot hook 1Us' would be.
+    specs:
+      Size: 2.95 × 11.15 × 45.8 mm
+      Volume: 988.5 mm³
+      Slots used: 2, in one column
+      Snap rows: 2
+      Fits: 2-row housings with the seat at the slot's top (one per column)
+    print: >-
+      On its flat side, no supports. Both sides chamfered 0.5 mm. Arachne walls,
+      5+ walls or 100% infill; PETG if the snap cracks.
+    folder: omniwall/slot-hook-2u
+    downloads:
+      - omniwall/hook/print/slot_hook_2u.3mf
+      - omniwall/hook/print/slot_hook_2u.stl
+      - omniwall/hook/print/slot_hook_2u.step
+      - omniwall/hook/step/slot_hook_2u.step
+
+  - id: arc-drawer-3x2
+    kind: drawer
+    category: drawers
+    name: Arc drawer 3×2
+    folder: omniwall/arc-drawer
+    prefix: arc_drawer
+    status: design
+    summary: >-
+      Three cells wide, two rows tall, 84 mm deep. The deepest drawer.
+    how: >-
+      The housing hangs on Bridge hook 1Us in two slot columns, in the top row or
+      both rows. Pull the scoop and the drawer slides out on two rear pins
+      running in grooves in the housing walls; at the end of its travel it tilts
+      down 30° and stays captive. To take it out, tilt it fully, push it back
+      along the gate, lift it round the stop and pull it forward.
+    specs:
+      Housing: 75.9 × 84 × 50.5 mm (W × D × H)
+      Drawer inside: 64.9 × 65.4 × 40 mm
+      Travel: 55.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 2 columns, 1 or 2 rows
+      Grid: 3 × 2 cells, 0.3 mm gap to neighbours
+    print: >-
+      Housing on its back, drawer upright, scoop on its back, snap pins flat. No
+      supports. One plate with every part in the all-parts 3MF.
+    downloads:
+      - omniwall/arc-drawer/print/arc_drawer_all_parts.3mf
+      - omniwall/arc-drawer/print/arc_drawer_housing_print.stl
+      - omniwall/arc-drawer/print/arc_drawer_drawer_print.stl
+      - omniwall/arc-drawer/print/arc_drawer_handle_print.stl
+      - omniwall/arc-drawer/print/arc_drawer_handle_pin_print.stl
+      - omniwall/arc-drawer/step/arc_drawer_assembly_closed.step
+
+  - id: arc-drawer-2x2x60
+    kind: drawer
+    category: drawers
+    name: Arc drawer 2×2×60
+    folder: omniwall/arc-drawer/2x2x60
+    prefix: arc_drawer_2x2x60
+    status: design
+    summary: Two cells wide, two rows tall, 60 mm deep, on a single hook column.
+    how: >-
+      Works like the 3×2: hangs on Bridge hook 1Us in the one slot column inside
+      it (on its centre line), slides out, tilts 30° and stays captive. Its scoop
+      is 40 mm wide so it fits the narrower face.
+    specs:
+      Housing: 50.5 × 60 × 50.5 mm (W × D × H)
+      Drawer inside: 39.5 × 41.4 × 40 mm
+      Travel: 31.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 1 column, 1 or 2 rows
+      Grid: 2 × 2 cells
+    print: Housing on its back, drawer upright, scoop on its back. No supports.
+    downloads:
+      - omniwall/arc-drawer/2x2x60/print/arc_drawer_2x2x60_all_parts.3mf
+      - omniwall/arc-drawer/2x2x60/print/arc_drawer_2x2x60_housing_print.stl
+      - omniwall/arc-drawer/2x2x60/print/arc_drawer_2x2x60_drawer_print.stl
+      - omniwall/arc-drawer/2x2x60/print/arc_drawer_2x2x60_handle_print.stl
+      - omniwall/arc-drawer/2x2x60/print/arc_drawer_2x2x60_handle_pin_print.stl
+      - omniwall/arc-drawer/2x2x60/step/arc_drawer_2x2x60_assembly_closed.step
+
+  - id: arc-drawer-3x2x60
+    kind: drawer
+    category: drawers
+    name: Arc drawer 3×2×60
+    folder: omniwall/arc-drawer/3x2x60
+    prefix: arc_drawer_3x2x60
+    status: design
+    summary: The 3×2 footprint at 60 mm deep.
+    how: >-
+      Works like the 3×2 on the same two hook columns. The 60 mm units tile with
+      each other; next to an 84 mm unit they line up at the panel, not at the
+      front.
+    specs:
+      Housing: 75.9 × 60 × 50.5 mm (W × D × H)
+      Drawer inside: 64.9 × 41.4 × 40 mm
+      Travel: 31.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 2 columns, 1 or 2 rows
+      Grid: 3 × 2 cells
+    print: Housing on its back, drawer upright, scoop on its back. No supports.
+    downloads:
+      - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_all_parts.3mf
+      - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_housing_print.stl
+      - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_drawer_print.stl
+      - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_handle_print.stl
+      - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_handle_pin_print.stl
+      - omniwall/arc-drawer/3x2x60/step/arc_drawer_3x2x60_assembly_closed.step
+
+  - id: arc-drawer-3x3x60
+    kind: drawer
+    category: drawers
+    name: Arc drawer 3×3×60
+    folder: omniwall/arc-drawer/3x3x60
+    prefix: arc_drawer_3x3x60
+    status: design
+    summary: Three cells wide, three rows tall, 60 mm deep. The tallest drawer.
+    how: >-
+      Works like the 3×2, with a ridge pair in each pocket for every one of its
+      three hook rows.
+    specs:
+      Housing: 75.9 × 60 × 75.9 mm (W × D × H)
+      Drawer inside: 64.9 × 41.4 × 65.4 mm
+      Travel: 31.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 2 columns, 1 to 3 rows
+      Grid: 3 × 3 cells
+    print: Housing on its back, drawer upright, scoop on its back. No supports.
+    downloads:
+      - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_all_parts.3mf
+      - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_housing_print.stl
+      - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_drawer_print.stl
+      - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_handle_print.stl
+      - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_handle_pin_print.stl
+      - omniwall/arc-drawer/3x3x60/step/arc_drawer_3x3x60_assembly_closed.step
+
+  - id: bin-label
+    kind: label
+    category: labels
+    name: Front label
+    folder: labels/bin-label
+    status: ready to print
+    summary: >-
+      A white plate with black text inlaid flush, for the bins' label pocket and
+      the U holder on the arc drawers' face.
+    how: >-
+      Add the text to labels/bin-label/params.yaml and run its build.py. The text
+      is Arial Bold, as large as fits the plate's margins (up to 6.5 mm tall),
+      cut 0.4 mm into the face. A drawer label drops into its holder from above,
+      face out.
+    specs:
+      Plate: 34.7 × 10.85 × 0.9 mm
+      Text inlay: 0.4 mm (two layers)
+      Text margins: 1.2 mm (bin), 2.2 mm at the sides (arc drawer)
+      Colours: plate filament 2 (white), text filament 1 (black)
+    print: >-
+      Face down, on a smooth plate for a smooth face. The colour change is only
+      in the first two layers. No supports.
+    downloads:
+      - labels/bin-label/print/labels.3mf
+      - labels/bin-label/params.yaml
+
+  - id: panel
+    kind: reference
+    category: reference
+    name: Omniwall panel
+    folder: omniwall
+    status: reference
+    summary: >-
+      The steel panel: a 25.4 mm grid, each cell boxed in by four 3.0 × 15.5 mm
+      slots with a 6.2 mm peg hole in its middle.
+    image: omniwall/panel-diagram.svg
+    how: >-
+      Neighbouring cells share slots. The hole sits midway between the slots on
+      both axes, so slot centrelines lie on the grid lines and the holes on a grid
+      offset by half a pitch. Every part takes its numbers from panel.yaml rather
+      than retyping them.
+    specs:
+      Pitch: 25.4 mm both ways
+      Slot: 3.0 × 15.5 mm
+      Peg hole: Ø6.2 mm
+      Steel: 18 ga, 1.55 mm (measured)
+      Between in-line slots: 9.9 mm of steel
+      Hole edge to slot: 8.1 mm
+    downloads:
+      - omniwall/panel.yaml
+      - omniwall/README.md

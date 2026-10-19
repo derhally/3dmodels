@@ -1,0 +1,352 @@
+{
+ "bridge-hook-1u": {
+  "images": [
+   [
+    "docs/omniwall/img/bridge-hook-1u/hook.png",
+    "The hook: dovetail front on the right, finger and foot on the left go through the panel"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-1u/front.png",
+    "On the panel, from the front: objects slide down onto the dovetail"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-1u/back.png",
+    "From behind the panel"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-1u/side.png",
+    "Side view: wall on the left, steel in grey"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-1u/print.png",
+    "As printed: on its flat side, no supports"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/bridge-hook-1u/bridge_hook_1u.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/panel/hook_panel.stl",
+    "color": "#9aa1aa",
+    "metalness": 0.15,
+    "roughness": 0.5
+   }
+  ]
+ },
+ "bridge-hook-2u": {
+  "images": [
+   [
+    "docs/omniwall/img/bridge-hook-2u/hook.png",
+    "The hook: dovetail front on the right, finger and foot on the left go through the panel"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-2u/front.png",
+    "On the panel, from the front: objects slide down onto the dovetail"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-2u/back.png",
+    "From behind the panel"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-2u/side.png",
+    "Side view: wall on the left, steel in grey"
+   ],
+   [
+    "docs/omniwall/img/bridge-hook-2u/print.png",
+    "As printed: on its flat side, no supports"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/bridge-hook-2u/bridge_hook_2u.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/panel/hook_panel.stl",
+    "color": "#9aa1aa",
+    "metalness": 0.15,
+    "roughness": 0.5
+   }
+  ]
+ },
+ "slot-hook-1u": {
+  "images": [
+   [
+    "docs/omniwall/img/slot-hook-1u/hook.png",
+    "The hook: dovetail front on the right, finger and foot on the left go through the panel"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-1u/front.png",
+    "On the panel, from the front: objects slide down onto the dovetail"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-1u/back.png",
+    "From behind the panel"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-1u/side.png",
+    "Side view: wall on the left, steel in grey"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-1u/print.png",
+    "As printed: on its flat side, no supports"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/slot-hook-1u/slot_hook_1u.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/panel/hook_panel.stl",
+    "color": "#9aa1aa",
+    "metalness": 0.15,
+    "roughness": 0.5
+   }
+  ]
+ },
+ "slot-hook-2u": {
+  "images": [
+   [
+    "docs/omniwall/img/slot-hook-2u/hook.png",
+    "The hook: dovetail front on the right, finger and foot on the left go through the panel"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-2u/front.png",
+    "On the panel, from the front: objects slide down onto the dovetail"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-2u/back.png",
+    "From behind the panel"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-2u/side.png",
+    "Side view: wall on the left, steel in grey"
+   ],
+   [
+    "docs/omniwall/img/slot-hook-2u/print.png",
+    "As printed: on its flat side, no supports"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/slot-hook-2u/slot_hook_2u.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/panel/hook_panel.stl",
+    "color": "#9aa1aa",
+    "metalness": 0.15,
+    "roughness": 0.5
+   }
+  ]
+ },
+ "arc-drawer-3x2": {
+  "images": [
+   [
+    "docs/omniwall/img/arc-drawer-3x2/closed.png",
+    "Closed, on the panel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2/open.png",
+    "Pulled out to its stop"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2/tilted.png",
+    "Tilted down 30\u00b0 at the end of its travel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2/back.png",
+    "The back: dovetail pockets on the hooks"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2/print.png",
+    "Print parts: housing on its back, drawer upright, scoop, snap pin"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2/housing.stl",
+    "color": "#e6e8ec"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2/hooks.stl",
+    "color": "#e8a33d"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2/drawer_open.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2/handle_open.stl",
+    "color": "#2b5fb3"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2/pin_open.stl",
+    "color": "#e8a33d"
+   }
+  ]
+ },
+ "arc-drawer-2x2x60": {
+  "images": [
+   [
+    "docs/omniwall/img/arc-drawer-2x2x60/closed.png",
+    "Closed, on the panel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-2x2x60/open.png",
+    "Pulled out to its stop"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-2x2x60/tilted.png",
+    "Tilted down 30\u00b0 at the end of its travel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-2x2x60/back.png",
+    "The back: dovetail pockets on the hooks"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-2x2x60/print.png",
+    "Print parts: housing on its back, drawer upright, scoop, snap pin"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/arc-drawer-2x2x60/housing.stl",
+    "color": "#e6e8ec"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-2x2x60/hooks.stl",
+    "color": "#e8a33d"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-2x2x60/drawer_open.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-2x2x60/handle_open.stl",
+    "color": "#2b5fb3"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-2x2x60/pin_open.stl",
+    "color": "#e8a33d"
+   }
+  ]
+ },
+ "arc-drawer-3x2x60": {
+  "images": [
+   [
+    "docs/omniwall/img/arc-drawer-3x2x60/closed.png",
+    "Closed, on the panel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2x60/open.png",
+    "Pulled out to its stop"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2x60/tilted.png",
+    "Tilted down 30\u00b0 at the end of its travel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2x60/back.png",
+    "The back: dovetail pockets on the hooks"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x2x60/print.png",
+    "Print parts: housing on its back, drawer upright, scoop, snap pin"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2x60/housing.stl",
+    "color": "#e6e8ec"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2x60/hooks.stl",
+    "color": "#e8a33d"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2x60/drawer_open.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2x60/handle_open.stl",
+    "color": "#2b5fb3"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x2x60/pin_open.stl",
+    "color": "#e8a33d"
+   }
+  ]
+ },
+ "arc-drawer-3x3x60": {
+  "images": [
+   [
+    "docs/omniwall/img/arc-drawer-3x3x60/closed.png",
+    "Closed, on the panel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x3x60/open.png",
+    "Pulled out to its stop"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x3x60/tilted.png",
+    "Tilted down 30\u00b0 at the end of its travel"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x3x60/back.png",
+    "The back: dovetail pockets on the hooks"
+   ],
+   [
+    "docs/omniwall/img/arc-drawer-3x3x60/print.png",
+    "Print parts: housing on its back, drawer upright, scoop, snap pin"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x3x60/housing.stl",
+    "color": "#e6e8ec"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x3x60/hooks.stl",
+    "color": "#e8a33d"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x3x60/drawer_open.stl",
+    "color": "#3b74d4"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x3x60/handle_open.stl",
+    "color": "#2b5fb3"
+   },
+   {
+    "stl": "docs/omniwall/models/arc-drawer-3x3x60/pin_open.stl",
+    "color": "#e8a33d"
+   }
+  ]
+ },
+ "bin-label": {
+  "images": [
+   [
+    "docs/omniwall/img/bin-label/m3-screws-arc-drawer.png",
+    "m3-screws-arc-drawer"
+   ],
+   [
+    "docs/omniwall/img/bin-label/wago-221-2.png",
+    "wago-221-2"
+   ]
+  ],
+  "viewer": [
+   {
+    "stl": "docs/omniwall/models/bin-label/m3-screws-arc-drawer-plate.stl",
+    "color": "#f4f4f2"
+   },
+   {
+    "stl": "docs/omniwall/models/bin-label/m3-screws-arc-drawer-text.stl",
+    "color": "#1d1f22"
+   }
+  ]
+ }
+}
