@@ -1,0 +1,70 @@
+# Omniwall wall trays (own design, 2026-10-19): low trays that hang on the same
+# hooks as the arc drawers, by dovetail pockets in their back wall. Zeid's brief:
+# minimal, no sharp edges, lips so things don't fall off, curved insides for
+# scooping, low side walls (trays, not bins). Concepts:
+# https://claude.ai/artifact/KD8Tn5Qnvgaf2kHGjBgh8A; Zeid kept the Cove, the Ramp
+# (3 cells, and 6 cells with less of a scoop) and the Lift-out dish.
+# This file holds the shared defaults; each tray is a folder (such as ramp-6x1)
+# whose params.yaml overrides them section by section, key by key.
+# Build with: build.py <folder>. All sizes in mm.
+# Source tags: given (Zeid), derived, assumed (chosen for the design).
+# Coordinates as the arc drawer: x across from the left face, y out from the
+# panel face (back face at y = 0), z up from the tray's bottom edge.
+
+unit:
+  style: cove              # which tray: cove, ramp or dish (set by each folder)
+  file_prefix: tray        # start of every output file name (set by each folder)
+
+tray:
+  cells: 3                 # given: 3 cells wide (the 6-cell Ramp sets 6)
+  rows: 1                  # assumed: one housing row tall (Zeid's brief: low walls, trays not bins)
+  gap: 0.3                 # as the arc drawer: width = cells x pitch - gap, so trays tile with drawers
+  depth: 60                # assumed: front lines up with the 60 deep drawer housings
+  wall: 2.4                # assumed: side and front walls (6 perimeters at 0.4)
+  back_front_wall: 2.0     # as the arc drawer housing: solid in front of the pocket floor (back wall 10.075 thick)
+  plan_front_radius: 12.4  # assumed: outer front corners seen from above (inner 10, so the coves blend round the corner)
+  bed_chamfer: 3.0         # assumed: outside bottom edge, 45 deg so it prints without supports...
+  bed_round: 4.0           # assumed: ...rolling into the walls with this radius
+  back_bed_chamfer: 0.6    # assumed: bottom edge against the panel
+  lip_round: 1.1           # assumed: top edges of the walls (nearly a full round on the 2.4 wall)
+  side_s_start: 34.0       # assumed: side walls start rising from lip height here (y), so the S has ended before the plan's front corners start (y 47.6)
+  side_s_end: 14.0         # assumed: ...and reach the back wall's height here, in one S of two arcs
+
+pocket:                    # the arc drawer housing's print-tested pocket (coupon 3, 2026-10-17); overrides panel.yaml dovetail_mount.pocket
+  spine_clearance: 0.15    # panel.yaml's, not the housing's -0.1: that one only works with the 45 deg gable a housing printed on its back has behind the lips; upright, it would leave the lips 0.1 into the spine
+  flank_gap: 0.1           # as the housing
+  ridge_height: 0.53       # as the housing: 0.28 interference per side with the 0.25 side clearance
+  # The tray prints upright, so the pocket's closed top would be a flat bridge.
+  # Instead it is a 45 deg gable along the pocket, through the hook's top corners
+  # at the seat height (so the tray hangs exactly where a flat seat would put it);
+  # the gable's eaves meet the pocket walls side_clearance below the seat.
+
+cove:                      # flat floor, every wall coved into it
+  lip: 14.2                # assumed: wall height
+  floor: 3.0               # assumed
+  cove: 10.0               # assumed: one radius all round, so it blends round the front corners
+
+ramp:                      # the floor tilts back toward the wall, a low bead at the front
+  lip: 10.0                # assumed (9.4 in the drawing: the lip round needs 1.1 of straight wall under it)
+  back_floor: 2.4          # assumed: floor at the back wall
+  front_floor: 7.4         # assumed: floor where it meets the front wall (6.0 deg tilt), 2.6 below the lip
+  bead_round: 1.4          # assumed: floor curves up into the front wall, leaving 1.2 straight under the lip
+  back_cove: 10.0          # assumed
+  side_cove: 1.2           # assumed: under the bead round, so the coves stay inside the walls
+
+dish:                      # a low cradle on the hooks, and a coved dish that lifts out of it
+  rim: 7.0                 # assumed: cradle rim height
+  cradle_floor: 2.4        # assumed
+  cradle_cove: 0.8         # assumed: cradle floor into its walls (small, so the dish's chamfered bottom sits flat)
+  clearance: 0.4           # assumed: dish to cradle, every side
+  dish_wall: 2.0           # assumed
+  dish_floor: 2.0          # assumed
+  dish_lip: 15.0           # assumed: dish top, measured from the tray's bottom edge
+  dish_cove: 7.5           # assumed: the dish's inside corners seen from above are 7.6, the cove can't be bigger
+  dish_chamfer: 1.0        # assumed: dish bottom edge, 45 deg
+  dish_lip_round: 0.9      # assumed: top edges of the dish wall
+  pour_depth: 3.0          # assumed: dip in the middle of the front lip
+  pour_radius: 14.0        # assumed: the dip's curve
+
+coupon:                    # pocket test print (test-prints/, git-ignored): the back wall round one pocket, printed upright like the tray
+  half_width: 8.0          # assumed

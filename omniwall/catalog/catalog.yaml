@@ -26,6 +26,9 @@ colors:
   pin: "#e8a33d"
   label_plate: "#f4f4f2"
   label_text: "#1d1f22"
+  tray: "#e6e8ec"
+  cradle: "#e6e8ec"
+  dish: "#e8a33d"
 
 categories:
   - id: hooks
@@ -42,6 +45,12 @@ categories:
       Arc drawers: a housing that hangs on the hooks and a drawer that slides
       out on two rear pins and tilts down 30° at the end of its travel. Units
       tile edge to edge with 0.3 mm between them.
+  - id: trays
+    name: Trays
+    blurb: >-
+      Low trays for small parts, one row tall and 60 mm deep, so they line up
+      with the 60 mm drawers. They hang on the same hooks by dovetail pockets in
+      their back wall and print upright without supports.
   - id: labels
     name: Labels
     blurb: Two-colour labels for bins and drawers, printed face down.
@@ -281,6 +290,109 @@ parts:
       - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_handle_print.stl
       - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_handle_pin_print.stl
       - omniwall/arc-drawer/3x2x90/step/arc_drawer_3x2x90_assembly_closed.step
+
+  - id: tray-cove-3x1
+    kind: assembly
+    category: trays
+    name: Cove tray 3×1
+    folder: omniwall/tray/cove-3x1
+    front: [0, 1, 0]
+    status: design
+    summary: A flat floor with every wall curving into it, for scooping parts out with a finger.
+    how: >-
+      The back wall is a full row tall and carries two dovetail pockets; the
+      side walls fall from it to a 14.2 mm lip in one S-curve. Inside, the 3 mm
+      floor meets the walls in a 10 mm cove all the way round, front corners
+      included. It slides down onto Bridge hook 1Us or Slot hook 1Us in the two
+      slot columns inside it and clicks onto their snap notches.
+    specs:
+      Size: 75.9 × 60 × 25.1 mm (W × D × H)
+      Lip: 14.2 mm
+      Inside: 3 mm floor, R10 coves
+      Hooks: 2 columns, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 1 cells
+    print: Upright, as it hangs. No supports; the pocket tops are 45° gables. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tray/cove-3x1/print/tray_cove_3x1_all_parts.3mf
+      - omniwall/tray/cove-3x1/print/tray_cove_3x1_print.stl
+      - omniwall/tray/cove-3x1/print/tray_cove_3x1_print.step
+      - omniwall/tray/cove-3x1/step/tray_cove_3x1_assembly.step
+
+  - id: tray-ramp-3x1
+    kind: assembly
+    category: trays
+    name: Ramp tray 3×1
+    folder: omniwall/tray/ramp-3x1
+    front: [0, 1, 0]
+    status: design
+    summary: The floor tilts down toward the wall, so parts gather at the back and stay put.
+    how: >-
+      The floor drops 6° from a low bead at the front lip to the back wall and
+      curves up into it with a 10 mm radius, so small parts roll to the back and
+      sweep out along the curve. The lip is 10 mm, the bead 2.6 mm below it.
+      Hangs like the other trays, on two hook columns.
+    specs:
+      Size: 75.9 × 60 × 25.1 mm (W × D × H)
+      Lip: 10 mm
+      Floor: 2.4 mm at the back, 7.4 mm at the front (6°), R10 into the back wall
+      Hooks: 2 columns, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 1 cells
+    print: Upright, as it hangs. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tray/ramp-3x1/print/tray_ramp_3x1_all_parts.3mf
+      - omniwall/tray/ramp-3x1/print/tray_ramp_3x1_print.stl
+      - omniwall/tray/ramp-3x1/print/tray_ramp_3x1_print.step
+      - omniwall/tray/ramp-3x1/step/tray_ramp_3x1_assembly.step
+
+  - id: tray-ramp-6x1
+    kind: assembly
+    category: trays
+    name: Ramp tray 6×1
+    folder: omniwall/tray/ramp-6x1
+    front: [0, 1, 0]
+    status: design
+    summary: The Ramp six cells wide, with a gentler slope and a lower lip.
+    how: >-
+      Half the 3-cell Ramp's tilt (3°) and half its curve into the back wall
+      (5 mm), with the lip lowered to 7.5 mm so the front bead stays 2.6 mm
+      high. Hangs on five hook columns.
+    specs:
+      Size: 152.1 × 60 × 25.1 mm (W × D × H)
+      Lip: 7.5 mm
+      Floor: 2.4 mm at the back, 4.9 mm at the front (3°), R5 into the back wall
+      Hooks: 5 columns, Bridge hook 1U or Slot hook 1U
+      Grid: 6 × 1 cells
+    print: Upright, as it hangs. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tray/ramp-6x1/print/tray_ramp_6x1_all_parts.3mf
+      - omniwall/tray/ramp-6x1/print/tray_ramp_6x1_print.stl
+      - omniwall/tray/ramp-6x1/print/tray_ramp_6x1_print.step
+      - omniwall/tray/ramp-6x1/step/tray_ramp_6x1_assembly.step
+
+  - id: tray-dish-3x1
+    kind: assembly
+    category: trays
+    name: Lift-out dish 3×1
+    folder: omniwall/tray/dish-3x1
+    front: [0, 1, 0]
+    status: design
+    summary: A low cradle on the hooks and a coved dish that lifts out to carry parts to the bench.
+    how: >-
+      The cradle hangs on two hook columns with a 7 mm rim. The dish sits in it
+      with 0.4 mm all round: 15 mm tall, 2 mm walls, a 7.5 mm cove inside, and a
+      3 mm dip in the middle of its front lip to pour parts back out.
+    specs:
+      Cradle: 75.9 × 60 × 25.1 mm (W × D × H), rim 7 mm
+      Dish: 70.3 × 46.7 × 12.6 mm, lip 15 mm above the cradle's bottom edge
+      Clearance: 0.4 mm per side
+      Hooks: 2 columns, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 1 cells
+    print: Both upright, no supports. One plate with both parts in the all-parts 3MF.
+    downloads:
+      - omniwall/tray/dish-3x1/print/tray_dish_3x1_all_parts.3mf
+      - omniwall/tray/dish-3x1/print/tray_dish_3x1_cradle_print.stl
+      - omniwall/tray/dish-3x1/print/tray_dish_3x1_dish_print.stl
+      - omniwall/tray/dish-3x1/step/tray_dish_3x1_assembly.step
 
   - id: bin-label
     kind: label
