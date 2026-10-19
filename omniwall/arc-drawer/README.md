@@ -6,22 +6,25 @@ tilts down 30° at the end of its travel and stays captive. Units tile edge to
 edge in any grid of widths and heights with 0.3 mm between them. `params.yaml`
 holds every dimension with its source, and `build.py` makes all the files from it.
 
-Four sizes so far. Units of the same depth tile together; the 84 mm and 60 mm
-deep ones line up at the panel, not at the front.
+Five sizes so far. Units of the same depth tile together; the 60 mm and 90 mm
+deep ones line up at the panel, not at the front. (The first size, a 3 × 2 at
+84 mm deep, was dropped on 2026-10-19 in favour of the 3 × 2 × 60; its numbers
+are still the defaults in this folder's `params.yaml`, but nothing builds it.)
 
 | Size | Folder, file prefix | Housing W × D × H, mm | Drawer outside W × L × H | Drawer inside W × L × H | Hooks | Travel |
 |---|---|---|---|---|---|---|
-| 3 × 2, 84 deep | this folder, `arc_drawer_*` | 75.9 × 84 × 50.5 | 71.5 × 75.8 × 45.0 | 64.9 × 65.4 × 40 | 2 columns, 1 or 2 rows | 55.9 (76 %) |
 | 2 × 2, 60 deep | [`2x2x60/`](2x2x60/), `arc_drawer_2x2x60_*` | 50.5 × 60 × 50.5 | 46.1 × 51.8 × 45.0 | 39.5 × 41.4 × 40 | 1 column on the centre line, 1 or 2 rows | 31.9 (65 %) |
 | 3 × 2, 60 deep | [`3x2x60/`](3x2x60/), `arc_drawer_3x2x60_*` | 75.9 × 60 × 50.5 | 71.5 × 51.8 × 45.0 | 64.9 × 41.4 × 40 | 2 columns, 1 or 2 rows | 31.9 (65 %) |
 | 3 × 3, 60 deep | [`3x3x60/`](3x3x60/), `arc_drawer_3x3x60_*` | 75.9 × 60 × 75.9 | 71.5 × 51.8 × 70.4 | 64.9 × 41.4 × 65.4 | 2 columns, 1 to 3 rows | 31.9 (65 %) |
+| 4 × 2, 60 deep | [`4x2x60/`](4x2x60/), `arc_drawer_4x2x60_*` | 101.3 × 60 × 50.5 | 96.9 × 51.8 × 45.0 | 90.3 × 41.4 × 40 | 3 columns, 1 or 2 rows | 31.9 (65 %) |
+| 3 × 2, 90 deep | [`3x2x90/`](3x2x90/), `arc_drawer_3x2x90_*` | 75.9 × 90 × 50.5 | 71.5 × 81.8 × 45.0 | 64.9 × 71.4 × 40 | 2 columns, 1 or 2 rows | 61.9 (78 %) |
 
 Drawer lengths include the label holder; the scoop stands 11 mm further out. All of them tilt to 30° at the end of
 their travel and have the same scoop and label holder. A size is a folder with a
 `params.yaml` that sets only what differs (`2x2x60/params.yaml` sets `cells: 2` and `depth: 60`);
-everything else comes from this folder's `params.yaml`. A 60 mm deep unit also
-moves the track's stop to depth − 15.5 (44.5), so the arc, gate, hook and exit
-channel sit the same distance from the front as in the 84 mm unit. Every pocket
+everything else comes from this folder's `params.yaml`. Each size also sets
+the track's stop to depth − 15.5 (44.5 at 60 mm, 74.5 at 90 mm), so the arc,
+gate, hook and exit channel sit the same distance from the front on every size. Every pocket
 channel has a ridge pair for each hook row (three on a 3-row unit), one pitch
 apart.
 
@@ -89,7 +92,7 @@ column of the back plate to check this pocket before printing the housing.
   of the housing when it tilts, so the 0.5 mm gap between the face and the roof
   only has to clear the slide; a sweep through slide, tilt, gate, hook and exit finds
   no overlap. The drawer of the unit above, tilted or pushed back the same way,
-  clears this drawer's scoop by 6.2 mm (3 × 2); pulled out along its exit channel and
+  clears this drawer's scoop by 6.2 mm; pulled out along its exit channel and
   let rest on its sill, its nose touches the scoop only in the last couple of
   millimetres before it comes free (`report.txt` lists each state), so hold it
   up as it comes out.
@@ -150,8 +153,7 @@ STEP and STL per part, plus one plain 3MF for the printer (written with
 `../core_3mf.py`; Bambu Studio 2.x keeps only the geometry of the multi-plate
 projects `../bambu_project.py` writes, so it is a plain one-plate 3MF).
 
-**The one 3MF:** `print/arc_drawer_all_parts.3mf` (and
-`<size>/print/arc_drawer_<size>_all_parts.3mf` for the other sizes) holds the housing, the drawer, the scoop and
+**The one 3MF:** `<size>/print/arc_drawer_<size>_all_parts.3mf` holds the housing, the drawer, the scoop and
 its two pins on one plate, already in print orientation. Open it in Bambu Studio and slice. The drawer label is a separate two-colour print in
 [labels/bin-label](../../labels/bin-label/README.md).
 
@@ -177,18 +179,19 @@ its two pins on one plate, already in print orientation. Open it in Bambu Studio
 
 ## Regenerating
 
-`build.py` with no argument builds the 3 × 2 unit; `build.py 2x2x60` builds the
-2 × 2 into `2x2x60/`, and likewise `3x2x60` and `3x3x60`. Any new size is a new
-folder with its own `params.yaml`.
+`build.py <size>` builds one size into its folder: `build.py 2x2x60` builds the
+2 × 2 into `2x2x60/`, and likewise `3x2x60`, `3x3x60`, `4x2x60` and `3x2x90`.
+With no argument it lists the sizes. Any new size is a new folder with its own
+`params.yaml`.
 
-    uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py 3x2x60
 
 (the build123d-mcp server's `execute()` sandbox blocks the os, pathlib and yaml imports, so the
-script runs in a plain build123d Python; `uv` fetches build123d and PyYAML the first time). It rewrites
+script runs in a plain build123d Python; `uv` fetches build123d and PyYAML the first time). It rewrites the size folder's
 `step/` (housing, drawer, assemblies with hooks: closed, open, tilted, pushed back through the gate),
 `print/` and `report.txt`.
 
-    uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py print\arc_drawer_housing_print.step
+    uv run --no-project --python 3.12 --with build123d --with pyyaml python check_islands.py 3x2x60\print\arc_drawer_3x2x60_housing_print.step
 
 slices a print-orientation part into 0.2 mm layers and lists any region with
 nothing under it (the "floating regions" Bambu Studio warns about), which the
@@ -216,7 +219,7 @@ facets on the wall face, which the face-angle check counts as flat (46 on the
 housing) but which are far below one extrusion line; `check_islands.py`
 reports 0 floating regions on both print files.
 
-`solidcraft/check_solidcraft.py` compares the result with `step/`. Housing
+`solidcraft/check_solidcraft.py` compared the result with the 84 mm 3 × 2's `step/` files, which are no longer built (they are in git history before 2026-10-19). Housing
 volume 79536.80 vs 79536.70 mm3, drawer 46323.459 vs 46323.459 mm3, same
 bounding boxes and centroids, no hook clash.
 

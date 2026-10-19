@@ -11,7 +11,7 @@ collection:
     slots and 6.2 mm peg holes, 18 ga steel). Hooks go into the panel's slots;
     everything else slides down onto the hooks through dovetail pockets in its
     back and clicks into place.
-  cover: arc-drawer-3x2
+  cover: arc-drawer-3x2x60
   # model folders under these that no part below names still get a page, under "More"
   covers: [omniwall, labels]
   renderers: renderers.py
@@ -146,38 +146,6 @@ parts:
       - omniwall/hook/print/slot_hook_2u.step
       - omniwall/hook/step/slot_hook_2u.step
 
-  - id: arc-drawer-3x2
-    kind: drawer
-    category: drawers
-    name: Arc drawer 3×2
-    folder: omniwall/arc-drawer
-    prefix: arc_drawer
-    status: design
-    summary: >-
-      Three cells wide, two rows tall, 84 mm deep. The deepest drawer.
-    how: >-
-      The housing hangs on Bridge hook 1Us in two slot columns, in the top row or
-      both rows. Pull the scoop and the drawer slides out on two rear pins
-      running in grooves in the housing walls; at the end of its travel it tilts
-      down 30° and stays captive. To take it out, tilt it fully, push it back
-      along the gate, lift it round the stop and pull it forward.
-    specs:
-      Housing: 75.9 × 84 × 50.5 mm (W × D × H)
-      Drawer inside: 64.9 × 65.4 × 40 mm
-      Travel: 55.9 mm, then a 30° tilt
-      Hooks: Bridge hook 1U, 2 columns, 1 or 2 rows
-      Grid: 3 × 2 cells, 0.3 mm gap to neighbours
-    print: >-
-      Housing on its back, drawer upright, scoop on its back, snap pins flat. No
-      supports. One plate with every part in the all-parts 3MF.
-    downloads:
-      - omniwall/arc-drawer/print/arc_drawer_all_parts.3mf
-      - omniwall/arc-drawer/print/arc_drawer_housing_print.stl
-      - omniwall/arc-drawer/print/arc_drawer_drawer_print.stl
-      - omniwall/arc-drawer/print/arc_drawer_handle_print.stl
-      - omniwall/arc-drawer/print/arc_drawer_handle_pin_print.stl
-      - omniwall/arc-drawer/step/arc_drawer_assembly_closed.step
-
   - id: arc-drawer-2x2x60
     kind: drawer
     category: drawers
@@ -187,7 +155,7 @@ parts:
     status: design
     summary: Two cells wide, two rows tall, 60 mm deep, on a single hook column.
     how: >-
-      Works like the 3×2: hangs on Bridge hook 1Us in the one slot column inside
+      Works like the 3×2×60: hangs on Bridge hook 1Us in the one slot column inside
       it (on its centre line), slides out, tilts 30° and stays captive. Its scoop
       is 40 mm wide so it fits the narrower face.
     specs:
@@ -212,18 +180,24 @@ parts:
     folder: omniwall/arc-drawer/3x2x60
     prefix: arc_drawer_3x2x60
     status: design
-    summary: The 3×2 footprint at 60 mm deep.
+    summary: Three cells wide, two rows tall, 60 mm deep.
     how: >-
-      Works like the 3×2 on the same two hook columns. The 60 mm units tile with
-      each other; next to an 84 mm unit they line up at the panel, not at the
-      front.
+      The housing hangs on Bridge hook 1Us in two slot columns, in the top row or
+      both rows. Pull the scoop and the drawer slides out on two rear pins
+      running in grooves in the housing walls; at the end of its travel it tilts
+      down 30° and stays captive. To take it out, tilt it fully, push it back
+      along the gate, lift it round the stop and pull it forward. Units of the
+      same depth tile together; units of different depths line up at the panel,
+      not at the front.
     specs:
       Housing: 75.9 × 60 × 50.5 mm (W × D × H)
       Drawer inside: 64.9 × 41.4 × 40 mm
       Travel: 31.9 mm, then a 30° tilt
       Hooks: Bridge hook 1U, 2 columns, 1 or 2 rows
-      Grid: 3 × 2 cells
-    print: Housing on its back, drawer upright, scoop on its back. No supports.
+      Grid: 3 × 2 cells, 0.3 mm gap to neighbours
+    print: >-
+      Housing on its back, drawer upright, scoop on its back, snap pins flat. No
+      supports. One plate with every part in the all-parts 3MF.
     downloads:
       - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_all_parts.3mf
       - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_housing_print.stl
@@ -241,7 +215,7 @@ parts:
     status: design
     summary: Three cells wide, three rows tall, 60 mm deep. The tallest drawer.
     how: >-
-      Works like the 3×2, with a ridge pair in each pocket for every one of its
+      Works like the 3×2×60, with a ridge pair in each pocket for every one of its
       three hook rows.
     specs:
       Housing: 75.9 × 60 × 75.9 mm (W × D × H)
@@ -257,6 +231,56 @@ parts:
       - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_handle_print.stl
       - omniwall/arc-drawer/3x3x60/print/arc_drawer_3x3x60_handle_pin_print.stl
       - omniwall/arc-drawer/3x3x60/step/arc_drawer_3x3x60_assembly_closed.step
+
+  - id: arc-drawer-4x2x60
+    kind: drawer
+    category: drawers
+    name: Arc drawer 4×2×60
+    folder: omniwall/arc-drawer/4x2x60
+    prefix: arc_drawer_4x2x60
+    status: design
+    summary: Four cells wide, two rows tall, 60 mm deep. The widest drawer.
+    how: >-
+      Works like the 3×2×60 on three hook columns. Tiles with the other 60 mm units.
+    specs:
+      Housing: 101.3 × 60 × 50.5 mm (W × D × H)
+      Drawer inside: 90.3 × 41.4 × 40 mm
+      Travel: 31.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 3 columns, 1 or 2 rows
+      Grid: 4 × 2 cells
+    print: Housing on its back, drawer upright, scoop on its back. No supports.
+    downloads:
+      - omniwall/arc-drawer/4x2x60/print/arc_drawer_4x2x60_all_parts.3mf
+      - omniwall/arc-drawer/4x2x60/print/arc_drawer_4x2x60_housing_print.stl
+      - omniwall/arc-drawer/4x2x60/print/arc_drawer_4x2x60_drawer_print.stl
+      - omniwall/arc-drawer/4x2x60/print/arc_drawer_4x2x60_handle_print.stl
+      - omniwall/arc-drawer/4x2x60/print/arc_drawer_4x2x60_handle_pin_print.stl
+      - omniwall/arc-drawer/4x2x60/step/arc_drawer_4x2x60_assembly_closed.step
+
+  - id: arc-drawer-3x2x90
+    kind: drawer
+    category: drawers
+    name: Arc drawer 3×2×90
+    folder: omniwall/arc-drawer/3x2x90
+    prefix: arc_drawer_3x2x90
+    status: design
+    summary: Three cells wide, two rows tall, 90 mm deep. The deepest drawer.
+    how: >-
+      Works like the 3×2×60 on the same two hook columns, with a longer drawer and travel.
+    specs:
+      Housing: 75.9 × 90 × 50.5 mm (W × D × H)
+      Drawer inside: 64.9 × 71.4 × 40 mm
+      Travel: 61.9 mm, then a 30° tilt
+      Hooks: Bridge hook 1U, 2 columns, 1 or 2 rows
+      Grid: 3 × 2 cells
+    print: Housing on its back, drawer upright, scoop on its back. No supports.
+    downloads:
+      - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_all_parts.3mf
+      - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_housing_print.stl
+      - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_drawer_print.stl
+      - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_handle_print.stl
+      - omniwall/arc-drawer/3x2x90/print/arc_drawer_3x2x90_handle_pin_print.stl
+      - omniwall/arc-drawer/3x2x90/step/arc_drawer_3x2x90_assembly_closed.step
 
   - id: bin-label
     kind: label

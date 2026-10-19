@@ -2,9 +2,9 @@
 # params.yaml). Hook pockets come from ../hook_geometry.py and ../panel.yaml, so
 # they match the print-tested hooks. Run it from this folder with a plain build123d
 # Python (the build123d-mcp server's execute() blocks the os, pathlib and yaml imports):
-#     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py [unit folder]
-# With no argument it builds the 3 x 2 unit from params.yaml here. A unit folder
-# (such as 2x2x60) holds a params.yaml whose sections override this one's key by key.
+#     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py <unit folder>
+# params.yaml here holds the shared defaults; each size is a unit folder (such as
+# 2x2x60) whose params.yaml overrides them section by section, key by key.
 # It writes the unit folder's step/, print/ (STEP and STL per part, one all-parts 3MF) and
 # report.txt, and leaves the closed assembly in `result`.
 # Unit coordinates: x across from the left outer face, y out from the panel face
@@ -20,7 +20,9 @@ from build123d import *  # noqa: F403
 
 SRC = Path(os.environ.get("ARC_DRAWER_DIR", Path(__file__).resolve().parent))   # this folder: base params.yaml
 ROOT = SRC.parent
-HERE = SRC / sys.argv[1] if len(sys.argv) > 1 else SRC                          # unit folder: its params and outputs
+if len(sys.argv) < 2:                                                           # this folder holds only the shared defaults (Zeid, 2026-10-19)
+    sys.exit("usage: build.py <size folder>, one of: " + ", ".join(sorted(p.parent.name for p in SRC.glob("*/params.yaml"))))
+HERE = SRC / sys.argv[1]                                                        # unit folder: its params and outputs
 P = yaml.safe_load((SRC / "params.yaml").read_text())
 if HERE != SRC:
     for k, v in yaml.safe_load((HERE / "params.yaml").read_text()).items():

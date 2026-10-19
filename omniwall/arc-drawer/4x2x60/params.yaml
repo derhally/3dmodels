@@ -1,0 +1,11 @@
+# Omniwall arc-pocket drawer, 4 cells x 2 rows, 60 mm deep (Zeid asked 2026-10-19).
+# Everything not set here comes from ../params.yaml (the shared defaults), section by
+# section and key by key. Build with ../build.py 4x2x60 (see ../README.md).
+# 101.3 wide: three hook columns (25.25, 50.65, 76.05), two hook rows.
+unit:
+  cells: 4                       # given: 4 cells wide
+  depth: 60                      # given: 60 mm deep
+  file_prefix: arc_drawer_4x2x60 # output files: arc_drawer_4x2x60_all_parts.3mf and so on
+
+track:
+  stop: 44.5                     # derived: depth - 15.5, the same as 68.5 in the 84 deep defaults, so the arc, gate, hook and exit sit the same distance from the front
