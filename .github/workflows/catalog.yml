@@ -1,0 +1,57 @@
+# Rebuilds the model catalog (catalog/build.py) whenever model files, catalog
+# text or the catalog code change on main, and publishes it with GitHub Pages.
+# Pages must be set to "GitHub Actions" (Settings > Pages > Source). On a
+# private repo the site is only published when the repository variable
+# CATALOG_PAGES is "true" (Pages on a private repo needs a paid plan); either
+# way the built site is attached to the run as the "github-pages" artifact.
+name: Model catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.step"
+      - "**.stl"
+      - "**.3mf"
+      - "**/catalog.yaml"
+      - "**/README.md"
+      - "omniwall/panel.yaml"
+      - "omniwall/panel-diagram.svg"
+      - "catalog/**"
+      - "omniwall/catalog/**"
+      - ".github/workflows/catalog.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: catalog-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Render the models and write the site
+        env:
+          CATALOG_CHROMIUM: /usr/bin/google-chrome     # preinstalled on GitHub's Ubuntu runners
+        run: uv run --no-project --python 3.12 --with build123d --with pyyaml --with playwright python catalog/build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: ${{ !github.event.repository.private || vars.CATALOG_PAGES == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

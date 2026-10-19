@@ -103,6 +103,10 @@ open in their CAD program.
   folder in the design's folder, never in `print/` or `step/`. Git ignores every
   `test-prints/`, so they stay local and the folder can simply be deleted;
   `build.py` writes them again.
+- Every model appears in the model catalog site ([catalog/](catalog/README.md)),
+  rebuilt by a GitHub workflow on push. Give a new model an entry in its
+  collection's `catalog.yaml` (text, specs, downloads); without one it is
+  listed from its README.
 - `build.py` scripts regenerate every output file. After a refactor, regenerate
   and compare volumes against the previous files to prove nothing moved.
 

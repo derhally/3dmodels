@@ -1,0 +1,31 @@
+# The model catalog's own text. Each collection's parts are in a catalog.yaml
+# next to its models; build.py finds them all.
+
+title: 3D models
+tagline: Printable parts, designed in code.
+intro: >-
+  Every model here is a Python script on the build123d CAD library, so each one
+  is an exact solid: STEP for CAD, STL and 3MF laid out for printing. All of
+  them print without supports on a Bambu Lab H2C, in PLA or PETG.
+repo: https://github.com/derhally/3dmodels
+branch: main
+# collections in this order on the home page; any others follow by name
+order: [omniwall, waveshare-p4-7b]
+
+# Model folders no catalog.yaml names or covers (a folder with STEP files in
+# step/ or print files in print/) are listed under this collection.
+more:
+  id: more
+  name: More models
+  tagline: Models without a catalog entry yet.
+  intro: >-
+    These folders have model files but no entry in a catalog.yaml, so their
+    pages take the README's heading and first paragraph and the renders come
+    from their STEP and print files.
+
+# folder names never treated as models
+skip: [test-prints, solidcraft, cache, _site, node_modules]
+skip_prefix: [old-, .]
+
+# the three renders in the home page's header, as collection/part
+hero: [omniwall/arc-drawer-3x2, waveshare-p4-7b/nightstand, waveshare-p4-7b/chin-speaker]

@@ -1,15 +1,20 @@
-# Omniwall parts catalog: what build_catalog.py puts on each page.
-# Numbers are copied from the parts' params files and READMEs; the files and
-# renders come from the parts themselves.
+# Omniwall's entries in the model catalog (catalog/build.py finds every
+# catalog.yaml in the repo). Numbers are copied from the parts' params files
+# and READMEs; the files and renders come from the parts themselves.
 
-title: Omniwall parts
-intro: >-
-  Printed parts for the Omniwall steel pegboard (25.4 mm grid of 3.0 × 15.5 mm
-  slots and 6.2 mm peg holes, 18 ga steel). Hooks go into the panel's slots;
-  everything else slides down onto the hooks through dovetail pockets in its
-  back and clicks into place.
-repo: https://github.com/derhally/3dmodels
-branch: main
+collection:
+  id: omniwall
+  name: Omniwall
+  tagline: Hooks, drawers and labels for the Omniwall steel pegboard.
+  intro: >-
+    Printed parts for the Omniwall steel pegboard (25.4 mm grid of 3.0 × 15.5 mm
+    slots and 6.2 mm peg holes, 18 ga steel). Hooks go into the panel's slots;
+    everything else slides down onto the hooks through dovetail pockets in its
+    back and clicks into place.
+  cover: arc-drawer-3x2
+  # model folders under these that no part below names still get a page, under "More"
+  covers: [omniwall, labels]
+  renderers: renderers.py
 
 colors:
   hook: "#3b74d4"
@@ -30,6 +35,7 @@ categories:
       any hook. Two families, named for how they hold the panel, and a size in U:
       the number of housing rows the hook's front spans, with one snap notch pair
       per row.
+    table: [Slots used, Snap rows]      # specs shown side by side above the cards
   - id: drawers
     name: Drawers
     blurb: >-
