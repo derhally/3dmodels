@@ -99,6 +99,10 @@ open in their CAD program.
 - Variants of one design share a `common/` folder (shared params and geometry
   library); each variant has its own `params.yaml`, `build.py`, `step/` and
   `print/`.
+- Test prints (fit tests, coupons, test frames, probes) go in a `test-prints/`
+  folder in the design's folder, never in `print/` or `step/`. Git ignores every
+  `test-prints/`, so they stay local and the folder can simply be deleted;
+  `build.py` writes them again.
 - `build.py` scripts regenerate every output file. After a refactor, regenerate
   and compare volumes against the previous files to prove nothing moved.
 
