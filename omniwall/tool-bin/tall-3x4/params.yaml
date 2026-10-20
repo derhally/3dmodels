@@ -1,0 +1,10 @@
+# Tall bin 3 x 4: the tall bin one row taller (Zeid, 2026-10-20: "3x4, same design as the tall bin").
+# Everything not set here comes from ../params.yaml.
+unit:
+  file_prefix: tool_bin_tall_3x4
+  pattern: square
+
+bin:
+  cells: 3                   # given: 75.9 wide, two hook columns
+  rows: 4                    # given: 101.3 tall at the back
+  front_height: 75.9         # assumed: one row below the back, as the 3 x 3; the grid sits under it

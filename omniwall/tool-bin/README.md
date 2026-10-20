@@ -11,18 +11,20 @@ they tile with them, every outside edge rounded, a 45° chamfer at the bed edge
 rolling into a radius, a coved floor inside, and the drawers' U label holder on
 the front for a [bin label](../../labels/bin-label/).
 
-Four bins, from the [concept sheet](https://claude.ai/artifact/1yvXStQUJkG4cpvx3zR3Z7)
-(Zeid kept all four, and picked spring tabs for the snap):
+Five bins: four from the [concept sheet](https://claude.ai/artifact/1yvXStQUJkG4cpvx3zR3Z7)
+(Zeid kept all four, and picked spring tabs for the snap), and the tall bin one
+row taller:
 
 | Bin | Folder, file prefix | W × D × H, mm | Grid | Hooks |
 |---|---|---|---|---|
 | Pencil cup 2 × 2 | [`cup-2x2/`](cup-2x2/), `tool_bin_cup_2x2_*` | 50.5 × 60 × 50.5 | honeycomb, 13 mm across the flats | 1 column × 2 rows |
-| Tool caddy 3 × 2 | [`caddy-3x2/`](caddy-3x2/), `tool_bin_caddy_3x2_*` | 75.9 × 60 × 50.5 | 4 × Ø13 (markers), 12 × Ø9 (pencils, picks), a 62 × 7 slot (tweezers, scrapers) | 2 columns × 2 rows |
+| Tool caddy 3 × 2 | [`caddy-3x2/`](caddy-3x2/), `tool_bin_caddy_3x2_*` | 75.9 × 60 × 50.5 | 4 × Ø13 (markers), 12 × Ø8.6 (pencils, picks), a 62 × 7 slot (tweezers, scrapers) | 2 columns × 2 rows |
 | Tall bin 3 × 3 | [`tall-3x3/`](tall-3x3/), `tool_bin_tall_3x3_*` | 75.9 × 60 × 75.9, 50.5 at the front | 4 × 3 cells of 14.4 × 13.2 | 2 columns × 3 rows |
-| Split bin 4 × 2 | [`split-4x2/`](split-4x2/), `tool_bin_split_4x2_*` | 101.3 × 60 × 50.5 | left half: 3 × 3 cells of 11.7 × 13.2; right half an open well | 3 columns × 2 rows |
+| Tall bin 3 × 4 | [`tall-3x4/`](tall-3x4/), `tool_bin_tall_3x4_*` | 75.9 × 60 × 101.3, 75.9 at the front | 4 × 3 cells of 14.4 × 13.2 | 2 columns × 4 rows |
+| Split bin 4 × 2 | [`split-4x2/`](split-4x2/), `tool_bin_split_4x2_*` | 101.3 × 60 × 50.5 | left half: 3 × 3 cells of 11.6 × 13.2; right half an open well | 3 columns × 2 rows |
 
-The tall bin's side walls fall from the back to the front in one S of two arcs,
-as on the trays, and its grid sits under the front rim.
+The tall bins' side walls fall from the back to the front in one S of two arcs,
+as on the trays, and the grid sits under the front rim.
 
 ## Hardware
 

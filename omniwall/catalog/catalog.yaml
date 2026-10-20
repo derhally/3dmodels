@@ -418,7 +418,7 @@ parts:
       side; pull it out by any hole. The drawers' label holder is on the front.
     specs:
       Size: 50.5 × 60 × 50.5 mm (W × D × H)
-      Tool grid: 44.9 × 46.7 × 8 mm, hexagons 13 mm across the flats
+      Tool grid: 47.1 × 46.7 × 8 mm, hexagons 13 mm across the flats
       Hooks: 1 column × 2 rows, Bridge hook 1U or Slot hook 1U (or one Slot hook 2U)
       Grid: 2 × 2 cells
     print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
@@ -443,7 +443,7 @@ parts:
       columns.
     specs:
       Size: 75.9 × 60 × 50.5 mm (W × D × H)
-      Tool grid: 70.3 × 46.7 × 8 mm; 4 × Ø13, 12 × Ø9, slot 62 × 7
+      Tool grid: 72.5 × 46.7 × 8 mm; 4 × Ø13, 12 × Ø8.6, slot 62 × 7
       Hooks: 2 columns × 2 rows, Bridge hook 1U or Slot hook 1U (or Slot hook 2Us)
       Grid: 3 × 2 cells
     print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
@@ -467,7 +467,7 @@ parts:
       under the front rim. Three rows tall, on two hook columns.
     specs:
       Size: 75.9 × 60 × 75.9 mm (W × D × H), 50.5 at the front
-      Tool grid: 70.3 × 46.7 × 8 mm, 4 × 3 cells of 14.4 × 13.2
+      Tool grid: 72.5 × 46.7 × 8 mm, 4 × 3 cells of 14.4 × 13.2
       Hooks: 2 columns × 3 rows, Bridge hook 1U or Slot hook 1U
       Grid: 3 × 3 cells
     print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
@@ -476,6 +476,30 @@ parts:
       - omniwall/tool-bin/tall-3x3/print/tool_bin_tall_3x3_bin_print.stl
       - omniwall/tool-bin/tall-3x3/print/tool_bin_tall_3x3_grid_print.stl
       - omniwall/tool-bin/tall-3x3/step/tool_bin_tall_3x3_assembly.step
+
+  - id: tool-bin-tall-3x4
+    kind: assembly
+    category: tool-bins
+    name: Tall bin 3×4
+    folder: omniwall/tool-bin/tall-3x4
+    front: [0, 1, 0]
+    status: design
+    summary: The tall bin one row taller, for long tools.
+    how: >-
+      101.3 mm tall at the back, 75.9 at the front, the side walls falling
+      between them in an S of two arcs as on the 3×3. The square grid sits
+      under the front rim. Four rows tall, on two hook columns.
+    specs:
+      Size: 75.9 × 60 × 101.3 mm (W × D × H), 75.9 at the front
+      Tool grid: 72.5 × 46.7 × 8 mm, 4 × 3 cells of 14.4 × 13.2
+      Hooks: 2 columns × 4 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 4 cells
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tool-bin/tall-3x4/print/tool_bin_tall_3x4_all_parts.3mf
+      - omniwall/tool-bin/tall-3x4/print/tool_bin_tall_3x4_bin_print.stl
+      - omniwall/tool-bin/tall-3x4/print/tool_bin_tall_3x4_grid_print.stl
+      - omniwall/tool-bin/tall-3x4/step/tool_bin_tall_3x4_assembly.step
 
   - id: tool-bin-split-4x2
     kind: assembly
@@ -491,7 +515,7 @@ parts:
       tall, on three hook columns.
     specs:
       Size: 101.3 × 60 × 50.5 mm (W × D × H)
-      Tool grid: 46.3 × 46.7 × 8 mm, 3 × 3 cells of 11.7 × 13.2
+      Tool grid: 48.5 × 46.7 × 8 mm, 3 × 3 cells of 11.6 × 13.2
       Hooks: 3 columns × 2 rows, Bridge hook 1U or Slot hook 1U (or Slot hook 2Us)
       Grid: 4 × 2 cells
     print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
