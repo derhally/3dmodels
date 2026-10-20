@@ -29,6 +29,8 @@ colors:
   tray: "#e6e8ec"
   cradle: "#e6e8ec"
   dish: "#e8a33d"
+  bin: "#e6e8ec"
+  grid: "#e8a33d"
 
 categories:
   - id: hooks
@@ -51,6 +53,13 @@ categories:
       Low trays for small parts, one row tall and 60 mm deep, so they line up
       with the 60 mm drawers. They hang on the same hooks by dovetail pockets in
       their back wall and print upright without supports.
+  - id: tool-bins
+    name: Tool bins
+    blurb: >-
+      Bins for picks, pencils and markers, 60 mm deep like the drawers and trays.
+      Each has a drop-in grid that rests on a ledge round the inside and clicks
+      in with a spring tab on each side, so tools stand upright. Leave the grid
+      out for an open bin.
   - id: labels
     name: Labels
     blurb: Two-colour labels for bins and drawers, printed face down.
@@ -393,6 +402,104 @@ parts:
       - omniwall/tray/dish-3x1/print/tray_dish_3x1_cradle_print.stl
       - omniwall/tray/dish-3x1/print/tray_dish_3x1_dish_print.stl
       - omniwall/tray/dish-3x1/step/tray_dish_3x1_assembly.step
+
+
+  - id: tool-bin-cup-2x2
+    kind: assembly
+    category: tool-bins
+    name: Pencil cup 2×2
+    folder: omniwall/tool-bin/cup-2x2
+    front: [0, 1, 0]
+    status: design
+    summary: A compact cup with a honeycomb grid for pencils, markers and picks.
+    how: >-
+      Two rows tall, on one hook column with a hook in each row. The grid rests
+      on a 2 mm ledge 9 mm under the rim and clicks in with a spring tab on each
+      side; pull it out by any hole. The drawers' label holder is on the front.
+    specs:
+      Size: 50.5 × 60 × 50.5 mm (W × D × H)
+      Tool grid: 44.9 × 46.7 × 8 mm, hexagons 13 mm across the flats
+      Hooks: 1 column × 2 rows, Bridge hook 1U or Slot hook 1U (or one Slot hook 2U)
+      Grid: 2 × 2 cells
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tool-bin/cup-2x2/print/tool_bin_cup_2x2_all_parts.3mf
+      - omniwall/tool-bin/cup-2x2/print/tool_bin_cup_2x2_bin_print.stl
+      - omniwall/tool-bin/cup-2x2/print/tool_bin_cup_2x2_grid_print.stl
+      - omniwall/tool-bin/cup-2x2/step/tool_bin_cup_2x2_assembly.step
+
+  - id: tool-bin-caddy-3x2
+    kind: assembly
+    category: tool-bins
+    name: Tool caddy 3×2
+    folder: omniwall/tool-bin/caddy-3x2
+    front: [0, 1, 0]
+    status: design
+    summary: Holes sized for the tools, from markers at the back to a slot for tweezers at the front.
+    how: >-
+      The grid has four 13 mm holes along the back for markers and fat handles,
+      two rows of six 9 mm holes for pencils, picks and hex keys, and a slot
+      across the front for tweezers and scrapers. Two rows tall, on two hook
+      columns.
+    specs:
+      Size: 75.9 × 60 × 50.5 mm (W × D × H)
+      Tool grid: 70.3 × 46.7 × 8 mm; 4 × Ø13, 12 × Ø9, slot 62 × 7
+      Hooks: 2 columns × 2 rows, Bridge hook 1U or Slot hook 1U (or Slot hook 2Us)
+      Grid: 3 × 2 cells
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tool-bin/caddy-3x2/print/tool_bin_caddy_3x2_all_parts.3mf
+      - omniwall/tool-bin/caddy-3x2/print/tool_bin_caddy_3x2_bin_print.stl
+      - omniwall/tool-bin/caddy-3x2/print/tool_bin_caddy_3x2_grid_print.stl
+      - omniwall/tool-bin/caddy-3x2/step/tool_bin_caddy_3x2_assembly.step
+
+  - id: tool-bin-tall-3x3
+    kind: assembly
+    category: tool-bins
+    name: Tall bin 3×3
+    folder: omniwall/tool-bin/tall-3x3
+    front: [0, 1, 0]
+    status: design
+    summary: A taller back for long tools; the sides fall to the front in one S-curve.
+    how: >-
+      75.9 mm tall at the back, 50.5 at the front, the side walls falling
+      between them in an S of two arcs as on the trays. The square grid sits
+      under the front rim. Three rows tall, on two hook columns.
+    specs:
+      Size: 75.9 × 60 × 75.9 mm (W × D × H), 50.5 at the front
+      Tool grid: 70.3 × 46.7 × 8 mm, 4 × 3 cells of 14.4 × 13.2
+      Hooks: 2 columns × 3 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 3 cells
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tool-bin/tall-3x3/print/tool_bin_tall_3x3_all_parts.3mf
+      - omniwall/tool-bin/tall-3x3/print/tool_bin_tall_3x3_bin_print.stl
+      - omniwall/tool-bin/tall-3x3/print/tool_bin_tall_3x3_grid_print.stl
+      - omniwall/tool-bin/tall-3x3/step/tool_bin_tall_3x3_assembly.step
+
+  - id: tool-bin-split-4x2
+    kind: assembly
+    category: tool-bins
+    name: Split bin 4×2
+    folder: omniwall/tool-bin/split-4x2
+    front: [0, 1, 0]
+    status: design
+    summary: A wall down the middle, a grid on the left and an open well on the right.
+    how: >-
+      The left side takes the grid, for tools that stand; the right is an open
+      coved well for flush cutters, scrapers and the nozzle wrench. Two rows
+      tall, on three hook columns.
+    specs:
+      Size: 101.3 × 60 × 50.5 mm (W × D × H)
+      Tool grid: 46.3 × 46.7 × 8 mm, 3 × 3 cells of 11.7 × 13.2
+      Hooks: 3 columns × 2 rows, Bridge hook 1U or Slot hook 1U (or Slot hook 2Us)
+      Grid: 4 × 2 cells
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/tool-bin/split-4x2/print/tool_bin_split_4x2_all_parts.3mf
+      - omniwall/tool-bin/split-4x2/print/tool_bin_split_4x2_bin_print.stl
+      - omniwall/tool-bin/split-4x2/print/tool_bin_split_4x2_grid_print.stl
+      - omniwall/tool-bin/split-4x2/step/tool_bin_split_4x2_assembly.step
 
   - id: bin-label
     kind: label

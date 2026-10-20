@@ -1,0 +1,98 @@
+# Omniwall tool bins (own design, 2026-10-19): bins for 3D printer tools (picks,
+# pencils, markers) that hang on the same hooks as the arc drawers and trays, by
+# dovetail pockets in their back wall. Zeid's brief: a bin for tools, with an
+# optional grid that sits on an inner ledge so pencils and markers stand upright,
+# following the drawers' and trays' features. He kept all four concepts
+# (https://claude.ai/artifact/1yvXStQUJkG4cpvx3zR3Z7) and picked spring tabs (B)
+# for the grid's snap (2026-10-19).
+# This file holds the shared defaults; each bin is a folder (such as caddy-3x2)
+# whose params.yaml overrides them section by section, key by key.
+# Build with: build.py <folder>. All sizes in mm.
+# Source tags: given (Zeid), derived, assumed (chosen for the design).
+# Coordinates as the trays: x across from the left face, y out from the panel
+# face (back face at y = 0), z up from the bin's bottom edge.
+
+unit:
+  file_prefix: tool_bin      # start of every output file name (set by each folder)
+  pattern: square            # grid holes: square, hex or mixed (set by each folder)
+
+bin:
+  cells: 3                   # set by each folder
+  rows: 2                    # set by each folder: housing rows tall (a hook in every row of every column)
+  gap: 0.3                   # as the drawers and trays: width = cells x pitch - gap, so bins tile with them
+  depth: 60                  # assumed: front lines up with the 60 deep drawer housings and the trays
+  wall: 2.4                  # assumed: side and front walls (6 perimeters at 0.4)
+  floor: 2.4                 # assumed
+  back_front_wall: 2.0       # as the trays: solid in front of the pocket floor (back wall 10.075 thick)
+  front_height: null         # null: the walls run level at full height; the tall bin sets a lower front
+  side_s_start: 46.0         # assumed (tall bin): side walls start rising from the front height here (y)...
+  side_s_end: 12.0           # ...and reach full height here, in one S of two arcs
+  plan_front_radius: 6.0     # assumed: outer front corners seen from above (6, so the label holder fits the 2-cell front)
+  inner_back_radius: 3.5     # assumed: inside corners against the back wall, seen from above (not under the cove, so the cove blends cleanly round the corner; not under the ledge, so its underside stays 45 deg)
+  cove: 3.5                  # assumed: floor into every wall, inside (no bigger than the inside corners seen from above: 3.5 at the back, 3.6 at the front)
+  bed_chamfer: 2.0           # assumed: outside bottom edge, 45 deg so it prints without supports...
+  bed_round: 3.0             # assumed: ...rolling into the walls with this radius
+  back_bed_chamfer: 0.6      # as the trays: bottom edge against the panel
+  lip_round: 1.0             # assumed: top edges of the walls
+  divider: null              # null: one compartment; the split bin sets a wall down the middle
+
+pocket:                      # as the trays: the drawer housing's print-tested pocket (coupon 3), printed upright with a 45 deg gable top
+  spine_clearance: 0.15      # panel.yaml's (the housing's -0.1 needs the on-its-back gable)
+  flank_gap: 0.1             # as the housing
+  ridge_height: 0.53         # as the housing: 0.28 interference per side with the 0.25 side clearance
+  ridges_every_row: true     # Zeid's rule (2026-10-18): a ridge pair every pitch below the seat, one per hook row
+
+label:                       # the arc drawers' U holder for the bin label (../../labels/bin-label), open at the top
+  width: 34.7                # given: bin-label plate
+  height: 10.85              # given
+  thickness: 0.9             # given
+  side_clearance: 0.15       # as the drawers
+  thickness_clearance: 0.3   # as the drawers
+  rail: 1.2                  # as the drawers
+  return: 1.5                # as the drawers
+  top_clear: 0.45            # as the drawers: side rails above the label's top
+  below_rim: 3.0             # assumed: side rails' tops this far below the front rim
+
+grid:                        # the drop-in grid: rests on a ledge round the inside, snaps in with a spring tab each side
+  thickness: 8.0             # assumed: rib depth, guides the tools upright
+  below_rim: 1.0             # assumed: grid top under the lowest rim
+  clearance: 0.4             # assumed (the trays' dish uses 0.4): grid to bin, back and front
+  side_clearance: 0.2        # grid to the side walls, where the tabs are: 0.4 left the grid loose side to side (Zeid's caddy snap test, 2026-10-20); 0.2 seats each tab ridge 0.1 into its groove, so the tabs hold the grid centred
+  ledge: 2.0                 # assumed: ledge width; its underside is 45 deg, so the ledge is 2.0 tall too
+  border: 2.0                # assumed: solid frame round the holes
+  rib: 1.6                   # assumed: ribs between holes (4 perimeters)
+  top_chamfer: 0.6           # assumed: lead-in round the top of every hole and the grid's top edge (the grid prints top down)
+  square_cell: 13.0          # assumed: square pattern, target cell (stretched to fill the frame); markers are ~12
+  hex_flats: 13.0            # assumed: hex pattern, across the flats
+  mixed:                     # assumed: back row big holes, middle rows small, a slot at the front
+    big: [13.0, 4]           # diameter, count: markers, fat handles
+    small: [9.0, 6, 2]       # diameter, count per row, rows: pencils, picks, hex keys
+  min_hole_area: 40          # cells cut down by the frame smaller than this are left solid
+
+snap:                        # Zeid picked spring tabs (option B, 2026-10-19)
+  tab_length: 20.0           # assumed: cantilever, fixed at its back end (20 rather than 14, so the thicker tab bends as easily)
+  tab_thickness: 1.6         # assumed: 4 perimeters; bends 0.7 to get in (about 0.4% strain in PLA). 1.2 was too thin to stand well on the bed (Zeid's prints, 2026-10-20)
+  slot: 1.6                  # assumed: behind the tab, room to bend. 0.9 closed up on the first layers in Zeid's two prints (2026-10-20)
+  slot_chamfer: 0.5          # assumed: 45 deg on the slot's fixed sides at the grid top (the bed side), so first-layer squish can't bridge it
+  pad: 5.0                   # assumed: solid strip down each side of the grid for the tab, its slot and a 1.8 rib behind it
+  ridge: 0.9                 # assumed: ridge on the tab, off its face, 45 deg above and below
+  groove: 0.6                # assumed: V groove in the wall (seated, the ridge presses 0.1 into it, see grid.side_clearance)
+  groove_extra: 1.0          # assumed: groove runs this much past the tab at each end
+
+print:                       # Bambu Studio settings written into every 3MF, so it opens ready to slice
+  # On top of ../../bambu/project_settings.config (printer, filament and every other
+  # setting, as saved from Bambu Studio). Keys and values as Bambu Studio names them.
+  project:                   # every part
+    sparse_infill_density: 10%      # Zeid's saved Bambu project (compact-ducted, 2026-10-18)
+    sparse_infill_pattern: zig-zag  # as above
+    seam_position: back             # as above
+    wall_generator: arachne         # as above (Arachne also suits the hooks)
+    wall_loops: 3                   # as above; AGENTS.md: 3+ walls
+    layer_height: 0.2               # AGENTS.md
+  bin: {}                    # the bin's own, on top of project
+  grid:                      # the grid's own
+    wall_loops: 4            # assumed: the 1.6 tabs and ribs come out as solid walls, no infill gaps
+
+coupon:                      # test prints (test-prints/, git-ignored)
+  half_width: 8.0            # as the trays: pocket coupon, the back wall round one pocket, upright
+  ring_below_ledge: 3.0      # snap test: the bin's top band, from this far under the ledge, with the full grid
