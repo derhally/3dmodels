@@ -36,9 +36,10 @@ place of two 1Us in a column).
 
 As the trays: the back wall is 10.075 mm thick and carries one dovetail pocket
 per slot column (`dovetail_mount` in `../panel.yaml`, built by `pocket_void()` in
-`../hook_geometry.py`, with the drawer housing's print-tested flank gap and
-0.53 mm snap ridges). Each pocket is open at the bottom and closed at the top
-with a 45° gable through the top hook's top corners, so the bin prints upright.
+`../hook_geometry.py`, with the drawer housing's print-tested flank gap, and
+0.40 mm snap ridges, print-tested upright: the housing's 0.53 mm jammed printed
+upright). Each pocket is open at the bottom and closed at the top with a 45°
+gable through the top hook's top corners, so the bin prints upright.
 There is a ridge pair in every row, so every hook clicks in. Slide the bin down
 onto the hooks until the ridges click into the hooks' notches.
 
@@ -69,7 +70,7 @@ nothing faces down flatter than 45° from vertical). PLA or PETG, 0.2 mm layers,
 - The bin prints upright, as it hangs. The grid prints top face down, so its
   top is the smooth bed face and the hole chamfers sit on the bed.
 - `print/`: STEP and STL of each part laid as on the bed, and one
-  `*_all_parts.3mf` with the bin and grid on one plate.
+  `*_all_parts.3mf` with the bin and grid on one plate, far enough apart to print by object.
 - Every 3MF is a Bambu Studio project that opens ready to slice: the printer,
   filament and settings of [`../../bambu/`](../../bambu/), with `print` in
   `params.yaml` on top (infill, seam, wall generator for every part; 4 walls on

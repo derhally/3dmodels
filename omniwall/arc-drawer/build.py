@@ -649,18 +649,20 @@ for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{N
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
            ("pocket coupon", *shape_mesh(cpp, 0, 60))], TEST / f"{NAME}_fit_test_plate.3mf")
-# Housing and drawer side by side on one plate, 10 mm apart, centred on the origin:
-# a Bambu Studio project with the template's settings.
-gap = 10.0
-hb, db = hp.bounding_box(), dp.bounding_box()
-hx = -(hb.size.X + gap + db.size.X) / 2 - hb.min.X
-dx = hx + hb.max.X + gap - db.min.X
-objs = [("housing", Pos(hx, -hb.center().Y, 0) * hp), ("drawer", Pos(dx, -db.center().Y, 0) * dp)]
+# Every part in one Bambu Studio project with the template's settings, which
+# prints by object: housing and drawer each on a plate of their own (both can
+# be taller than the print head's clearance under its rod), the handle and its
+# two pins together on a third, far enough apart (bambu_object_gap).
+centred = lambda s: Pos(-s.bounding_box().center().X, -s.bounding_box().center().Y, 0) * s
+plates = [("housing", [("housing", centred(hp))]), ("drawer", [("drawer", centred(dp))])]
 if SEP:
-    # The handle and its two pins in a row in front of them
-    yr = -max(hb.size.Y, db.size.Y) / 2 - gap - hdp.bounding_box().size.Y / 2
-    objs += [("handle", Pos(-15, yr, 0) * hdp), ("pin 1", Pos(15, yr, 0) * pnp), ("pin 2", Pos(30, yr, 0) * pnp)]
-write_bambu_project([(NAME, objs)], HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
-log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}" + (", the handle and two pins in front" if SEP else ""))
+    gap = bambu_object_gap(TEMPLATE)
+    hw, pw = hdp.bounding_box().size.X, pnp.bounding_box().size.X
+    x0 = -(hw + 2 * (gap + pw)) / 2
+    plates.append(("handle and pins", [("handle", Pos(x0 + hw / 2, 0, 0) * centred(hdp)),
+                                       ("pin 1", Pos(x0 + hw + gap + pw / 2, 0, 0) * centred(pnp)),
+                                       ("pin 2", Pos(x0 + hw + 2 * gap + 1.5 * pw, 0, 0) * centred(pnp))]))
+write_bambu_project(plates, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
+log(f"{NAME}_all_parts: {', '.join(n for n, _ in plates)}, one plate each")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[h, da, *hks])

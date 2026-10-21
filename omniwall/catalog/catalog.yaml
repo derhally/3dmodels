@@ -31,6 +31,8 @@ colors:
   dish: "#e8a33d"
   bin: "#e6e8ec"
   grid: "#e8a33d"
+  holder: "#e6e8ec"
+  stripper: "#2b5fb3"
 
 categories:
   - id: hooks
@@ -60,6 +62,12 @@ categories:
       Each has a drop-in grid that rests on a ledge round the inside and clicks
       in with a spring tab on each side, so tools stand upright. Leave the grid
       out for an open bin.
+  - id: tool-holders
+    name: Tool holders
+    blurb: >-
+      Holders shaped round one hand tool, so it hangs in view and lifts straight
+      out. They hang on the same hooks by dovetail pockets in their back plate
+      and print upright without supports.
   - id: labels
     name: Labels
     blurb: Two-colour labels for bins and drawers, printed face down.
@@ -215,7 +223,7 @@ parts:
       Grid: 3 × 2 cells, 0.3 mm gap to neighbours
     print: >-
       Housing on its back, drawer upright, scoop on its back, snap pins flat. No
-      supports. One plate with every part in the all-parts 3MF.
+      supports. The all-parts 3MF has housing, drawer, and scoop with pins on a plate each.
     downloads:
       - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_all_parts.3mf
       - omniwall/arc-drawer/3x2x60/print/arc_drawer_3x2x60_housing_print.stl
@@ -524,6 +532,33 @@ parts:
       - omniwall/tool-bin/split-4x2/print/tool_bin_split_4x2_bin_print.stl
       - omniwall/tool-bin/split-4x2/print/tool_bin_split_4x2_grid_print.stl
       - omniwall/tool-bin/split-4x2/step/tool_bin_split_4x2_assembly.step
+
+  - id: stripper-holder
+    kind: assembly
+    category: tool-holders
+    name: Wire stripper holder
+    folder: omniwall/haisstronica/wire-stripper
+    front: [0, 1, 0]
+    status: design
+    summary: Two prongs under the grips of a Haisstronica 3-in-1 wire stripper, with the head hanging between them.
+    how: >-
+      The stripper hangs jaws down with its back to the wall. Each prong's seat
+      slopes up and out at about 25°, the same slope as the grip bottoms, so the
+      grips sit flat and the tool centres itself. A 4 mm lip at the front of each
+      prong stops it sliding forward. The back plate sits above the bump on the
+      tool's back, with a 45° gable between the legs to clear it.
+    specs:
+      Size: 75.9 × 30.6 × 71 mm (W × D × H)
+      Tool: Haisstronica 3-in-1 self-adjusting wire stripper, head 48.5 wide, grips 16 thick
+      Seats: 51.5 apart, sloped about 25°, 4 mm lip
+      Hooks: 2 columns × 2 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 2 cells
+    print: Upright, as it hangs, on the legs' feet. No supports. PLA or PETG, 0.2 mm layers, 4 walls.
+    downloads:
+      - omniwall/haisstronica/wire-stripper/print/stripper_holder_all_parts.3mf
+      - omniwall/haisstronica/wire-stripper/print/stripper_holder_print.stl
+      - omniwall/haisstronica/wire-stripper/print/stripper_holder_print.step
+      - omniwall/haisstronica/wire-stripper/step/stripper_holder_assembly.step
 
   - id: bin-label
     kind: label

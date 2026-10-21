@@ -149,12 +149,11 @@ snap ridges squeeze the seated hooks.
 
 `step/` holds the parts as designed, in their places in the assembly, for
 CAD. `print/` holds the same parts turned to the way they lie on the bed, as
-STEP and STL per part, plus one plain 3MF for the printer (written with
-`../core_3mf.py`; Bambu Studio 2.x keeps only the geometry of the multi-plate
-projects `../bambu_project.py` writes, so it is a plain one-plate 3MF).
+STEP and STL per part, plus one 3MF for the printer: a Bambu Studio project
+with the repo's print settings (`../../bambu/bambu_project.py`), ready to slice.
 
-**The one 3MF:** `<size>/print/arc_drawer_<size>_all_parts.3mf` holds the housing, the drawer, the scoop and
-its two pins on one plate, already in print orientation. Open it in Bambu Studio and slice. The drawer label is a separate two-colour print in
+**The one 3MF:** `<size>/print/arc_drawer_<size>_all_parts.3mf` holds the housing, the drawer, and the scoop with
+its two pins, each on a plate of its own (the project prints by object), already in print orientation. Open it in Bambu Studio and slice. The drawer label is a separate two-colour print in
 [labels/bin-label](../../labels/bin-label/README.md).
 
 - **Housing: on its back,** panel side on the bed, open front up. Floor, roof,

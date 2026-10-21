@@ -32,9 +32,10 @@ slot row.
 The back wall is 10.075 mm thick and carries one dovetail pocket per slot
 column, the same pocket as the drawer housings (`dovetail_mount` in
 `../panel.yaml`, built by `pocket_void()` in `../hook_geometry.py`, with the
-housing's print-tested flank gap and 0.53 mm snap ridges). Each pocket is open
-at the bottom and closed at the top; slide the tray down onto the hooks until
-the snap ridges click into the hooks' notches. The tray's bottom edge sits on a
+housing's print-tested flank gap, and 0.40 mm snap ridges, print-tested upright:
+the housing's 0.53 mm jammed printed upright). Each pocket is open at the bottom
+and closed at the top; slide the tray down onto the hooks until the snap ridges
+click into the hooks' notches. The tray's bottom edge sits on a
 peg-hole row, so the hooks sit 3.3 mm above it, as in a drawer housing's bottom
 row.
 
@@ -53,7 +54,7 @@ vertical). PLA or PETG, 0.2 mm layers, 3+ walls.
 
 - `print/`: STEP and STL of each part laid as on the bed, and one
   `*_all_parts.3mf` with every part on one plate (the dish tray's cradle and
-  dish side by side).
+  dish side by side, far enough apart to print by object).
 - `step/`: the parts in place for CAD, and `*_assembly.step` with the Bridge
   hook 1Us they hang on.
 - `test-prints/` (git-ignored, written by `build.py`): a pocket coupon, the back

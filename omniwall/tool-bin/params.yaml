@@ -39,7 +39,7 @@ bin:
 pocket:                      # as the trays: the drawer housing's print-tested pocket (coupon 3), printed upright with a 45 deg gable top
   spine_clearance: 0.15      # panel.yaml's (the housing's -0.1 needs the on-its-back gable)
   flank_gap: 0.1             # as the housing
-  ridge_height: 0.53         # as the housing: 0.28 interference per side with the 0.25 side clearance
+  ridge_height: 0.40         # print-tested upright (Zeid, 2026-10-21, wire-stripper ridge coupons): 0.15 interference per side with the 0.25 side clearance; the housing's 0.53 (tested printed on its back) jammed printed upright
   ridges_every_row: true     # Zeid's rule (2026-10-18): a ridge pair every pitch below the seat, one per hook row
 
 label:                       # the arc drawers' U holder for the bin label (../../labels/bin-label), open at the top

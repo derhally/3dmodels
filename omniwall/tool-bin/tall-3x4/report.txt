@@ -1,16 +1,16 @@
 tool_bin_tall_3x4: 75.9 wide, 60 deep, 101.3 tall at the back, 75.9 at the front; back wall 10.075 thick; pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7, 54.1, 79.5], seat z 97.20, gable eaves z 96.95; ledge top z 66.90, snap z 70.90
-bin: 75.90 x 62.40 x 101.30 mm, volume 115422.5 mm3, 203 faces, solids 1, valid True, max edge tolerance 4.9e-05
+bin: 75.90 x 62.40 x 101.30 mm, volume 115416.3 mm3, 203 faces, solids 1, valid True, max edge tolerance 4.9e-05
 grid: 72.50 x 46.73 x 8.00 mm, volume 8063.6 mm3, 240 faces, solids 1, valid True, max edge tolerance 1.5e-07
 grid: square pattern, 12 holes
 measured: 4 gable faces in the pockets (expect 4), z 96.930 to 98.675 (eaves 96.950, the hook's top corners at 97.200)
 measured: ledge faces at z 66.90: 1, area 449.7 mm2; grid underside z 66.900, grid top 74.900 (1.00 under the front rim)
 grid vs bin seated: overlap 4.1600 mm3 (the tab ridges pressing 0.10 into the grooves, the preload that holds the grid centred); grid lifted 0.05: clearance 0.000
 grid 2.0 higher (on its way in): overlap 15.680 mm3, the ridges 0.7 into the walls: what each tab bends to get past
-hooks vs bin: 1.118 mm3 over 8 Bridge hook 1Us (2 columns x 4 rows; snap ridges reach 0.28 into the hooks' 0.23 notches: a small overlap is expected)
+hooks vs bin: 0.000 mm3 over 8 Bridge hook 1Us (2 columns x 4 rows; ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
 hooks vs grid: 0.000 mm3
 tool_bin_tall_3x4_bin_print: 75.9 x 62.4 x 101.3, faces 203, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
 tool_bin_tall_3x4_grid_print: 72.5 x 46.7 x 8.0, faces 240, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
-tool_bin_tall_3x4_all_parts.3mf: bin and grid on one plate, 158.4 wide
+tool_bin_tall_3x4_all_parts.3mf: bin and grid on one plate, 252.4 wide
 tool_bin_tall_3x4_pocket_coupon_print: 16.0 x 10.1 x 101.3, faces 57, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
 tool_bin_tall_3x4_snap_test_band_print: 75.9 x 62.4 x 18.0, faces 110, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
-snap test (test-prints): the bin from z 61.9 to 79.9 (18.0 tall band) and the whole grid, one plate 158.4 wide
+snap test (test-prints): the bin from z 61.9 to 79.9 (18.0 tall band) and the whole grid, one plate 252.4 wide

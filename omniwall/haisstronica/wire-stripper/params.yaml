@@ -1,0 +1,78 @@
+# Omniwall holder for the Haisstronica 3-in-1 self-adjusting wire stripper (own design,
+# 2026-10-20). Zeid picked option B, the shoulder fork: two prongs catch the bottoms
+# of the blue grips and the black head hangs between them, all of it in view.
+# Option drawings: /mnt/project-files/wire-stripper-holder/options/ (project files).
+# Build with: build.py. All sizes in mm.
+# Source tags: given (Zeid's calipers), photo (read from Zeid's photos, scaled to
+# his calipers), derived, assumed (chosen for the design).
+# Coordinates as the tool bins: x across from the left face, y out from the panel
+# face (back face at y = 0), z up from the plate's bottom edge (the legs hang below it).
+
+unit:
+  file_prefix: stripper_holder
+
+tool:                        # the stripper, hanging jaws down with its back to the wall
+  # J = jaw end (end of the black head away from the handles), G = bottom ends of
+  # the blue grips; see /mnt/project-files/wire-stripper-holder/photo/what_to_measure.png
+  j_to_g: 50.0               # given
+  grip_thickness: 16.0       # given: front to back at the grip bottoms
+  root_width: 61.4           # given: across both grips at the two pins, just above G
+  head_width: 48.5           # given: the black head across at its widest (photo read 48.7)
+  j_to_c: 53.0               # given: J to C, the grips' outer bottom corners; the grip bottoms slope up from G at the
+                             # head to C, so the seats slope the same way (Zeid's idea, 2026-10-21): about 25 deg,
+                             # rise j_to_c - j_to_g over (root_width - head_width) / 2; the photo trace read ~33
+  thickness: 30.4            # given: thickest part, back bump to the knob
+  spread: 105.2              # given: across the handle ends at rest
+  length: 206.0              # photo: J to the handle ends (the photo's 212 less its 6 mm longer head)
+  bump:                      # given: on the back of the head, centred across it
+    width: 28.25             # given (taken as across the tool)
+    length: 10.13            # given (taken as along the tool)
+    height: 2.7              # given: proud of the back face
+    from_j: 33.5             # given: J to the bump's edge nearest the jaws
+
+holder:
+  cells: 3                   # assumed: 75.9 wide, two hook columns, the grips' 61.4 inside it
+  rows: 2                    # assumed: 50.5 tall, 4 hooks
+  gap: 0.3                   # as the drawers, trays and bins: width = cells x pitch - gap
+  back_front_wall: 2.0       # as the trays and bins: solid in front of the pocket floor (back wall 10.075)
+  seat: 5.0                  # derived: G (the grip bottoms' low inner corners, at the head) sits this far above the plate
+                             # bottom, so the bump (6.4 below G) clears the plate; each seat rises outward from G at the
+                             # grip bottoms' slope (tool.j_to_c), so the grips sit flat and the two make a V that centres the tool
+  head_clearance: 1.5        # assumed: head to each prong
+  grip_clearance: 1.5        # assumed: grip front to the lip
+  lip_thickness: 3.0         # assumed
+  lip_height: 4.0            # assumed: above the seat (square to it), stops the grips sliding forward
+  prong_tip: 5.0             # assumed: prong thickness at its front, under the seat (square to it)
+  gable_apex: 15.0           # derived: plate bottom between the legs is a 45 deg gable to here; at the
+                             # pockets it is under the bottom hooks (3.3), over the bump it is 2+ above it
+  legs_inner: 18.0           # assumed: the plate's legs reach this close to the axis behind the head (bump half width 14.1)
+  notch_round: 10.0          # assumed: where the legs' inner faces turn into the gable
+  prong_inset: 1.5           # assumed: prongs stop this short of the plate's sides, clear of its edge round
+  top_round: 3.0             # assumed: plate's top corners seen from the front
+  edge_round: 0.8            # assumed: front edges of the plate, prongs and lips (1.0 fails on the prongs)
+  lip_round: 1.4             # assumed: top of each lip (nearly its half thickness)
+  tip_round: 3.0             # assumed: prong front, where the 45 deg underside meets it
+  bed_chamfer: 0.5           # print lesson (2026-10-20): 45 deg on the bed edges, against elephant's foot
+
+pocket:                      # as the trays and bins: the drawer housing's print-tested pocket, upright with a 45 deg gable top
+  spine_clearance: 0.15
+  flank_gap: 0.1
+  ridge_height: 0.40         # print-tested upright (Zeid, 2026-10-21, ridge coupons 0.30-0.45): 0.15 interference per side with the 0.25 side clearance; the housing's 0.53 jammed printed upright
+  ridges_every_row: true
+
+print:                       # Bambu Studio settings written into the 3MF, on top of ../../../bambu/project_settings.config
+  project:
+    sparse_infill_density: 15%      # assumed: a little more than the bins' 10%, the prongs carry the tool
+    sparse_infill_pattern: zig-zag  # as the bins
+    seam_position: back             # as the bins
+    wall_generator: arachne         # as the bins
+    wall_loops: 4                   # assumed: prongs and legs mostly walls
+    layer_height: 0.2               # AGENTS.md
+  holder: {}
+
+coupon:
+  half_width: 8.0            # as the bins: pocket coupon, the back plate round one pocket, upright
+  seat_top: 22.0             # seat coupon: the holder below this height (both prongs), to set the tool in by hand
+                             # and check the seat angle before printing the whole holder
+  below_hook: 4.0            # ridge coupons: they start this far below the top-row hook, open at the bottom
+  ridge_heights: [0.30, 0.35, 0.40, 0.45]   # ridge coupons: 0.05 to 0.20 interference per side (0.25 side clearance); the holder's 0.53 (0.28) jammed printed upright (Zeid, 2026-10-21)

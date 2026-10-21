@@ -82,6 +82,19 @@ def bambu_bed(config):
     return max(xs) - min(xs), max(ys) - min(ys)
 
 
+def bambu_object_gap(template):
+    """Gap to leave between parts on one plate. The template prints by object, and
+    Bambu Studio refuses to slice parts taller than the nozzle (nozzle_height)
+    that sit closer than the print head's clearance (extruder_clearance_max_radius,
+    96 mm on the H2C; 90 mm conflicted and 100 mm sliced in a two-box test). A part
+    taller than extruder_clearance_height_to_rod also needs that gap in y from
+    the others, not only in x, so lay such parts out on plates of their own."""
+    config = json.loads(open(template, encoding="utf-8").read())
+    if config["print_sequence"] != "by object":
+        return 10.0
+    return math.ceil(float(config["extruder_clearance_max_radius"]) / 10) * 10 + 4
+
+
 def write_bambu_project(plates, path, bed=None, template=None, settings=None):
     """Write a Bambu Studio 3MF with one build plate per entry in `plates`.
 

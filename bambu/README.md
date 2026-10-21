@@ -34,10 +34,15 @@ The current template was saved by Bambu Studio 02.08.04.57 for Zeid's **Bambu
 Lab H2C 0.4 nozzle**, 0.20mm Standard, with Bambu PETG Basic in five AMS slots
 (grey, black, white, red, orange), from `h2c.3mf` (2026-10-21). Changed from
 the preset: Arachne walls, seam at the back, zig-zag sparse infill, arc fitting
-off, slice gap closing radius 0.02 and resolution 0.004. Walls (2) and print
-sequence (by layer, so several parts on one plate slice without overrides)
-stay at the preset's; a design that needs more walls sets them in its
+off, print sequence by object, slice gap closing radius 0.02 and resolution
+0.004. Walls stay at the preset's 2; a design that needs more sets them in its
 `params.yaml`.
+
+By object, Bambu Studio refuses to slice a plate whose parts (any taller than
+the 4 mm nozzle) sit closer than the print head's clearance: on the H2C 90 mm
+apart conflicted and 100 mm sliced. `bambu_object_gap()` gives the gap to use
+(104 mm), and parts taller than the head's clearance under its rod (47.4 mm)
+go on plates of their own.
 
 ## Changing the printer or filament
 

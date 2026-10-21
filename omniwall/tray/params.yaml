@@ -33,7 +33,7 @@ tray:
 pocket:                    # the arc drawer housing's print-tested pocket (coupon 3, 2026-10-17); overrides panel.yaml dovetail_mount.pocket
   spine_clearance: 0.15    # panel.yaml's, not the housing's -0.1: that one only works with the 45 deg gable a housing printed on its back has behind the lips; upright, it would leave the lips 0.1 into the spine
   flank_gap: 0.1           # as the housing
-  ridge_height: 0.53       # as the housing: 0.28 interference per side with the 0.25 side clearance
+  ridge_height: 0.40       # print-tested upright (Zeid, 2026-10-21, wire-stripper ridge coupons): 0.15 interference per side with the 0.25 side clearance; the housing's 0.53 (tested printed on its back) jammed printed upright
   # The tray prints upright, so the pocket's closed top would be a flat bridge.
   # Instead it is a 45 deg gable along the pocket, through the hook's top corners
   # at the seat height (so the tray hangs exactly where a flat seat would put it);

@@ -1,0 +1,21 @@
+stripper_holder: 75.9 wide x 50.5 tall plate (3 cells x 2 rows), 10.075 thick; legs to z -20.50, prongs out to y 30.575; overall 75.90 x 30.58 x 71.00, volume 50339.7 mm3, 172 faces, valid True, max edge tolerance 6.6e-05
+pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7], seat z 46.40; prong seat z 5.00 at G, gap 51.50 (head 48.5), lip inner face y 27.575, gable apex z 15.00
+seat at 26.75 from the axis: z 6.17 (expected 6.16: 24.9 deg up from G at 24.25)
+seat at 35.45 from the axis: z 10.20 (expected 10.21: 24.9 deg up from G at 24.25)
+stripper stand-in: 105.1 x 30.5 x 206.6, jaw end z -45.00, bump z -11.50 to -1.37
+stripper vs holder: overlap 0.0000 mm3; lifted 0.05: clearance 0.000
+head to the prongs: 1.500 (its back rests on the plate and legs); bump to holder: 1.584
+hooks vs holder: 0.000 mm3 over 4 Bridge hook 1Us (ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
+hooks vs stripper: 0.000 mm3
+stripper_holder_print: 75.9 x 30.6 x 71.0, faces 172, overhangs flatter than 45 deg: 0
+stripper_holder_all_parts.3mf: the holder, upright on the legs
+stripper_holder_pocket_coupon_print: 16.0 x 10.1 x 51.5, faces 45, overhangs flatter than 45 deg: 0
+stripper_holder_seat_coupon_print: 75.9 x 30.6 x 42.5, faces 145, overhangs flatter than 45 deg: 0
+stripper_holder_ridge_30_coupon_print: 16.0 x 10.1 x 25.8, faces 82, overhangs flatter than 45 deg: 0
+    ridge 0.3: 0.05 interference per side
+stripper_holder_ridge_35_coupon_print: 16.0 x 10.1 x 25.8, faces 83, overhangs flatter than 45 deg: 0
+    ridge 0.35: 0.10 interference per side
+stripper_holder_ridge_40_coupon_print: 16.0 x 10.1 x 25.8, faces 67, overhangs flatter than 45 deg: 0
+    ridge 0.4: 0.15 interference per side
+stripper_holder_ridge_45_coupon_print: 16.0 x 10.1 x 25.8, faces 68, overhangs flatter than 45 deg: 0
+    ridge 0.45: 0.20 interference per side

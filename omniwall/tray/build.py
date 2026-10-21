@@ -367,8 +367,8 @@ log(f"measured: {len(roof)} gable faces in the pockets (expect {2 * len(hook_col
 hks = hooks()
 interf = sum(overlap(body, k) for k in hks)
 raised = sum(overlap(body, Pos(0, 0, 0.1) * k) for k in hks)
-log(f"hooks vs tray: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us (snap ridges reach "
-    f"{pk['ridge']['height'] - pk['side_clearance']:.2f} into the hooks' {dv['notch']['depth']} notches: a small overlap is expected); "
+log(f"hooks vs tray: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us (ridges {pk['ridge']['height']:.2f} tall, room for "
+    f"{dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: overlap only if taller); "
     f"with the hooks 0.1 higher {raised:.3f} mm3 (more: the hooks' tops bear on the gables)")
 if len(parts) == 2:
     cr, di = parts
@@ -390,9 +390,10 @@ for s in parts:
     for b in sorted(bad, key=lambda t: -t[1])[:10]:
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
     printed.append((s.label, p))
-# One plate: the parts side by side, 10 mm apart, centred on the origin: a Bambu
-# Studio project with the template's settings.
-gap = 10.0
+# One plate: the parts side by side, far enough apart to print by object
+# (bambu_object_gap), centred on the origin: a Bambu Studio project with the
+# template's settings.
+gap = bambu_object_gap(TEMPLATE)
 widths = [p.bounding_box().size.X for _, p in printed]
 x = -(sum(widths) + gap * (len(printed) - 1)) / 2
 objs = []

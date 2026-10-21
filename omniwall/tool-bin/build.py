@@ -492,10 +492,13 @@ def write_print(stem, p, folder):
 
 
 def plate(items, path):
-    """parts side by side on one plate, 10 mm apart, centred on the plate: a Bambu
+    """parts side by side on one plate, far enough apart to print by object (bambu_object_gap), centred on the plate: a Bambu
     Studio project with the template's settings, print.project on top and each
     part's own print.<kind> (items are (label, part, kind))"""
-    gap = 10.0
+    gap = bambu_object_gap(TEMPLATE)
+    # lowest first: by object, Bambu Studio prints the parts in this order, and a
+    # part taller than the head's clearance under its rod has to come last
+    items = sorted(items, key=lambda it: it[1].bounding_box().size.Z)
     widths = [p.bounding_box().size.X for _, p, _ in items]
     x = -(sum(widths) + gap * (len(items) - 1)) / 2
     objs = []
@@ -541,8 +544,9 @@ if __name__ == "__main__":
         f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
-    log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; snap ridges reach "
-        f"{pk['ridge']['height'] - pk['side_clearance']:.2f} into the hooks' {dv['notch']['depth']} notches: a small overlap is expected)")
+    log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
+        f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
+        f"overlap only if taller)")
     log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[*parts, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 

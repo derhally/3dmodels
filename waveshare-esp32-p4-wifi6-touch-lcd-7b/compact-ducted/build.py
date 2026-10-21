@@ -173,16 +173,14 @@ write(on_bed(Compound(children=[Pos(i * (tw + 4), 0, 0) * tab for i in range(4)]
       print_dir / "p4_7b_compact_clamp_tabs_print", ["step", "stl", "3mf"])
 write(facade_test_frame(g, W, L, s_g), out_dir / "test-prints" / "p4_7b_facade_test_frame", ["step", "stl", "3mf"])
 
-tb, db = tab_print.bounding_box(), duct_print.bounding_box()
-tab_x0 = db.size.X / 2 + 12 + tb.size.X / 2
-write_bambu_project(
+tb = tab_print.bounding_box()
+write_bambu_project(                                  # one plate each: the template prints by object
     [("Front plate", [("Front plate", plate_print)]),
      ("Body", [("Body", body_print)]),
-     ("Duct and clamp tabs",
-      [("Duct", Pos(-tb.size.X, 0, 0) * duct_print)]
-      + [(f"Clamp tab {i + 1}",
-          Pos(tab_x0 - tb.size.X + (i % 2) * (tb.size.X + 8), (i // 2 - 0.5) * (tb.size.Y + 8), 0) * tab_print)
-         for i in range(4)])],
+     ("Duct", [("Duct", duct_print)]),
+     ("Clamp tabs", [(f"Clamp tab {i + 1}",          # lower than the nozzle, so they can sit close
+                      Pos((i % 2 - 0.5) * (tb.size.X + 8), (i // 2 - 0.5) * (tb.size.Y + 8), 0) * tab_print)
+                     for i in range(4)])],
     print_dir / "p4_7b_compact_bambu_project.3mf",
     template=TEMPLATE,                                # plates spaced for the template's printer
     settings=PRINT,
