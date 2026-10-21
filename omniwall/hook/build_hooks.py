@@ -4,7 +4,9 @@
 # Every printed hook carries the same dovetail front (spine and symmetric head
 # with snap notches; dovetail_mount in panel.yaml), so one pocket fits them all.
 # Writes, for each hook:
-#   print/<name>.step/.stl/.3mf  lying on its flat side, as printed (no supports)
+#   print/<name>.step/.stl/.3mf  lying on its flat side, as printed (no supports);
+#                                the 3MF is a Bambu Studio project with params.yaml's
+#                                print settings over ../../bambu/project_settings.config
 #   step/<name>.step             as mounted: x across the slot (flat side at 0),
 #                                y out from the wall (panel front face at 4.95),
 #                                z up from the upper slot's bottom edge
@@ -16,8 +18,10 @@ from build123d import *  # noqa: F403
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
+PRINT = yaml.safe_load((HERE / "params.yaml").read_text())["print"]
+TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filament, process as saved from Bambu Studio
 exec((ROOT / "hook_geometry.py").read_text())
-exec((ROOT / "core_3mf.py").read_text())
+exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
 
 # Bridge hooks are modelled from the bottom of their foot with the panel front
 # at bridge_hook.panel_front_y; move them into the slot hooks' frame.
@@ -42,7 +46,9 @@ for stem, (name, build) in HOOKS.items():
     flat.label = name
     export_step(flat, str(HERE / "print" / f"{stem}.step"))
     export_stl(flat, str(HERE / "print" / f"{stem}.stl"))
-    write_3mf([(name, *shape_mesh(flat))], HERE / "print" / f"{stem}.3mf")
+    c = flat.bounding_box().center()
+    write_bambu_project([(name, [(name, Pos(-c.X, -c.Y, 0) * flat, PRINT.get(stem) or {})])],
+                        HERE / "print" / f"{stem}.3mf", template=TEMPLATE, settings=PRINT["project"])
     b = hook.bounding_box()
     print(f"{name}: {b.size.X:.2f} x {b.size.Y:.2f} x {b.size.Z:.2f} mm, z {b.min.Z:.2f} to {b.max.Z:.2f}, "
           f"volume {hook.volume:.1f} mm3, solids {len(hook.solids())}, valid {hook.is_valid}")

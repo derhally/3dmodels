@@ -33,6 +33,8 @@ if HERE != SRC:
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
+exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
+TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filament, process as saved from Bambu Studio
 exec((SRC / "handle_geometry.py").read_text())
 
 _export_step = export_step
@@ -647,17 +649,18 @@ for part, stem, out in ((hp, f"{NAME}_housing_print", HERE / "print"), (dp, f"{N
 # The fit test pieces on one plate (plain 3MF: Bambu Studio imports every object onto the current plate).
 write_3mf([("housing front", *shape_mesh(htp, -60, 0)), ("drawer rear", *shape_mesh(dtp, 40, 0)),
            ("pocket coupon", *shape_mesh(cpp, 0, 60))], TEST / f"{NAME}_fit_test_plate.3mf")
-# Housing and drawer side by side on one plate, 10 mm apart, centred on the origin.
+# Housing and drawer side by side on one plate, 10 mm apart, centred on the origin:
+# a Bambu Studio project with the template's settings.
 gap = 10.0
 hb, db = hp.bounding_box(), dp.bounding_box()
 hx = -(hb.size.X + gap + db.size.X) / 2 - hb.min.X
 dx = hx + hb.max.X + gap - db.min.X
-objs = [("housing", *shape_mesh(hp, hx, -hb.center().Y)), ("drawer", *shape_mesh(dp, dx, -db.center().Y))]
+objs = [("housing", Pos(hx, -hb.center().Y, 0) * hp), ("drawer", Pos(dx, -db.center().Y, 0) * dp)]
 if SEP:
     # The handle and its two pins in a row in front of them
     yr = -max(hb.size.Y, db.size.Y) / 2 - gap - hdp.bounding_box().size.Y / 2
-    objs += [("handle", *shape_mesh(hdp, -15, yr)), ("pin 1", *shape_mesh(pnp, 15, yr)), ("pin 2", *shape_mesh(pnp, 30, yr))]
-write_3mf(objs, HERE / "print" / f"{NAME}_all_parts.3mf")
+    objs += [("handle", Pos(-15, yr, 0) * hdp), ("pin 1", Pos(15, yr, 0) * pnp), ("pin 2", Pos(30, yr, 0) * pnp)]
+write_bambu_project([(NAME, objs)], HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts: housing and drawer on one plate, {hb.size.X + gap + db.size.X:.1f} x {max(hb.size.Y, db.size.Y):.1f}" + (", the handle and two pins in front" if SEP else ""))
 (HERE / "report.txt").write_text("\n".join(lines) + "\n")
 result = Compound(children=[h, da, *hks])

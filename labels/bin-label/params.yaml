@@ -25,8 +25,10 @@ text:
 
 # Bambu Studio filament slots: match these to where white and black sit in the AMS.
 filament:
-  plate: 2   # white
-  text: 1    # black
+  plate: 3   # white (slot 3 in ../../bambu/project_settings.config, Zeid's H2C AMS)
+  text: 2    # black (slot 2)
+  plate_colour: "#FFFFFF"   # how the slots show in Bambu Studio
+  text_colour: "#000000"
 
 # One label per entry: plain text for a bin label, or {text: ..., size: arc-drawer}.
 # Each gets its own STEP/STL/3MF, and all of them share one Bambu Studio plate.

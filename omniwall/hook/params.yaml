@@ -1,0 +1,15 @@
+# Official hooks: the geometry is in ../panel.yaml and ../hook_geometry.py; this
+# file holds only the print settings build_hooks.py writes into each hook's 3MF
+# in print/, so it opens in Bambu Studio ready to slice.
+print:
+  # On top of ../../bambu/project_settings.config (printer, filament and every other
+  # setting, as saved from Bambu Studio). Keys and values as Bambu Studio names them.
+  project:                   # every hook
+    print_settings_id: 0.12mm High Quality @BBL H2C  # ../README.md and the catalog: 0.12 mm layers on a 0.4 nozzle. Bambu's own 0.12 preset, so speeds, shells and accelerations match the layer height
+    layer_height: 0.12                     # as above (the preset's own value)
+    wall_generator: arachne                # ../slot-hook-2u/README.md: Arachne walls
+    wall_loops: 5                          # as above: 5+ walls or 100% infill
+    wall_sequence: inner-outer-inner wall  # as above: the fit faces are outer walls and this keeps them accurate
+  bridge_hook_1u: {}         # each hook's own, on top of project
+  slot_hook_1u: {}
+  slot_hook_2u: {}

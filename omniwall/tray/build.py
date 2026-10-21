@@ -32,6 +32,8 @@ for k, v in yaml.safe_load((HERE / "params.yaml").read_text()).items():
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
+exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
+TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filament, process as saved from Bambu Studio
 
 _export_step = export_step
 
@@ -388,15 +390,16 @@ for s in parts:
     for b in sorted(bad, key=lambda t: -t[1])[:10]:
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
     printed.append((s.label, p))
-# One plate: the parts side by side, 10 mm apart, centred on the origin (plain 3MF).
+# One plate: the parts side by side, 10 mm apart, centred on the origin: a Bambu
+# Studio project with the template's settings.
 gap = 10.0
 widths = [p.bounding_box().size.X for _, p in printed]
 x = -(sum(widths) + gap * (len(printed) - 1)) / 2
 objs = []
 for (label, p), wd in zip(printed, widths):
-    objs.append((label, *shape_mesh(p, x + wd / 2, 0)))
+    objs.append((label, Pos(x + wd / 2, 0, 0) * p))
     x += wd + gap
-write_3mf(objs, HERE / "print" / f"{NAME}_all_parts.3mf")
+write_bambu_project([(NAME, objs)], HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} on one plate, {sum(widths) + gap * (len(printed) - 1):.1f} wide")
 
 # Pocket test print: the back wall round the first pocket, upright like the tray.

@@ -110,4 +110,8 @@ feet:
   depth: 1.0
   inset: 14.0
 
-print_bed: [330, 320]    # Bambu Lab H2C; sets plate spacing in the Bambu Studio project
+print_bed: [330, 320]    # Bambu Lab H2C; nightstand/check.py's bed-fit check (the 3MFs use ../../bambu/project_settings.config's printer)
+
+print:                   # Bambu Studio settings written into every 3MF, on top of ../../bambu/project_settings.config
+  project:
+    wall_loops: 3        # the variants' READMEs: 3+ walls

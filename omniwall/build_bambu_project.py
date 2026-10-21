@@ -6,7 +6,7 @@ from pathlib import Path
 from build123d import Pos, import_step
 
 ROOT = Path(__file__).resolve().parent
-exec((ROOT / "bambu_project.py").read_text())
+exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
 
 PARTS = [
     ("Bridge hook 1U", ROOT / "hook/print/bridge_hook_1u.step"),

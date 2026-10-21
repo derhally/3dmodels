@@ -616,13 +616,15 @@ if __name__ == "__main__":
     tw = tab.bounding_box().size.X
     tabs4 = on_bed(Compound(children=[Pos(i * (tw + 4), 0, 0) * tab for i in range(4)]))
     write(tabs4, print_dir / f"{name}_clamp_tabs_print", ["step", "stl", "3mf"])
-    # every printed part in one 3MF, laid out side by side (more than one plate's worth)
-    every = [p for k, (p, _) in prints.items() if k != "clamp_tab"] + [tabs4]
-    mesher = Mesher()
-    for p in layout(every):
-        mesher.add_shape(p)
+    # every printed part in one Bambu Studio project, one part per plate
+    every = [(k.replace("_", " ").capitalize(), p) for k, (p, _) in prints.items() if k != "clamp_tab"]
+    every.append(("Clamp tabs", tabs4))
+    plates = []
+    for label, p in every:
+        c = p.bounding_box().center()
+        plates.append((label, [(label, Pos(-c.X, -c.Y, 0) * p)]))
     print_dir.mkdir(parents=True, exist_ok=True)
-    mesher.write(str(print_dir / f"{name}_all_parts.3mf"))
+    write_bambu_project(plates, print_dir / f"{name}_all_parts.3mf", template=TEMPLATE, settings=PRINT)
     print("wrote", print_dir / f"{name}_all_parts.3mf")
     write(Compound(children=layout(list(hinge_test(prints)))), test_dir / f"{name}_hinge_test", ["step", "stl", "3mf"])
     write(Compound(children=layout(list(snap_test()))), test_dir / f"{name}_snap_test", ["step", "stl", "3mf"])

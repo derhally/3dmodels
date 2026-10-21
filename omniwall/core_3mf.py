@@ -1,8 +1,7 @@
 # Plain 3MF writer (core spec only, no slicer metadata): one or more mesh objects
 # in one file. Bambu Studio, Orca and PrusaSlicer import it as geometry onto the
-# current plate without complaint. The Bambu-project writer (bambu_project.py)
-# is what Bambu Studio 2.x rejects as "created by an old version": it carries a
-# BambuStudio application tag but no project settings, so the plates are dropped.
+# current plate without complaint. Used for test prints; the printed parts go
+# through ../bambu/bambu_project.py, which writes full Bambu Studio projects.
 import uuid
 import zipfile
 

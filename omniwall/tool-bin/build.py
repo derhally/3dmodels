@@ -35,7 +35,7 @@ for k, v in yaml.safe_load((HERE / "params.yaml").read_text()).items():
 panel = yaml.safe_load((ROOT / "panel.yaml").read_text())
 exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT / "core_3mf.py").read_text())
-exec((ROOT / "bambu_project.py").read_text())
+exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
 TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filament, process as saved from Bambu Studio
 
 _export_step = export_step

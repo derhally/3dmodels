@@ -12,9 +12,10 @@ Print orientation is face down: the text is the first layers on the bed (it
 reads mirrored in the print files and correctly once the label is flipped).
 
 Outputs, per label: step/<name>.step (both bodies), print/<name>.3mf (two
-objects), print/<name>-plate.stl and print/<name>-text.stl. Plus one Bambu
-Studio project, print/labels.3mf, with every label on one plate and the plate
-and text on the filament slots set in params.
+parts), print/<name>-plate.stl and print/<name>-text.stl. Plus print/labels.3mf
+with every label on one plate. The 3MFs are Bambu Studio projects with the
+settings in ../../bambu/project_settings.config, and the plate and text on
+the filament slots set in params.
 """
 
 import re
@@ -32,7 +33,15 @@ P = yaml.safe_load((Path(sys.argv[1]) if len(sys.argv) > 1 else here / "params.y
 out_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else here
 tx, SIZES = P["text"], P["sizes"]
 depth = tx["inlay_depth"]
-BED = (330, 320)   # Bambu Lab H2C
+# Bambu Studio projects: the repo's settings template (printer, filament, process
+# as saved from Bambu Studio), with the filament slots coloured as params says.
+exec((here.parent.parent / "bambu" / "bambu_project.py").read_text())
+fl = P["filament"]
+colours = bambu_config(here.parent.parent / "bambu" / "project_settings.config")["filament_colour"]
+colours[fl["plate"] - 1], colours[fl["text"] - 1] = fl["plate_colour"], fl["text_colour"]
+CONFIG = bambu_config(here.parent.parent / "bambu" / "project_settings.config",
+                      {"filament_colour": colours, "filament_multi_colour": colours})
+BED = bambu_bed(CONFIG)
 
 
 def fitted_text(txt, sz):
@@ -140,7 +149,7 @@ def write_bambu_labels(labels, path):
             f' <Relationship Target="/3D/3dmodel.model" Id="rel-1" Type="{model_rel}"/>\n</Relationships>\n'),
         "3D/3dmodel.model": (
             f'{head}<model unit="millimeter" xml:lang="en-US" {ns}>\n'
-            ' <metadata name="Application">BambuStudio-02.08.04.57</metadata>\n'
+            f' <metadata name="Application">BambuStudio-{CONFIG["version"]}</metadata>\n'
             ' <metadata name="BambuStudio:3mfVersion">1</metadata>\n'
             ' <resources>\n' + "\n".join(resources) + '\n </resources>\n'
             f' <build p:UUID="{uuid.uuid4()}">\n' + "\n".join(items) + '\n </build>\n</model>\n'),
@@ -158,6 +167,7 @@ def write_bambu_labels(labels, path):
             '    <metadata key="locked" value="false"/>\n'
             + "\n".join(instances) + '\n  </plate>\n</config>\n'),
     }
+    files.update(bambu_config_files(CONFIG))
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in files.items():
             z.writestr(name, data)
@@ -176,11 +186,8 @@ for entry in P["labels"]:
     pp, pi = to_print(plate, sz), to_print(inlay, sz)
     export_stl(pp, str(out_dir / "print" / f"{name}-plate.stl"))
     export_stl(pi, str(out_dir / "print" / f"{name}-text.stl"))
-    m = Mesher()
-    m.add_shape(pp, part_number="plate")
-    m.add_shape(pi, part_number="text")
-    m.write(str(out_dir / "print" / f"{name}.3mf"))
     bambu.append((txt if size == "bin" else f"{txt} ({size})", pp, pi, sz))
+    write_bambu_labels(bambu[-1:], out_dir / "print" / f"{name}.3mf")
     bb, tb = Compound([plate, inlay]).bounding_box(), inlay.bounding_box()
     print(f"{txt} ({size}): {bb.size.X:.3f} x {bb.size.Y:.3f} x {bb.size.Z:.3f} mm, "
           f"text {tb.size.X:.2f} x {tb.size.Y:.2f} mm, "

@@ -184,7 +184,8 @@ write_bambu_project(
           Pos(tab_x0 - tb.size.X + (i % 2) * (tb.size.X + 8), (i // 2 - 0.5) * (tb.size.Y + 8), 0) * tab_print)
          for i in range(4)])],
     print_dir / "p4_7b_compact_bambu_project.3mf",
-    bed=P["print_bed"],
+    template=TEMPLATE,                                # plates spaced for the template's printer
+    settings=PRINT,
 )
 
 print(f"overall {W:.1f} W x {D:.1f} D x {Zc:.1f} H mm; lip {g.h0:.1f}; speaker face at Y {Yf:.1f}")

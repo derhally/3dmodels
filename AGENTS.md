@@ -65,11 +65,13 @@ open in their CAD program.
 
 - **Printer:** Bambu Lab H2C, 330 × 320 mm bed, 325 mm tall. Bambu Studio for
   slicing.
-- **Material:** PLA or PETG, 0.2 mm layers, 3+ walls.
+- **Material:** PLA or PETG, 0.2 mm layers. Walls as the Bambu preset (2) unless
+  the part needs more; a design that does sets `wall_loops` in its params.yaml
+  `print` section.
 - **Export every printed part in its print orientation,** as STEP, STL and 3MF,
-  and also a Bambu Studio project with one part per plate. The 3dmodels
-  Waveshare library has a working writer (`write_bambu_project` in
-  `waveshare-esp32-p4-wifi6-touch-lcd-7b/common/enclosure_lib.py`).
+  and also a Bambu Studio project with one part per plate. Write every 3MF with
+  the shared writer (`write_bambu_project` in `bambu/bambu_project.py`) and the
+  settings template, so it opens ready to slice (see `bambu/README.md`).
 - **No supports.** Nothing facing down may be flatter than 45° from vertical;
   aim for 35° where it costs nothing. Check this numerically on the print-
   orientation part, face by face. Don't trust the eye.

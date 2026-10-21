@@ -130,7 +130,10 @@ finger behind the panel swings the raised front into the steel above the slot
 `hook/print/<name>.step/.stl/.3mf` lying on their flat side with no supports,
 and `hook/step/<name>.step` as mounted (z up from the upper slot's bottom edge,
 the panel's front face at y = 4.95), with the names `bridge_hook_1u`,
-`slot_hook_1u` and `slot_hook_2u`. Run it from `hook/` with
+`slot_hook_1u` and `slot_hook_2u`. Each 3MF is a Bambu Studio project ready to
+slice, with the print settings from [hook/params.yaml](hook/params.yaml):
+Bambu's 0.12mm High Quality preset, Arachne walls, 5 walls, inner/outer/inner
+wall order. Run it from `hook/` with
 `uv run --no-project --python 3.12 --with build123d --with pyyaml python build_hooks.py`.
 
 Bridge hook 1U and Slot hook 1U were printed with the test plate

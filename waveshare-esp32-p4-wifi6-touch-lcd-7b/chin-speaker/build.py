@@ -117,5 +117,6 @@ write_bambu_project(
                       Pos((i % 2 - 0.5) * (tb.size.X + 10), (i // 2 - 0.5) * (tb.size.Y + 10), 0) * tab_print)
                      for i in range(4)])],
     print_dir / "p4_7b_bambu_project.3mf",
-    bed=P["print_bed"],
+    template=TEMPLATE,                                # plates spaced for the template's printer
+    settings=PRINT,
 )
