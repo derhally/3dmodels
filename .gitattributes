@@ -1,3 +1,16 @@
+# Text files are stored with LF line endings, so the Windows build scripts' CRLF
+# output and Windows checkouts don't show up as changes.
+* text=auto eol=lf
+# Model, print and image files: never diffed or merged line by line, so a pull
+# can't write conflict markers into them (it keeps one side whole instead).
+# STEP is text that the Windows builds write with CRLF: it stays text (LF in the
+# repo, so a rebuild with nothing changed shows no change) but merges as binary.
+*.step text eol=lf -diff merge=binary
+*.stp text eol=lf -diff merge=binary
 *.stl binary
 *.3mf binary
-*.step -diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.solidcraft binary
+*.svg text eol=lf
