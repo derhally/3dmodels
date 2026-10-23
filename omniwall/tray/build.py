@@ -176,7 +176,11 @@ def shell(lip):
     th = math.atan2(H - lip, a[0] - b[0])
     t = min(0.47 * math.dist(a, b), 12.0)              # tangent length: two arcs, a short straight between
     R = t / math.tan(th / 2)
-    side = extrude(face([(0, 0, 0), (D, 0, 0), (D, lip, 0), (a[0], a[1], R), (b[0], b[1], R), (0, H, 0)], YZ(0)),
+    # The top bend starts in front of the back wall, so the back wall's top is one
+    # flat face: a big arc running over it sliced into wide stepped strips
+    tb = min(t, b[0] - B - TR["back_top_flat"])
+    Rb = tb / math.tan(th / 2)
+    side = extrude(face([(0, 0, 0), (D, 0, 0), (D, lip, 0), (a[0], a[1], R), (b[0], b[1], Rb), (0, H, 0)], YZ(0)),
                    W, dir=(1, 0, 0))
     body = solid(plan & side)
     bot = [e for e in body.edges() if e.center().Z < 1e-3 and e.center().Y > 0.5]
@@ -376,11 +380,11 @@ if len(parts) == 2:
         f"(floor), side gap {P['dish']['clearance']} by construction")
 export_step(Compound(children=[*parts, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 
-# Print orientation: as it hangs, bottom edge on the bed.
+# Print orientation: as it hangs, bottom edge on the bed, front toward the plate's front.
 printed = []
 for s in parts:
     stem = f"{NAME}{'' if len(parts) == 1 else '_' + s.label}_print"
-    p = to_bed(s)
+    p = to_bed(Rot(0, 0, 180) * s)    # front toward the plate's front: Bambu's seam at "back" means the plate's back, so it lands on the back wall
     export_step(p, HERE / "print" / f"{stem}.step")
     export_stl(p, str(HERE / "print" / f"{stem}.stl"))
     bad = bad_faces(p)
@@ -398,7 +402,8 @@ widths = [p.bounding_box().size.X for _, p in printed]
 x = -(sum(widths) + gap * (len(printed) - 1)) / 2
 objs = []
 for (label, p), wd in zip(printed, widths):
-    objs.append((label, Pos(x + wd / 2, 0, 0) * p))
+    # print.<part> in params.yaml: that part's own Bambu Studio settings (such as the dish's finer layers)
+    objs.append((label, Pos(x + wd / 2, 0, 0) * p, {k: str(v) for k, v in P.get("print", {}).get(label, {}).items()}))
     x += wd + gap
 write_bambu_project([(NAME, objs)], HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} on one plate, {sum(widths) + gap * (len(printed) - 1):.1f} wide")
@@ -406,7 +411,7 @@ log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} on one plate, {su
 # Pocket test print: the back wall round the first pocket, upright like the tray.
 hc = P["coupon"]["half_width"]
 cp = solid(body & Pos(hook_cols[0], B / 2 - 0.5, H / 2) * Box(2 * hc, B + 1, H + 2))
-cpp = to_bed(cp)
+cpp = to_bed(Rot(0, 0, 180) * cp)
 export_step(cpp, HERE / "test-prints" / f"{NAME}_pocket_coupon_print.step")
 export_stl(cpp, str(HERE / "test-prints" / f"{NAME}_pocket_coupon_print.stl"))
 write_3mf([("pocket coupon", *shape_mesh(cpp))], HERE / "test-prints" / f"{NAME}_pocket_coupon_print.3mf")

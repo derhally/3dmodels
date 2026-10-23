@@ -29,6 +29,7 @@ tray:
   lip_round: 1.1           # assumed: top edges of the walls (nearly a full round on the 2.4 wall)
   side_s_start: 34.0       # assumed: side walls start rising from lip height here (y), so the S has ended before the plan's front corners start (y 47.6)
   side_s_end: 14.0         # assumed: ...and reach the back wall's height here, in one S of two arcs
+  back_top_flat: 0.5       # the S's top bend starts this far in front of the back wall, so the back wall's top is flat (it was on the bend's 31 mm arc, which printed as stepped strips: Zeid, 2026-10-23)
 
 pocket:                    # the arc drawer housing's print-tested pocket (coupon 3, 2026-10-17); overrides panel.yaml dovetail_mount.pocket
   spine_clearance: 0.15    # panel.yaml's, not the housing's -0.1: that one only works with the 45 deg gable a housing printed on its back has behind the lips; upright, it would leave the lips 0.1 into the spine

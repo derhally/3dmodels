@@ -6,7 +6,8 @@ the same hooks. They are one row tall and 60 mm deep, so they line up with the
 brief: minimal, no sharp edges, a lip so nothing falls off, curved insides for
 scooping, and low side walls (trays, not bins). Every outside edge is rounded,
 the side walls fall from the back wall to the lip in one S-curve, and the
-outside bottom edge is a 45° chamfer rolling into a 4 mm radius.
+outside bottom edge is a 45° chamfer rolling into a 4 mm radius. The back wall's top is flat: the S starts
+its bend just in front of it.
 
 Four trays, picked from five concepts
 ([concept sheet](https://claude.ai/artifact/KD8Tn5Qnvgaf2kHGjBgh8A)):
@@ -52,7 +53,8 @@ Every part prints upright, as it hangs, with no supports (checked face by face
 on the print-orientation parts: nothing faces down flatter than 45° from
 vertical). PLA or PETG, 0.2 mm layers, 3+ walls.
 
-- `print/`: STEP and STL of each part laid as on the bed, and one
+- `print/`: STEP and STL of each part laid as on the bed (front toward the
+  plate's front, so Bambu Studio's seam at "back" lands on the back wall), and one
   `*_all_parts.3mf` with every part on one plate (the dish tray's cradle and
   dish side by side, far enough apart to print by object).
 - `step/`: the parts in place for CAD, and `*_assembly.step` with the Bridge
