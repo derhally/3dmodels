@@ -328,6 +328,7 @@ def overlap(a, b):
 
 
 def to_bed(s):
+    s = Rot(0, 0, 180) * s     # front toward the plate's front: Bambu Studio's seam at "back" is the plate's back, so it lands on the back plate
     bb = s.bounding_box()
     return Pos(-bb.center().X, -bb.center().Y, -bb.min.Z) * s
 

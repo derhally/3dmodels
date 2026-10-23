@@ -58,7 +58,8 @@ nothing faces down flatter than 45° from vertical, checked face by face. The
 prongs' undersides are 45° or steeper. The bed edges have a 0.5 mm chamfer
 against elephant's foot.
 
-- `print/`: STEP and STL laid as on the bed, and `stripper_holder_all_parts.3mf`.
+- `print/`: STEP and STL laid as on the bed (front toward the plate's front, so
+  Bambu Studio's seam at "back" lands on the back plate), and `stripper_holder_all_parts.3mf`.
   That file is a Bambu Studio project with the settings of
   [`../../../bambu/`](../../../bambu/), plus `print` in `params.yaml` on top: 15%
   zig-zag infill, 4 walls, Arachne, seam at the back, 0.2 mm layers.
