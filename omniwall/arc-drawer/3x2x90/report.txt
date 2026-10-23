@@ -24,4 +24,4 @@ arc_drawer_3x2x90_handle_pin_print: 9.0 x 8.7 x 3.5, faces 20, overhangs flatter
 arc_drawer_3x2x90_fit_test_housing_print: 75.9 x 50.5 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x90_fit_test_drawer_print: 71.5 x 40.0 x 42.0, faces 26, overhangs flatter than 45 deg: 0
 arc_drawer_3x2x90_pocket_coupon_print: 12.0 x 38.5 x 10.1, faces 39, overhangs flatter than 45 deg: 0
-arc_drawer_3x2x90_all_parts: housing and drawer on one plate, 157.4 x 81.8, the handle and two pins in front
+arc_drawer_3x2x90_all_parts: housing, drawer, handle and pins, one plate each

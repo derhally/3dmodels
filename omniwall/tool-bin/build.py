@@ -211,7 +211,11 @@ def shell():
         th = math.atan2(H - HF, a[0] - b[0])
         t = min(0.47 * math.dist(a, b), D - a[0] - 1, b[0] - 1)   # tangent length: two arcs, a straight between
         R = t / math.tan(th / 2)
-        side = extrude(face([(0, 0, 0), (D, 0, 0), (D, HF, 0), (a[0], a[1], R), (b[0], b[1], R), (0, H, 0)], YZ(0)),
+        # The top bend starts in front of the back wall, so the back wall's top is one
+        # flat face (as the trays: a big arc over it sliced into wide stepped strips)
+        tb = min(t, b[0] - B - BN["back_top_flat"])
+        Rb = tb / math.tan(th / 2)
+        side = extrude(face([(0, 0, 0), (D, 0, 0), (D, HF, 0), (a[0], a[1], R), (b[0], b[1], Rb), (0, H, 0)], YZ(0)),
                        W, dir=(1, 0, 0))
         body = solid(body & side)
     bot = [e for e in body.edges() if e.center().Z < 1e-3 and e.center().Y > 0.5]
@@ -551,7 +555,7 @@ if __name__ == "__main__":
     export_step(Compound(children=[*parts, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 
     # Print orientation: the bin as it hangs, the grid top face down.
-    pb = to_bed(body)
+    pb = to_bed(Rot(0, 0, 180) * body)    # front toward the plate's front, so Bambu Studio's seam at "back" lands on the back wall
     pg = to_bed(Rot(180, 0, 0) * gr)
     write_print(f"{NAME}_bin_print", pb, HERE / "print")
     write_print(f"{NAME}_grid_print", pg, HERE / "print")
@@ -560,7 +564,7 @@ if __name__ == "__main__":
 
     # Test prints: the back wall round the first pocket; the bin's top band with the whole grid (snap test).
     hc = P["coupon"]["half_width"]
-    cp = to_bed(solid(body & Pos(hook_cols[0], B / 2 - 0.5, H / 2) * Box(2 * hc, B + 1, H + 2)))
+    cp = to_bed(Rot(0, 0, 180) * solid(body & Pos(hook_cols[0], B / 2 - 0.5, H / 2) * Box(2 * hc, B + 1, H + 2)))
     write_print(f"{NAME}_pocket_coupon_print", cp, HERE / "test-prints")
     plate([("pocket coupon", cp, "bin")], HERE / "test-prints" / f"{NAME}_pocket_coupon_print.3mf")
     z0 = ZL - GR["ledge"] - P["coupon"]["ring_below_ledge"]

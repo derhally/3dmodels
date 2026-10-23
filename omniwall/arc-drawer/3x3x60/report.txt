@@ -24,4 +24,4 @@ arc_drawer_3x3x60_handle_pin_print: 9.0 x 8.7 x 3.5, faces 20, overhangs flatter
 arc_drawer_3x3x60_fit_test_housing_print: 75.9 x 75.9 x 34.0, faces 42, overhangs flatter than 45 deg: 0
 arc_drawer_3x3x60_fit_test_drawer_print: 71.5 x 40.0 x 67.4, faces 26, overhangs flatter than 45 deg: 0
 arc_drawer_3x3x60_pocket_coupon_print: 12.0 x 63.9 x 10.1, faces 47, overhangs flatter than 45 deg: 0
-arc_drawer_3x3x60_all_parts: housing and drawer on one plate, 157.4 x 75.9, the handle and two pins in front
+arc_drawer_3x3x60_all_parts: housing, drawer, handle and pins, one plate each

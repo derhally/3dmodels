@@ -618,14 +618,15 @@ if True:
     log(f"drawer of the unit above vs this drawer's {PULL} (state: mm3, clearance mm): " + "; ".join(res))
 
 # Print orientation: housing on its back, drawer upright.
-hp, dp = print_housing(h), to_bed(d)
+# Drawer turned so its front faces the plate's front: Bambu Studio's seam at "back" is the plate's back (the housing's bottom face there)
+hp, dp = print_housing(h), to_bed(Rot(0, 0, 180) * d)
 # Fit test pieces: the housing's front part, the drawer's rear part, one pocket coupon.
 ht = solid(h & Pos(0, D - FT["housing_length"], 0) * Box(W, FT["housing_length"] + 1, H, align=Align.MIN))
 dt = solid(d & Pos(0, y_back - 1, 0) * Box(W, FT["drawer_length"] + 1, H, align=Align.MIN))
 xc0 = hook_cols[0]
 cp = solid(h & Pos(xc0 - FT["coupon_half_width"], 0, FT["coupon_bottom"]) * Box(2 * FT["coupon_half_width"], plate_t, H, align=Align.MIN))
 ht.label, dt.label, cp.label = "fit test housing front", "fit test drawer rear", "pocket coupon"
-htp, dtp, cpp = print_housing(ht), to_bed(dt), print_housing(cp)
+htp, dtp, cpp = print_housing(ht), to_bed(Rot(0, 0, 180) * dt), print_housing(cp)
 plates = []
 TEST = HERE / "test-prints"                          # fit tests: local only (git-ignored)
 TEST.mkdir(exist_ok=True)
