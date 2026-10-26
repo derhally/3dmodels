@@ -1,0 +1,16 @@
+caliper_holder: 75.9 wide x 50.5 tall plate (3 cells x 2 rows), 10.075 thick; fork x 18.35 to 57.55, out to y 28.075, seat z 16.00, lip to z 20.00; overall 75.90 x 28.08 x 50.50, volume 41983.1 mm3, 158 faces, valid True, max edge tolerance 6.0e-07
+pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7], seat z 46.40; beam slot x 26.60 to 44.10, wheel pocket x 41.55 to 55.15, back to y 18.375, floor z 3.21
+caliper stand-in: 90.0 x 14.0 x 290.5, from z -196.50 to 94.00, back on y 10.075
+caliper vs holder: overlap 0.0000 mm3; lifted 0.05: clearance 0.000 (back on the plate face)
+head to the lip: 1.000; beam to the slot: 0.749; wheel to its pocket: 0.799
+    seat at x 20.4, y 22.08: z 16.00
+    seat at x 24.6, y 22.08: z 16.00
+    seat at x 46.1, y 22.08: z 16.00
+    seat at x 55.5, y 22.08: z 16.00
+to take it out: lift 16.0, then pull straight forward
+hooks vs holder: 0.000 mm3 over 4 Bridge hook 1Us (ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
+hooks vs caliper: 0.000 mm3
+caliper_holder_print: 75.9 x 28.1 x 50.5, faces 158, overhangs flatter than 45 deg: 0
+caliper_holder_all_parts.3mf: the holder, upright
+caliper_holder_pocket_coupon_print: 16.0 x 10.1 x 50.5, faces 42, overhangs flatter than 45 deg: 0
+caliper_holder_fork_coupon_print: 75.9 x 28.1 x 22.0, faces 131, overhangs flatter than 45 deg: 0

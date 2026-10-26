@@ -560,6 +560,33 @@ parts:
       - omniwall/haisstronica/wire-stripper/print/stripper_holder_print.step
       - omniwall/haisstronica/wire-stripper/step/stripper_holder_assembly.step
 
+  - id: caliper-holder-neiko-6in
+    kind: assembly
+    category: tool-holders
+    name: Caliper holder (Neiko 6")
+    folder: omniwall/neiko/caliper-6in
+    front: [0, 1, 0]
+    status: design
+    summary: A fork that a Neiko 6" digital caliper hangs from, jaws up, with the beam down the wall.
+    how: >-
+      The slider head sits on a fork and the beam hangs down through a slot that
+      is open at the front. The thumb wheel drops into a pocket behind the left
+      tine, and a 4 mm lip in front of the display holds the head in. The fixed
+      jaw hangs on the slider's jaw, so the caliper rests closed. Lift it about
+      16 mm and pull it forward to take it out.
+    specs:
+      Size: 75.9 × 28.1 × 50.5 mm (W × D × H)
+      Tool: Neiko 6" digital caliper, sizes from a STEP of it (head 30 × 14, beam 16 × 4)
+      Fork: beam slot 0.75 clear each side, wheel pocket 0.8 clear, 4 mm lip 1 mm off the display
+      Hooks: 2 columns × 2 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 2 cells
+    print: Upright, as it hangs. No supports. PLA or PETG, 0.2 mm layers, 4 walls.
+    downloads:
+      - omniwall/neiko/caliper-6in/print/caliper_holder_all_parts.3mf
+      - omniwall/neiko/caliper-6in/print/caliper_holder_print.stl
+      - omniwall/neiko/caliper-6in/print/caliper_holder_print.step
+      - omniwall/neiko/caliper-6in/step/caliper_holder_assembly.step
+
   - id: bin-label
     kind: label
     category: labels

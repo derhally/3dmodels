@@ -1,0 +1,62 @@
+# Omniwall holder for Zeid's Neiko 6" digital caliper (own design, 2026-10-26).
+# Option B, hanging (Zeid, 2026-10-26: "holds it hanging down", like the wire stripper
+# holder): jaws up, the slider head sits on a fork, the beam hangs down through a slot open
+# at the front, the thumb wheel drops into a pocket behind the left tine. The fixed jaw hangs
+# on the slider's jaw, so it rests closed.
+# Option drawings: /mnt/project-files/neiko-caliper-holder/options/ (project files).
+# Build with: build.py. All sizes in mm.
+# Source tags: step (read from Zeid's "NEIKO 6 inch Calipers V2.step", a cut-out style model),
+# derived, assumed (chosen for the design).
+# Coordinates as the tool bins: x across from the left face, y out from the panel
+# face (back face at y = 0), z up from the bottom (on the bed).
+
+unit:
+  file_prefix: caliper_holder
+
+tool:                        # the caliper, hanging jaws up, display out, its back on the plate
+  outline: tool_outline.json # step: front silhouettes of each part with their thickness ranges
+  head_end: 62.0             # step: STEP x of the slider head's bottom end (it sits on the fork); jaw end at -16
+  head: [-2.6, 26.6]         # step: STEP y of the head's flat bottom (its corners are rounded)
+  back: -2.0                 # step: STEP z of the back face (rests on the plate)
+  head_front: 12.0           # step: STEP z of the display face: head 14 thick
+  beam: [4.0, 20.0]          # step: STEP y of the beam's edges
+  beam_front: 4.0            # step: STEP z of the beam's front face
+  length: 290.5              # step: jaw end to the beam end (long for a 6" caliper, ~235 usual; unconfirmed)
+
+holder:
+  cells: 3                   # assumed: 75.9 wide, two hook columns, the fork (about 42) inside it
+  rows: 2                    # assumed: 50.5 tall, two hook rows; the head rests on it above the fork
+  gap: 0.3                   # as the drawers, trays and bins: width = cells x pitch - gap
+  back_front_wall: 2.0       # as the trays and bins: solid in front of the pocket floor (back wall 10.075)
+  seat: 16.0                 # derived: fork top (the head's bottom) above the bed: wheel pocket 12.8 deep plus a 3.2 floor
+  beam_clearance: 0.75       # assumed: beam to each side of the slot
+  wheel_clearance: 0.8       # assumed: thumb wheel to its pocket, every side
+  head_clearance: 1.0        # assumed: display face to the lip
+  lip_thickness: 3.0         # assumed
+  lip_height: 4.0            # assumed: above the seat, stops the head sliding forward
+  side_wall: 2.4             # assumed: fork outside the wheel pocket and past the head's right side
+  fork_round: 3.0            # assumed: fork's front corners seen from above
+  top_round: 3.0             # assumed: plate's top corners seen from the front
+  edge_round: 0.8            # assumed: front edges of the plate and the fork
+  lip_round: 1.4             # assumed: top of the lip (nearly its half thickness)
+  bed_chamfer: 0.5           # print lesson (2026-10-20): 45 deg on the bed edges, against elephant's foot
+
+pocket:                      # as the trays, bins and wire stripper holder: upright pocket with a 45 deg gable top
+  spine_clearance: 0.15
+  flank_gap: 0.1
+  ridge_height: 0.40         # print-tested upright (Zeid, 2026-10-21)
+  ridges_every_row: true
+
+print:                       # Bambu Studio settings written into the 3MF, on top of ../../../bambu/project_settings.config
+  project:
+    sparse_infill_density: 15%      # as the wire stripper holder
+    sparse_infill_pattern: zig-zag  # as the bins
+    seam_position: back             # as the bins
+    wall_generator: arachne         # as the bins
+    wall_loops: 4                   # as the wire stripper holder: the tines are mostly walls
+    layer_height: 0.2               # AGENTS.md
+  holder: {}
+
+coupon:
+  half_width: 8.0            # as the bins: pocket coupon, the back plate round one pocket, upright
+  fork_top: 22.0             # fork coupon: the holder below this height (fork, lip, a strip of plate), to hang the caliper in by hand
