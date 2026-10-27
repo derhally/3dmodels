@@ -1,0 +1,8 @@
+# Lean bin 3 x 3: three cells wide, three rows tall at the back, nose 65 out. Zeid's sketch.
+# Everything not set here comes from ../params.yaml.
+unit:
+  file_prefix: lean_bin_3x3x65
+
+bin:
+  cells: 3                   # given (the mockups' size): 75.9 wide, two hook columns
+  rows: 3                    # given: 75.9 tall at the back, three hook rows

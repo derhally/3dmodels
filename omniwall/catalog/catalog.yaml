@@ -61,7 +61,8 @@ categories:
       Bins for picks, pencils and markers, 65 mm deep like the drawers and trays.
       Each has a drop-in grid that rests on a ledge round the inside and clicks
       in with a spring tab on each side, so tools stand upright. Leave the grid
-      out for an open bin.
+      out for an open bin. The lean bin has no grid: its front leans out, so
+      tools lie back on it and lean toward you.
   - id: tool-holders
     name: Tool holders
     blurb: >-
@@ -557,6 +558,31 @@ parts:
       - omniwall/tool-bin/split-4x2x65/print/tool_bin_split_4x2x65_bin_print.stl
       - omniwall/tool-bin/split-4x2x65/print/tool_bin_split_4x2x65_grid_print.stl
       - omniwall/tool-bin/split-4x2x65/step/tool_bin_split_4x2x65_assembly.step
+
+  - id: lean-bin-3x3x65
+    kind: assembly
+    category: tool-bins
+    name: Lean bin 3×3
+    folder: omniwall/lean-bin/3x3x65
+    front: [0, 1, 0]
+    status: design
+    summary: The front leans out at 42°, so screwdrivers and pencils lie back on it and lean toward you.
+    how: >-
+      The back hangs straight on the hooks; the front leans out 42° to a rounded
+      nose 65 mm from the panel, and the rim falls 32° from the back's flat top
+      to the nose, so the opening faces you. Tools lie back against the inside
+      of the front, handles out, easy to see and grab. Three rows tall at the
+      back, on two hook columns.
+    specs:
+      Size: 75.9 × 65 × 75.9 mm (W × D × H), nose 43.6 up, foot 29 deep
+      Lean: front 42° from vertical, rim 32° below level
+      Hooks: 2 columns × 3 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 3 × 3 cells
+    print: Upright as it hangs. No supports (the front's 42° is the steepest overhang). PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_all_parts.3mf
+      - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_bin_print.stl
+      - omniwall/lean-bin/3x3x65/step/lean_bin_3x3x65_assembly.step
 
   - id: stripper-holder
     kind: assembly

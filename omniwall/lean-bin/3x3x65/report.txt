@@ -1,0 +1,9 @@
+lean_bin_3x3x65: 75.9 wide, 75.9 tall at the back, nose 65 out at z 43.6 (rounded R6), foot 29.0 deep; front leans 42 deg, rim falls 32 deg from a 16.5 flat top; back wall 10.075 thick; pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7, 54.1], seat z 71.80, gable eaves z 71.55
+bin: 75.90 x 65.00 x 75.90 mm, volume 80434.5 mm3, 142 faces, solids 1, valid True, max edge tolerance 6.0e-04
+measured: 4 gable faces in the pockets (expect 4), z 71.530 to 73.275 (eaves 71.550, the hook's top corners at 71.800)
+measured: inside of the front (the ramp the tools lie on): 1 face, z 3.6 to 41.3, 50.8 long up the lean, 71.1 wide between the walls
+hooks vs bin: 0.000 mm3 over 6 Bridge hook 1Us (2 columns x 3 rows; ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
+on the bed: centre of mass y 18.3, z 34.5; foot from y 4.1 to 31.9 (the bin runs -32.5 to 32.5): the centre of mass is over the foot
+lean_bin_3x3x65_bin_print: 75.9 x 65.0 x 75.9, faces 142, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
+lean_bin_3x3x65_all_parts.3mf: the bin on one plate, 75.9 wide
+lean_bin_3x3x65_pocket_coupon_print: 16.0 x 10.1 x 75.9, faces 48, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
