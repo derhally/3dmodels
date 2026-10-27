@@ -49,6 +49,32 @@ print:                       # Bambu Studio settings written into every 3MF, on 
     wall_loops: 3                   # as the tool bins
     layer_height: 0.2               # AGENTS.md
   bin: {}                    # the bin's own, on top of project
+  grid:                      # the grid's own
+    wall_loops: 4            # as the tool bins' grid: the 1.6 tabs and ribs come out as solid walls
 
 coupon:                      # test prints (test-prints/, git-ignored)
   half_width: 8.0            # as the tool bins: pocket coupon, the back wall round one pocket, upright
+
+grid:                        # optional drop-in grid (Zeid, 2026-10-27: offer an insert): a holed plate across the opening, tools fanned out
+  drop: 6.0                  # assumed: grid top this far under the rim's slope (square to it); at the back wall that is 3 under the flat top
+  thickness: 8.0             # as the tool bins' grid: rib depth, guides the tools
+  clearance: 0.4             # as the tool bins: grid to the back wall and the ramp
+  side_clearance: 0.2        # as the tool bins: grid to the side walls, where the tabs are (the ridges preload 0.1)
+  ledge: 2.0                 # as the tool bins: ledge on the back wall under the grid, 45 deg underneath; the grid's front rests on the ramp
+  border: 2.0                # as the tool bins: solid frame round the holes
+  top_chamfer: 0.6           # as the tool bins: lead-in round every hole (the grid prints top down)
+  tip_floor: 1.0             # assumed: each hole aims at a point this far above the floor
+  rows:                      # assumed, from the back: [hole diameter, holes, centre along the grid from its back edge, tip from the back wall]
+    - [9.5, 4, 9.0, 4.0]     # pencils, picks, hex keys: nearly upright at the back
+    - [11.0, 3, 27.0, 9.0]   # screwdrivers, between the back row's holes
+    - [13.0, 4, 46.0, 13.5]  # markers, fat drivers: at the front, leaning most
+
+snap:                        # as the tool bins' grid (spring tabs, Zeid picked option B, 2026-10-19; v2 fit approved 2026-10-20)
+  tab_length: 20.0
+  tab_thickness: 1.6
+  slot: 1.6
+  slot_chamfer: 0.5
+  pad: 5.0
+  ridge: 0.9
+  groove: 0.6
+  groove_extra: 1.0

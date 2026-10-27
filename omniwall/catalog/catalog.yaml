@@ -61,8 +61,8 @@ categories:
       Bins for picks, pencils and markers, 65 mm deep like the drawers and trays.
       Each has a drop-in grid that rests on a ledge round the inside and clicks
       in with a spring tab on each side, so tools stand upright. Leave the grid
-      out for an open bin. The lean bin has no grid: its front leans out, so
-      tools lie back on it and lean toward you.
+      out for an open bin. The lean bin's front leans out, so tools lie back on
+      it and lean toward you; its grid fans them out.
   - id: tool-holders
     name: Tool holders
     blurb: >-
@@ -571,17 +571,20 @@ parts:
       The back hangs straight on the hooks; the front leans out 42° to a rounded
       nose 65 mm from the panel, and the rim falls 32° from the back's flat top
       to the nose, so the opening faces you. Tools lie back against the inside
-      of the front, handles out, easy to see and grab. Three rows tall at the
-      back, on two hook columns.
+      of the front, handles out, easy to see and grab. A drop-in grid (the tool
+      bins' grid, tilted, with the same spring tabs) holds 11 tools fanned out
+      instead. Three rows tall at the back, on two hook columns.
     specs:
       Size: 75.9 × 65 × 75.9 mm (W × D × H), nose 43.6 up, foot 29 deep
       Lean: front 42° from vertical, rim 32° below level
+      Tool grid (optional): 72.5 × 60 × 8 mm, 4 × Ø9.5, 3 × Ø11, 4 × Ø13
       Hooks: 2 columns × 3 rows, Bridge hook 1U or Slot hook 1U
       Grid: 3 × 3 cells
-    print: Upright as it hangs. No supports (the front's 42° is the steepest overhang). PLA or PETG, 0.2 mm layers.
+    print: Bin upright as it hangs, grid top face down. No supports. PLA or PETG, 0.2 mm layers.
     downloads:
       - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_all_parts.3mf
       - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_bin_print.stl
+      - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_grid_print.stl
       - omniwall/lean-bin/3x3x65/step/lean_bin_3x3x65_assembly.step
 
   - id: stripper-holder

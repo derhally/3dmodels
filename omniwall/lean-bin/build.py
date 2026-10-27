@@ -39,7 +39,7 @@ TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filame
 
 _export_step = export_step
 
-U, BN, PK = P["unit"], P["bin"], P["pocket"]
+U, BN, PK, GR, SN = P["unit"], P["bin"], P["pocket"], P["grid"], P["snap"]
 NAME = U["file_prefix"]
 pitch = panel["pitch"]
 hook = panel["bridge_hook"]
@@ -235,18 +235,21 @@ def y_inside(z):
     return YFOOT - T / math.cos(LEAN) + z * TL
 
 
-def cavity():
+def cavity(back=0.0, side=0.0, front=0.0):
     """Inside space: back wall straight up, the front's inside leaning with the
     front, inside corners rounded (as the tool bins: 3.5 at the back, the front's
-    corner radius less the wall at the front), coved into the floor."""
-    c = extrude(face([(B, F, 0), (y_inside(F), F, 0), (y_inside(TOP), TOP, 0), (B, TOP, 0)], YZ(T)),
-                W - 2 * T, dir=(1, 0, 0))
-    back = [e for e in c.edges() if e.center().Y < B + 1e-3 and abs(e.center().X - W / 2) > W / 2 - T - 1e-3
-            and e.bounding_box().size.Z > 1]
-    c = check("inside back corners", c, solid(c.fillet(RB, back)))
-    front = [e for e in c.edges() if e.center().Y > B + 1 and abs(e.center().X - W / 2) > W / 2 - T - 1e-3
-             and e.bounding_box().size.Z > 1 and e.geom_type == GeomType.LINE]
-    c = check("inside front corners", c, solid(c.fillet(RF - T, front)))
+    corner radius less the wall at the front), coved into the floor. back, side
+    and front shrink it from those walls (the grid's outline)."""
+    yi = lambda z: y_inside(z) - front / math.cos(LEAN)
+    c = extrude(face([(B + back, F, 0), (yi(F), F, 0), (yi(TOP), TOP, 0), (B + back, TOP, 0)], YZ(T + side)),
+                W - 2 * (T + side), dir=(1, 0, 0))
+    xm = W / 2 - T - side - 1e-3
+    back_e = [e for e in c.edges() if e.center().Y < B + back + 1e-3 and abs(e.center().X - W / 2) > xm
+              and e.bounding_box().size.Z > 1]
+    c = check("inside back corners", c, solid(c.fillet(max(RB - min(back, side), 0.5), back_e)))
+    front_e = [e for e in c.edges() if e.center().Y > B + back + 1 and abs(e.center().X - W / 2) > xm
+               and e.bounding_box().size.Z > 1 and e.geom_type == GeomType.LINE]
+    c = check("inside front corners", c, solid(c.fillet(RF - T - min(front, side), front_e)))
     floor = [e for e in c.edges() if e.bounding_box().max.Z < F + 1e-3]
     return check("cove", c, solid(c.fillet(BN["cove"], floor)))
 
@@ -271,8 +274,146 @@ def bin_body():
     body = shell()
     body = check("cavity", body, solid(body - cavity()))
     body = round_tops(body, BN["lip_round"])
+    back, front, grooves = grid_seats()
+    body = check("back ledge", body, solid(body + back))
+    body = check("front ledge", body, solid(body + front))
+    for gv in grooves:
+        body = check("snap groove", body, solid(body - gv))
     body.label = "bin"
     return body
+
+
+# ---------------------------------------------------------------- the grid (optional insert)
+# The grid lies square to the rim's slope, its top `drop` under it. It is built in
+# its own frame GP: x across (as the bin's), y down the slope from the back wall,
+# z out of its top face (top at z = 0, underside at -TI). The side walls are
+# square to it, so the tool bins' spring tabs and wall grooves carry over.
+RS = math.radians(BN["rim_slope"])
+NRIM = Vector(0, math.sin(RS), math.cos(RS))           # square to the rim, out of the bin
+DOWN = Vector(0, math.cos(RS), -math.sin(RS))          # down the rim's slope, forward
+TI = GR["thickness"]
+_p = Vector(0, TOPF, H) - NRIM * GR["drop"]            # a point on the grid's top...
+GO = _p + DOWN * ((B - _p.Y) / DOWN.Y)                 # ...where it meets the back wall's face
+GP = Plane(origin=GO, x_dir=(1, 0, 0), z_dir=NRIM)
+ZM = -TI / 2                                           # snap height: tab ridges and wall grooves
+TAB_Y = 30.0                                           # the tabs' middle, along the grid (between its rows of holes)
+
+
+def vprism(p0, along, out, length, h):
+    """45 deg V prism (as the tool bins): its base on a wall, centred at p0, sticking
+    out along `out` by h, running `length` along `along`; `up` is the frame's z"""
+    p0, a, o = Vector(p0), Vector(along).normalized(), Vector(out).normalized()
+    z = a.cross(o).normalized()
+    if z.Z < 0 and abs(z.Z) > 1e-9 or (abs(z.Z) < 1e-9 and z.Y < 0):
+        z = -z
+    s = p0 - a * (length / 2) - o * 0.02
+    tri = Face(Wire.make_polygon([s + z * (h + 0.02), s + o * (h + 0.02), s - z * (h + 0.02)], close=True))
+    return extrude(tri, length, dir=a)
+
+
+def to_grid(shape):
+    return GP.to_local_coords(shape)
+
+
+def from_grid(shape):
+    return GP.location * shape
+
+
+def grid_blank():
+    """the grid's outline as a solid, in its own frame: the inside, less the
+    clearances, between its top and underside"""
+    slab = from_grid(Pos(W / 2, 0, -TI / 2) * Box(W + 20, 300, TI))
+    g = solid(slab & cavity(GR["clearance"], GR["side_clearance"], GR["clearance"]))
+    return solid(to_grid(g))
+
+
+def tool_axes(g):
+    """(row, centre on the grid's top, tip near the floor, diameter) for every hole, in
+    the bin's frame. Every row's tips sit in a line along the floor, so the tools fan
+    out: the back row nearly upright, the front row leaning most."""
+    bb = g.bounding_box()
+    x0, x1 = bb.min.X + SN["pad"], bb.max.X - SN["pad"]
+    out = []
+    for k, (dia, n, v, tip_y) in enumerate(GR["rows"]):
+        for i in range(n):
+            u = x0 + (x1 - x0) * (i + 0.5) / n
+            c = GP.from_local_coords((u, v, 0))
+            out.append((k, c, Vector(u, B + tip_y, F + GR["tip_floor"]), dia))
+    return out
+
+
+def grid_holes(g):
+    """the holes as cylinders in the grid's frame, each along its tool's axis"""
+    cut = []
+    for k, c, tip, dia in tool_axes(g):
+        ax = (c - tip).normalized()
+        cut.append(Solid.make_cylinder(dia / 2, TI * 4, Plane(origin=c - ax * TI * 2, z_dir=ax)))
+    return [to_grid(h) for h in cut]
+
+
+def spring_tab(g, xe, inward, yc):
+    """Spring tab in the grid's side at x edge xe (inward +1 on the left side, -1 on
+    the right), as the tool bins': a beam tab_thickness wide, fixed at its back end,
+    a slot behind it and across its front end; a 45 deg ridge on its outer face at ZM.
+    In the grid's frame."""
+    t, s, L = SN["tab_thickness"], SN["slot"], SN["tab_length"]
+    xs0, xs1 = sorted((xe + inward * t, xe + inward * (t + s)))
+    slot = Pos((xs0 + xs1) / 2, yc, ZM) * Box(s, L, TI + 2)
+    xa, xb = sorted((xe - inward * 1.0, xe + inward * (t + s)))
+    end = Pos((xa + xb) / 2, yc + L / 2 + s / 2, ZM) * Box(xb - xa, s, TI + 2)
+    g = check("tab slot", g, solid(g - slot - end))
+    # 45 deg chamfer on the slot's fixed sides at the grid top (the bed side when
+    # printed), so first-layer squish can't bridge the slot to the tab
+    c, xf = SN["slot_chamfer"], xe + inward * (t + s)
+    side = vprism((xf, yc + s / 2, 0), (0, 1, 0), (inward, 0, 0), L + s, c)
+    far = vprism(((xa + xb) / 2, yc + L / 2 + s, 0), (1, 0, 0), (0, 1, 0), xb - xa, c)
+    g = check("slot chamfer", g, solid(g - side - far))
+    ridge = vprism((xe, yc + 1.0, ZM), (0, 1, 0), (-inward, 0, 0), L - 4, SN["ridge"])
+    return check("tab ridge", g, solid(g + ridge))
+
+
+def grid():
+    """the grid in its own frame (as the tool bins' grid): the blank, the holes along
+    their tools, a lead-in chamfer round the top, a spring tab each side"""
+    g = grid_blank()
+    bb = g.bounding_box()
+    holes = grid_holes(g)
+    cut = holes[0]
+    for h in holes[1:]:
+        cut = cut + h
+    g = check("holes", g, solid(g - cut))
+    top = [e for e in g.edges() if e.bounding_box().min.Z > -1e-3]
+    g = check("top chamfer", g, solid(g.chamfer(GR["top_chamfer"], None, top)))
+    yc = TAB_Y
+    g = spring_tab(g, bb.min.X, 1, yc)
+    g = spring_tab(g, bb.max.X, -1, yc)
+    return g, len(holes)
+
+
+def grid_seats():
+    """What the bin adds for the grid, in the bin's frame: a ledge on the back wall and one
+    on the ramp under the grid's edges, both 45 deg underneath, and a V groove in each
+    side wall for the tab ridges."""
+    L = GR["ledge"]
+    under = lambda y: GO.Z - TI / math.cos(RS) - (y - B) * math.tan(RS)     # the grid's underside at y (x-section)
+    x0, x1 = T - 0.5, W - T + 0.5
+    yb0 = B - 0.5
+    yb1 = B + GR["clearance"] + L
+    back = extrude(face([(yb0, under(yb0), 0), (yb1, under(yb1), 0), (yb0, under(yb1) - (yb1 - yb0), 0)], YZ(x0)),
+                   x1 - x0, dir=(1, 0, 0))
+    # under the grid's front edge: from L behind its underside's front corner to the ramp,
+    # its back face 45 deg (down and forward, into the ramp)
+    vb = grid_blank().faces().sort_by(Axis.Z)[0].bounding_box().max.Y      # underside's front edge, along the grid
+    pf = GP.from_local_coords((0, vb - L, -TI))
+    far = 40.0
+    yf0 = pf.Y + far * DOWN.Y
+    front = extrude(face([(pf.Y, pf.Z, 0), (yf0, under(yf0), 0), (pf.Y + far, pf.Z - far, 0)], YZ(x0)),
+                    x1 - x0, dir=(1, 0, 0))
+    front = solid(front & side_profile() & front_block())
+    ln = SN["tab_length"] + 2 * SN["groove_extra"]
+    grooves = [from_grid(vprism((x, TAB_Y + 1.0, ZM), (0, 1, 0), (o, 0, 0), ln, SN["groove"]))
+               for x, o in ((T, -1), (W - T, 1))]
+    return back, front, grooves
 
 
 # ---------------------------------------------------------------- checks (as the tool bins)
@@ -391,6 +532,14 @@ if __name__ == "__main__":
     log(f"bin: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm, volume {body.volume:.1f} mm3, "
         f"{len(body.faces())} faces, solids {len(body.solids())}, valid {body.is_valid}, max edge tolerance {tol:.1e}")
     export_step(body, HERE / "step" / f"{NAME}_bin.step")
+    gr_local, nholes = grid()
+    gr = from_grid(gr_local)
+    gr.label = "grid"
+    gbb = gr_local.bounding_box()
+    log(f"grid: {gbb.size.X:.2f} x {gbb.size.Y:.2f} x {gbb.size.Z:.2f} mm in its own frame, volume {gr.volume:.1f} mm3, "
+        f"{nholes} holes, valid {gr.is_valid}, max edge tolerance {tolerance(gr):.1e}; top {GR['drop']:g} under the rim's slope, "
+        f"{H - GO.Z:.2f} under the flat top at the back wall")
+    export_step(gr, HERE / "step" / f"{NAME}_grid.step")
 
     # Measured on the solid, not read from the code.
     roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 1e-3
@@ -401,14 +550,31 @@ if __name__ == "__main__":
     ramp = [f for f in body.faces() if f.geom_type == GeomType.PLANE and f.center().Y > B + 1
             and abs(f.normal_at(f.center()).Y + math.cos(LEAN)) < 1e-3 and abs(f.normal_at(f.center()).Z - math.sin(LEAN)) < 1e-3]
     rz = [v.Z for f in ramp for v in f.vertices()]
-    log(f"measured: inside of the front (the ramp the tools lie on): {len(ramp)} face, z {min(rz):.1f} to {max(rz):.1f}, "
+    log(f"measured: inside of the front (the ramp the tools lie on): {len(ramp)} faces (the grid's front ledge crosses it), z {min(rz):.1f} to {max(rz):.1f}, "
         f"{(max(rz) - min(rz)) / math.cos(LEAN):.1f} long up the lean, {W - 2 * T:.1f} wide between the walls")
+    for k, c, tip, dia in tool_axes(grid_blank()):
+        ax = (c - tip).normalized()
+        log(f"grid row {k + 1}: hole {dia:g} at x {c.X:.1f}, tool leans {math.degrees(math.acos(ax.Z)):.1f} deg, "
+            f"tip at y {tip.Y:.1f} (floor {B:.1f} to {y_inside(tip.Z):.1f})")
+    blank = grid_blank()
+    hs = [h & blank for h in grid_holes(blank)]
+    rib = min(a.distance_to(b) for i, a in enumerate(hs) for b in hs[i + 1:])
+    edge_gap = min(min(f.distance_to(h) for f in blank.faces() if abs(f.normal_at(f.center()).Z) < 0.99) for h in hs)
+    log(f"grid: thinnest rib between holes {rib:.2f}, thinnest frame at the edge {edge_gap:.2f}")
+    log(f"grid vs bin seated: overlap {overlap(body, gr):.4f} mm3 (the tab ridges pressing "
+        f"{SN['ridge'] - GR['side_clearance'] - SN['groove']:.2f} into the grooves, as the tool bins); "
+        f"grid lifted 0.05: clearance {body.distance_to(from_grid(Pos(0, 0, 0.05) * gr_local)):.3f}")
+    push = 2.0
+    log(f"grid {push:.1f} higher (on its way in, along the slope's square): overlap "
+        f"{overlap(body, from_grid(Pos(0, 0, push) * gr_local)):.3f} mm3, the ridges "
+        f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
     log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
         f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
         f"overlap only if taller)")
-    export_step(Compound(children=[body, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
+    log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
+    export_step(Compound(children=[body, gr, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 
     # Print orientation: the bin as it hangs, front toward the plate's front, so
     # Bambu Studio's seam at "back" lands on the back wall (as the tool bins).
@@ -419,9 +585,11 @@ if __name__ == "__main__":
     log(f"on the bed: centre of mass y {com.Y:.1f}, z {com.Z:.1f}; foot from y {min(foot):.1f} to {max(foot):.1f} "
         f"(the bin runs {pbb.min.Y:.1f} to {pbb.max.Y:.1f}): the centre of mass is "
         + ("over the foot" if min(foot) <= com.Y <= max(foot) else "OUTSIDE the foot"))
+    pg = to_bed(Rot(180, 0, 0) * gr_local)    # the grid top face down, as the tool bins' grid
     write_print(f"{NAME}_bin_print", pb, HERE / "print")
-    wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
-    log(f"{NAME}_all_parts.3mf: the bin on one plate, {wd:.1f} wide")
+    write_print(f"{NAME}_grid_print", pg, HERE / "print")
+    wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
+    log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
 
     # Test print: the back wall round the first pocket, upright (as the tool bins).
     hc = P["coupon"]["half_width"]
