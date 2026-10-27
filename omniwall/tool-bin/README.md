@@ -6,7 +6,7 @@ drop-in grid that rests on a ledge round the inside, so pencils and markers
 stand upright. The grid clicks in with a spring tab on each side. Leave the grid
 out and the bin is an open bin.
 
-They follow the drawers and trays: 60 mm deep, width = cells × 25.4 − 0.3 so
+They follow the drawers and trays: 65 mm deep (60 until 2026-10-27), width = cells × 25.4 − 0.3 so
 they tile with them, every outside edge rounded, a 45° chamfer at the bed edge
 rolling into a radius, a coved floor inside, and the drawers' U label holder on
 the front for a [bin label](../../labels/bin-label/).
@@ -17,11 +17,11 @@ row taller:
 
 | Bin | Folder, file prefix | W × D × H, mm | Grid | Hooks |
 |---|---|---|---|---|
-| Pencil cup 2 × 2 | [`cup-2x2/`](cup-2x2/), `tool_bin_cup_2x2_*` | 50.5 × 60 × 50.5 | honeycomb, 13 mm across the flats | 1 column × 2 rows |
-| Tool caddy 3 × 2 | [`caddy-3x2/`](caddy-3x2/), `tool_bin_caddy_3x2_*` | 75.9 × 60 × 50.5 | 4 × Ø13 (markers), 12 × Ø8.6 (pencils, picks), a 62 × 7 slot (tweezers, scrapers) | 2 columns × 2 rows |
-| Tall bin 3 × 3 | [`tall-3x3/`](tall-3x3/), `tool_bin_tall_3x3_*` | 75.9 × 60 × 75.9, 50.5 at the front | 4 × 3 cells of 14.4 × 13.2 | 2 columns × 3 rows |
-| Tall bin 3 × 4 | [`tall-3x4/`](tall-3x4/), `tool_bin_tall_3x4_*` | 75.9 × 60 × 101.3, 75.9 at the front | 4 × 3 cells of 14.4 × 13.2 | 2 columns × 4 rows |
-| Split bin 4 × 2 | [`split-4x2/`](split-4x2/), `tool_bin_split_4x2_*` | 101.3 × 60 × 50.5 | left half: 3 × 3 cells of 11.6 × 13.2; right half an open well | 3 columns × 2 rows |
+| Pencil cup 2 × 2 | [`cup-2x2x65/`](cup-2x2x65/), `tool_bin_cup_2x2x65_*` | 50.5 × 65 × 50.5 | honeycomb, 13 mm across the flats | 1 column × 2 rows |
+| Tool caddy 3 × 2 | [`caddy-3x2x65/`](caddy-3x2x65/), `tool_bin_caddy_3x2x65_*` | 75.9 × 65 × 50.5 | 4 × Ø13 (markers), 12 × Ø8.6 (pencils, picks), a 62 × 12 slot (tweezers, scrapers) | 2 columns × 2 rows |
+| Tall bin 3 × 3 | [`tall-3x3x65/`](tall-3x3x65/), `tool_bin_tall_3x3x65_*` | 75.9 × 65 × 75.9, 50.5 at the front | 4 × 3 cells of 14.4 × 14.9 | 2 columns × 3 rows |
+| Tall bin 3 × 4 | [`tall-3x4x65/`](tall-3x4x65/), `tool_bin_tall_3x4x65_*` | 75.9 × 65 × 101.3, 75.9 at the front | 4 × 3 cells of 14.4 × 14.9 | 2 columns × 4 rows |
+| Split bin 4 × 2 | [`split-4x2x65/`](split-4x2x65/), `tool_bin_split_4x2x65_*` | 101.3 × 65 × 50.5 | left half: 3 × 3 cells of 11.6 × 14.9; right half an open well | 3 columns × 2 rows |
 
 The tall bins' side walls fall from the back to the front in one S of two arcs,
 as on the trays, and the grid sits under the front rim.
@@ -91,7 +91,7 @@ nothing faces down flatter than 45° from vertical). PLA or PETG, 0.2 mm layers,
 folder:
 
 ```
-uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py caddy-3x2
+uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py caddy-3x2x65
 ```
 
 It writes the folder's `step/`, `print/`, `test-prints/` and `report.txt`. The

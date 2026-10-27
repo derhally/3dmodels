@@ -25,6 +25,12 @@ housing:
   roof: 2.0                # assumed
   floor: 3.0               # assumed: the drawer slides on it; its front edge is the tilt pivot (sill)
   back_front_wall: 2.0     # assumed: solid in front of the pocket floor gable (back plate = 6.5 + 1.725 + 2.0 = 10.225)
+  hull_slot:                # Zeid, 2026-10-27: empty slot inside all four outer walls so the back plate's solid top layers don't show as a hull line outside
+    inset: 0.85            # assumed: outer face to the slot, the 2 outer wall lines (0.42 + 0.45)
+    width: 0.4             # given (Zeid, 2026-10-27: the test print with 0.4 and 0.1 side by side, 0.4 looked best): slicer walls each side; roof keeps 0.75 behind it for the slot's top 1 mm above the plate
+    below_plate: 1.1       # given (Zeid, 2026-10-27: about 1 mm either side of the junction): starts this far below the back plate's top (8.975), under its 5 solid top layers
+    past_plate: 1.0        # given (Zeid): ends this far past the back plate (11.075); the track groove's back end dips to 10.825, leaving 0.75 of wall between them there
+    pocket_margin: 1.0     # assumed: solid this far either side of each pocket where it opens in the bottom face
   ridges_every_row: true   # a ridge pair every pitch below the seat, one per hook row, so every row of hooks clicks in (Zeid, 2026-10-18: snaps at every row, never in between)
   pocket:                  # print-tested 2026-10-17: pocket_variants coupon 3 clicked best (Zeid). Overrides panel.yaml dovetail_mount.pocket for the housing only
     spine_clearance: -0.1  # lips' 45 deg back starts 0.1 below the spine's front (pocket_variants.gable_drop), so the print gable no longer thins them
@@ -55,7 +61,7 @@ track:                     # channel in each housing side wall that the drawer's
   depth: 1.2               # assumed
   clearance: 0.25          # assumed: around the pin (test print)
   stop: 68.5               # assumed: pin centre at full travel (76 % of the drawer out); the arc starts here
-  tilt: 30                 # assumed: the arc about the sill ends here; the drawer hangs open at this tilt
+  tilt: 31                 # given (Zeid, 2026-10-27: one degree more tilt; was 30): the arc about the sill ends here; the drawer hangs open at this tilt
   gate: 6.0                # assumed: the tipped drawer is pushed this far back before the hook, along a curve with the arc's radius (Zeid, 2026-10-18: the gate curves like the arc); it lifts the drawer, so let go it slides back to the arc's end
   hook_radius: 2.8         # assumed: centre line radius of the hook, which curves up round the tongue of wall and forward into the exit channel (the tongue's tip is rounded 1.05)
   stop_round: 3.0          # given (Zeid, 2026-10-18: round the sharp corner across from the stop, where the tilt starts); radius where the groove's ceiling meets the arc

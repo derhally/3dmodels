@@ -1,0 +1,3 @@
+unit:
+  style: cove
+  file_prefix: tray_cove_3x1x65   # output files: tray_cove_3x1x65_print.stl and so on

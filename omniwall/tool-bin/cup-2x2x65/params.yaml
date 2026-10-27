@@ -1,0 +1,9 @@
+# Pencil cup 2 x 2: a compact cup with a honeycomb grid (concept 1).
+# Everything not set here comes from ../params.yaml.
+unit:
+  file_prefix: tool_bin_cup_2x2x65
+  pattern: hex
+
+bin:
+  cells: 2                   # given (Zeid kept concept 1): 50.5 wide, one hook column
+  rows: 2                    # given: 50.5 tall

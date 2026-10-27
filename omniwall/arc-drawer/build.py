@@ -280,12 +280,33 @@ def pocket(xc):
     return Pos(xc - cx, 0, seat_z - HH) * solid(v)
 
 
+def hull_slot():
+    """Empty slot round all four outer walls, just behind the outer wall lines, from
+    about 1 mm under the back plate's top to 1 mm past it (Zeid, 2026-10-27). The housing prints
+    on its back, and the back plate's top layers (the bay floor) print solid infill
+    over the whole plate with long layer times, which left a hull line round the
+    outside. With the slot the slicer walls it off, so the outside is the same
+    thin skin all the way up. It breaks round any pocket it would cut into."""
+    sl = HS["hull_slot"]
+    a, w = sl["inset"], sl["width"]
+    y0, y1 = plate_t - sl["below_plate"], plate_t + sl["past_plate"]
+    ring = Pos(a, y0, a) * Box(W - 2 * a, y1 - y0, H - 2 * a, align=Align.MIN)
+    ring = ring - Pos(a + w, y0 - 1, a + w) * Box(W - 2 * (a + w), y1 - y0 + 2, H - 2 * (a + w), align=Align.MIN)
+    for xc in hook_cols:
+        pb = pocket(xc).bounding_box()
+        if pb.max.Y + sl["pocket_margin"] <= y0:     # the slot starts above the pocket
+            continue
+        ring = ring - Pos(pb.min.X - sl["pocket_margin"], y0 - 1, -1) * Box(pb.size.X + 2 * sl["pocket_margin"], y1 - y0 + 2, a + w + sl["pocket_margin"] + 1, align=Align.MIN)
+    return ring
+
+
 def housing():
     s = HS["side"]
     body = Box(W, D, H, align=Align.MIN)
     body = body - Pos(s, plate_t, z_floor) * Box(W - 2 * s, D, z_roof - z_floor, align=Align.MIN)
     for xc in hook_cols:
         body = body - pocket(xc)
+    body = body - hull_slot()
     left = track_void(s)
     body = solid(body - left - mirror(left, Plane.YZ.offset(W / 2)))
     body.label = "housing"
@@ -596,7 +617,7 @@ for state in ("closed", "open", "tilted", "pushed"):
     moved.label = f"drawer {state}"
     log(f"{state}: drawer vs housing {overlap(h, moved):.3f} mm3, vs hooks {sum(overlap(moved, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[h, moved, *hks]), str(HERE / "step" / f"{NAME}_assembly_{state}.step"))
-log("tilt sweep on the arc (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(da, 'tilted', angle=a)):.3f}" for a in range(0, tilt + 1, 5)))
+log("tilt sweep on the arc (deg: mm3): " + ", ".join(f"{a}: {overlap(h, drawer_at(da, 'tilted', angle=a)):.3f}" for a in sorted({*range(0, int(tilt) + 1, 5), tilt})))
 log(f"hangs open at {rest_tilt(*path_point(s_hang)):.1f} deg, {s_hang - arc_len:.1f} mm past the arc's end; pushing it out over the top lifts its centre of gravity {cg_lift:.2f} mm")
 log("along the gate and hook, resting on the sill (mm from the arc's end: deg, mm3): " + ", ".join(
     f"{s_ - arc_len:.1f}: {rest_tilt(*path_point(s_)):.1f}, {overlap(h, drawer_at(da, 'pushed', y=s_)):.3f}"

@@ -1,0 +1,14 @@
+# Tool caddy 3 x 2: holes sized for the tools (concept 2).
+# Everything not set here comes from ../params.yaml.
+unit:
+  file_prefix: tool_bin_caddy_3x2x65
+  pattern: mixed
+
+bin:
+  cells: 3                   # given (Zeid kept concept 2): 75.9 wide, two hook columns
+  rows: 2                    # given: 50.5 tall
+
+grid:
+  mixed:
+    big: [13.0, 4]           # as ../params.yaml (yaml replaces the whole list)
+    small: [8.6, 6, 2]       # assumed: 8.6 rather than 9 so six still fit across with the wider tab strips; takes a hex pencil (8.1 across the corners)

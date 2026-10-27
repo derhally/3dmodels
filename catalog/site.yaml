@@ -28,4 +28,4 @@ skip: [test-prints, solidcraft, cache, _site, node_modules]
 skip_prefix: [old-, .]
 
 # the three renders in the home page's header, as collection/part
-hero: [omniwall/arc-drawer-3x2x60, waveshare-p4-7b/nightstand, waveshare-p4-7b/chin-speaker]
+hero: [omniwall/arc-drawer-3x2x65, waveshare-p4-7b/nightstand, waveshare-p4-7b/chin-speaker]

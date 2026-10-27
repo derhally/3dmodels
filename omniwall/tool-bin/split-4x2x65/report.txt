@@ -1,0 +1,16 @@
+tool_bin_split_4x2x65: 101.3 wide, 65 deep, 50.5 tall; back wall 10.075 thick; pockets at x [25.25, 50.65, 76.05], hook bottoms z [3.3, 28.7], seat z 46.40, gable eaves z 46.15; ledge top z 41.50, snap z 45.50
+bin: 101.30 x 67.40 x 50.50 mm, volume 93228.2 mm3, 208 faces, solids 1, valid True, max edge tolerance 1.1e-05
+grid: 48.45 x 51.73 x 8.00 mm, volume 6711.4 mm3, 192 faces, solids 1, valid True, max edge tolerance 1.5e-07
+grid: square pattern, 9 holes
+measured: 6 gable faces in the pockets (expect 6), z 46.130 to 47.875 (eaves 46.150, the hook's top corners at 46.400)
+measured: ledge faces at z 41.50: 1, area 373.6 mm2; grid underside z 41.500, grid top 49.500 (1.00 under the front rim)
+grid vs bin seated: overlap 4.1600 mm3 (the tab ridges pressing 0.10 into the grooves, the preload that holds the grid centred); grid lifted 0.05: clearance 0.000
+grid 2.0 higher (on its way in): overlap 15.680 mm3, the ridges 0.7 into the walls: what each tab bends to get past
+hooks vs bin: 0.000 mm3 over 6 Bridge hook 1Us (3 columns x 2 rows; ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
+hooks vs grid: 0.000 mm3
+tool_bin_split_4x2x65_bin_print: 101.3 x 67.4 x 50.5, faces 208, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
+tool_bin_split_4x2x65_grid_print: 48.4 x 51.7 x 8.0, faces 192, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
+tool_bin_split_4x2x65_all_parts.3mf: bin and grid on one plate, 253.8 wide
+tool_bin_split_4x2x65_pocket_coupon_print: 16.0 x 10.1 x 50.5, faces 40, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
+tool_bin_split_4x2x65_snap_test_band_print: 101.3 x 67.4 x 14.0, faces 151, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
+snap test (test-prints): the bin from z 36.5 to 50.5 (14.0 tall band) and the whole grid, one plate 253.8 wide

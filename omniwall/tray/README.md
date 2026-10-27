@@ -1,8 +1,9 @@
 # Omniwall wall trays
 
 Low trays for small parts that hang on the panel next to the arc drawers, on
-the same hooks. They are one row tall and 60 mm deep, so they line up with the
-60 mm drawer housings and tile with them (width = cells × 25.4 − 0.3). The
+the same hooks. They are one row tall and 65 mm deep (60 until 2026-10-27), so
+they line up with the 65 mm drawer housings and tile with them (width = cells ×
+25.4 − 0.3). The
 brief: minimal, no sharp edges, a lip so nothing falls off, curved insides for
 scooping, and low side walls (trays, not bins). Every outside edge is rounded,
 the side walls fall from the back wall to the lip in one S-curve, and the
@@ -14,10 +15,10 @@ Four trays, picked from five concepts
 
 | Tray | Folder, file prefix | W × D × H, mm | Lip | Inside | Hook columns |
 |---|---|---|---|---|---|
-| Cove 3 × 1 | [`cove-3x1/`](cove-3x1/), `tray_cove_3x1_*` | 75.9 × 60 × 25.1 | 14.2 | flat 3 mm floor, R10 cove into every wall | 2 |
-| Ramp 3 × 1 | [`ramp-3x1/`](ramp-3x1/), `tray_ramp_3x1_*` | 75.9 × 60 × 25.1 | 10 | floor tilts 6° down to the back wall, R10 into it, 2.6 mm bead at the front | 2 |
-| Ramp 6 × 1 | [`ramp-6x1/`](ramp-6x1/), `tray_ramp_6x1_*` | 152.1 × 60 × 25.1 | 7.5 | the Ramp with less scoop: 3° tilt, R5 into the back wall | 5 |
-| Lift-out dish 3 × 1 | [`dish-3x1/`](dish-3x1/), `tray_dish_3x1_*` | cradle 75.9 × 60 × 25.1, dish 70.3 × 46.7 × 12.6 | cradle 7, dish 15 | loose dish with R7.5 coves and a 3 mm pour dip in its front lip, 0.4 mm clearance in the cradle | 2 |
+| Cove 3 × 1 | [`cove-3x1x65/`](cove-3x1x65/), `tray_cove_3x1x65_*` | 75.9 × 65 × 25.1 | 14.2 | flat 3 mm floor, R10 cove into every wall | 2 |
+| Ramp 3 × 1 | [`ramp-3x1x65/`](ramp-3x1x65/), `tray_ramp_3x1x65_*` | 75.9 × 65 × 25.1 | 10 | floor tilts 6° down to the back wall, R10 into it, 2.6 mm bead at the front | 2 |
+| Ramp 6 × 1 | [`ramp-6x1x65/`](ramp-6x1x65/), `tray_ramp_6x1x65_*` | 152.1 × 65 × 25.1 | 7.5 | the Ramp with less scoop: 3° tilt, R5 into the back wall | 5 |
+| Lift-out dish 3 × 1 | [`dish-3x1x65/`](dish-3x1x65/), `tray_dish_3x1x65_*` | cradle 75.9 × 65 × 25.1, dish 70.3 × 51.7 × 12.6 | cradle 7, dish 15 | loose dish with R7.5 coves and a 3 mm pour dip in its front lip, 0.4 mm clearance in the cradle | 2 |
 
 The Ramp's front inside corners keep a small crease where the tilted floor
 meets the rounded corners (the cove fillet fails there).
@@ -71,7 +72,7 @@ vertical). PLA or PETG, 0.2 mm layers, 3+ walls.
 `cells: 6` and its shallower ramp). From this folder:
 
 ```
-uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py ramp-6x1
+uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py ramp-6x1x65
 ```
 
 It writes the folder's `step/`, `print/`, `test-prints/` and `report.txt`. The

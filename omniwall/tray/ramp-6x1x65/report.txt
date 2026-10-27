@@ -1,0 +1,8 @@
+ramp: the front inside corners keep a small crease where the floor meets them (the cove fillet fails there)
+tray_ramp_6x1x65 (ramp): 152.1 wide, 65 deep, back wall 25.1 tall and 10.075 thick; pockets at x [25.25, 50.65, 76.05, 101.45, 126.85], hook bottoms z 3.30, seat z 21.00, gable eaves z 20.75
+tray: 152.10 x 65.00 x 25.10 mm, volume 69501.8 mm3, 190 faces, solids 1, valid True, max edge tolerance 4.9e-05
+measured: 10 gable faces in the pockets (expect 10), z 20.730 to 22.475 (eaves 20.750, the hook's top corners at 21.000, ridge 22.475)
+hooks vs tray: 0.000 mm3 over 5 Bridge hook 1Us (ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller); with the hooks 0.1 higher 0.062 mm3 (more: the hooks' tops bear on the gables)
+tray_ramp_6x1x65_print: 152.1 x 65.0 x 25.1, faces 190, flattest face pointing down 45.0 deg from vertical, overhangs flatter than 45 deg: 0
+tray_ramp_6x1x65_all_parts.3mf: tray on one plate, 152.1 wide
+pocket coupon (test-prints): 16.0 x 10.1 x 25.1, overhangs flatter than 45 deg: 0
