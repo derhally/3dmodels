@@ -72,18 +72,32 @@ eaves = seat_z - (w_pocket - w_hook)                                # gable meet
 # The side view (Zeid's sketch): a flat top at the back, the rim falling at rim_slope
 # to the nose, the front leaning back at front_lean down to the foot. The rounded
 # nose's furthest point is at `depth`, so the corner it rounds sits a little further out.
-LEAN = math.radians(BN["front_lean"])
-TL = math.tan(LEAN)
 TR = math.tan(math.radians(BN["rim_slope"]))
 TOPF = BN["top_flat"]
 RN = BN["nose_radius"]
-_a = Vector(math.sin(LEAN), math.cos(LEAN))                      # up the front (y, z)...
-_b = Vector(-math.cos(math.atan(TR)), math.sin(math.atan(TR)))   # ...then back along the rim
-_bis = (_b - _a).normalized()                                    # towards the nose arc's centre
-_out = -_bis.X * RN / math.cos(math.acos(_a.dot(_b)) / 2) - RN  # corner's lead over the arc's furthest point
-YN = D + _out                                                    # the nose's corner (before rounding)...
-ZN = H - (YN - TOPF) * TR                                        # ...on the rim line
-YFOOT = YN - ZN * TL                                             # the front's foot on the bed
+
+
+def nose(lean):
+    """(nose corner y, z, foot y) for a front leaning `lean` radians"""
+    a = Vector(math.sin(lean), math.cos(lean))                      # up the front (y, z)...
+    b = Vector(-math.cos(math.atan(TR)), math.sin(math.atan(TR)))   # ...then back along the rim
+    bis = (b - a).normalized()                                      # towards the nose arc's centre
+    out = -bis.X * RN / math.cos(math.acos(a.dot(b)) / 2) - RN      # corner's lead over the arc's furthest point
+    yn = D + out                                                    # the nose's corner (before rounding)...
+    zn = H - (yn - TOPF) * TR                                       # ...on the rim line
+    return yn, zn, yn - zn * math.tan(lean)                         # the front's foot on the bed
+
+
+if BN.get("foot"):          # a set foot depth: lean the front so it lands there, the nose staying at `depth`
+    lo, hi = math.radians(10), math.radians(44.9)
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if nose(mid)[2] > BN["foot"] else (lo, mid)
+    LEAN = (lo + hi) / 2
+else:
+    LEAN = math.radians(BN["front_lean"])
+TL = math.tan(LEAN)
+YN, ZN, YFOOT = nose(LEAN)
 UP = Vector(0, math.sin(LEAN), math.cos(LEAN))                   # up the front face
 TOP = H + 5                                                      # cavities run up past the walls
 RF = BN["plan_front_radius"]
@@ -296,7 +310,7 @@ _p = Vector(0, TOPF, H) - NRIM * GR["drop"]            # a point on the grid's t
 GO = _p + DOWN * ((B - _p.Y) / DOWN.Y)                 # ...where it meets the back wall's face
 GP = Plane(origin=GO, x_dir=(1, 0, 0), z_dir=NRIM)
 ZM = -TI / 2                                           # snap height: tab ridges and wall grooves
-TAB_Y = 30.0                                           # the tabs' middle, along the grid (between its rows of holes)
+TAB_Y = SN.get("tab_y", 30.0)                          # the tabs' middle, along the grid (between its rows of holes)
 
 
 def vprism(p0, along, out, length, h):
@@ -330,13 +344,18 @@ def grid_blank():
 def tool_axes(g):
     """(row, centre on the grid's top, tip near the floor, diameter) for every hole, in
     the bin's frame. Every row's tips sit in a line along the floor, so the tools fan
-    out: the back row nearly upright, the front row leaning most."""
+    out: the back row nearly upright, the front row leaning most. A row with a fifth
+    value puts its outer holes that far in from the bin's sides and the rest evenly
+    between (the screwdriver grid's hex rows); otherwise the holes share the width."""
     bb = g.bounding_box()
     x0, x1 = bb.min.X + SN["pad"], bb.max.X - SN["pad"]
     out = []
-    for k, (dia, n, v, tip_y) in enumerate(GR["rows"]):
+    for k, (dia, n, v, tip_y, *inset) in enumerate(GR["rows"]):
         for i in range(n):
-            u = x0 + (x1 - x0) * (i + 0.5) / n
+            if inset:
+                u = W / 2 if n == 1 else inset[0] + (W - 2 * inset[0]) * i / (n - 1)
+            else:
+                u = x0 + (x1 - x0) * (i + 0.5) / n
             c = GP.from_local_coords((u, v, 0))
             out.append((k, c, Vector(u, B + tip_y, F + GR["tip_floor"]), dia))
     return out
@@ -347,7 +366,8 @@ def grid_holes(g):
     cut = []
     for k, c, tip, dia in tool_axes(g):
         ax = (c - tip).normalized()
-        cut.append(Solid.make_cylinder(dia / 2, TI * 4, Plane(origin=c - ax * TI * 2, z_dir=ax)))
+        ln = TI * 4 + 2 * GR.get("tube", 0)
+        cut.append(Solid.make_cylinder(dia / 2, ln, Plane(origin=c - ax * (ln - TI * 2), z_dir=ax)))
     return [to_grid(h) for h in cut]
 
 
@@ -372,11 +392,29 @@ def spring_tab(g, xe, inward, yc):
     return check("tab ridge", g, solid(g + ridge))
 
 
+def guide_tubes(g):
+    """Guide tubes under the grid, one round each hole along its tool (grid.tube long
+    below the underside), in the grid's frame. Each starts just under the top, so its
+    tilted end stays inside the plate."""
+    out = []
+    for k, c, tip, dia in tool_axes(g):
+        ax = (c - tip).normalized()
+        cos = ax.dot(NRIM)
+        r = dia / 2 + GR["tube_wall"]
+        s0 = r * math.tan(math.acos(cos)) + 0.05
+        out.append(to_grid(Solid.make_cylinder(r, TI / cos - s0 + GR["tube"], Plane(origin=c - ax * s0, z_dir=-ax))))
+    return out
+
+
 def grid():
-    """the grid in its own frame (as the tool bins' grid): the blank, the holes along
-    their tools, a lead-in chamfer round the top, a spring tab each side"""
+    """the grid in its own frame (as the tool bins' grid): the blank, guide tubes if
+    any, the holes along their tools, a lead-in chamfer round the top, a spring tab
+    each side"""
     g = grid_blank()
     bb = g.bounding_box()
+    if GR.get("tube"):
+        for t in guide_tubes(g):
+            g = check("guide tube", g, solid(g + t))
     holes = grid_holes(g)
     cut = holes[0]
     for h in holes[1:]:
@@ -523,7 +561,7 @@ if __name__ == "__main__":
         (HERE / sub).mkdir(exist_ok=True)
     body = bin_body()
     log(f"{NAME}: {W:.1f} wide, {H:.1f} tall at the back, nose {D:g} out at z {ZN:.1f} (rounded R{RN:g}), "
-        f"foot {YFOOT:.1f} deep; front leans {BN['front_lean']:g} deg, rim falls {BN['rim_slope']:g} deg from a "
+        f"foot {YFOOT:.1f} deep; front leans {math.degrees(LEAN):.1f} deg, rim falls {BN['rim_slope']:g} deg from a "
         f"{TOPF:g} flat top; back wall {B:.3f} thick; pockets at x {[round(x, 2) for x in hook_cols]}, hook bottoms z "
         f"{[round(z, 2) for z in hook_rows]}, seat z {seat_z:.2f}, gable eaves z {eaves:.2f}")
     bb = body.bounding_box()
@@ -568,6 +606,17 @@ if __name__ == "__main__":
     log(f"grid {push:.1f} higher (on its way in, along the slope's square): overlap "
         f"{overlap(body, from_grid(Pos(0, 0, push) * gr_local)):.3f} mm3, the ridges "
         f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
+    if GR.get("handle"):        # screwdriver grid: handles of a sample driver on every axis
+        hd, hl = GR["handle"], GR["handle_length"]
+        for sh in GR["shafts"]:
+            segs = []
+            for k, c, tip, dia in tool_axes(blank):
+                ax = (c - tip).normalized()
+                segs.append(Solid.make_cylinder(hd / 2, hl, Plane(origin=tip + ax * sh, z_dir=ax)))
+            gaps = [a.distance_to(b) for i, a in enumerate(segs) for b in segs[i + 1:]]
+            log(f"handles Ø{hd:g} x {hl:g} on a {sh:g} shaft (tip to handle): closest pair {min(gaps):.1f} apart, "
+                f"closest to the bin {min(body.distance_to(s) for s in segs):.1f}, top {max(s.bounding_box().max.Z for s in segs):.0f} "
+                f"high, furthest {max(s.bounding_box().max.Y for s in segs):.0f} out from the panel")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
     log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
