@@ -1,0 +1,29 @@
+hull slot: 3 pieces round the walls (broken at the pockets)
+lean_bin_4x4x65: 101.3 wide, 101.3 tall at the back, nose 65 out at z 69.9 (rounded R6), foot 34.0 deep; front leans 25.0 deg, rim falls 32 deg from a 16.5 flat top; back wall 10.075 thick; pockets at x [25.25, 50.65, 76.05], hook bottoms z [3.3, 28.7, 54.1, 79.5], seat z 97.20, gable eaves z 96.95
+bin: 101.30 x 65.00 x 101.30 mm, volume 138518.3 mm3, 250 faces, solids 1, valid True, max edge tolerance 4.7e-04
+grid: 97.90 x 61.10 x 20.68 mm in its own frame, volume 46033.5 mm3, 8 holes, valid True, max edge tolerance 2.7e-04; top 6 under the rim's slope, 3.06 under the flat top at the back wall
+measured: 6 gable faces in the pockets (expect 6), z 96.930 to 98.675 (eaves 96.950, the hook's top corners at 97.200)
+measured: inside of the front (the ramp the tools lie on): 3 faces (the grid's front ledge crosses it), z 1.3 to 67.9, 73.5 long up the lean, 96.5 wide between the walls
+grid row 1: hole 5 at x 14.4, tool leans 3.6 deg, tip at y 12.1 (floor 10.1 to 32.9)
+grid row 1: hole 5 at x 50.6, tool leans 3.6 deg, tip at y 12.1 (floor 10.1 to 32.9)
+grid row 1: hole 5 at x 86.9, tool leans 3.6 deg, tip at y 12.1 (floor 10.1 to 32.9)
+grid row 2: hole 5 at x 32.5, tool leans 14.2 deg, tip at y 17.1 (floor 10.1 to 32.9)
+grid row 2: hole 5 at x 68.8, tool leans 14.2 deg, tip at y 17.1 (floor 10.1 to 32.9)
+grid row 3: hole 5 at x 14.4, tool leans 27.0 deg, tip at y 22.1 (floor 10.1 to 32.9)
+grid row 3: hole 5 at x 50.6, tool leans 27.0 deg, tip at y 22.1 (floor 10.1 to 32.9)
+grid row 3: hole 5 at x 86.9, tool leans 27.0 deg, tip at y 22.1 (floor 10.1 to 32.9)
+grid: thinnest rib between holes 21.69, thinnest frame at the edge 4.39
+grid vs bin seated: overlap 4.1600 mm3 (the tab ridges pressing 0.10 into the grooves, as the tool bins); grid lifted 0.05: clearance 0.000
+grid 2.0 higher (on its way in, along the slope's square): overlap 15.680 mm3, the ridges 0.7 into the walls: what each tab bends to get past
+screwdriver grid: a shaft shorter than 75 to 96 (back row to front) hangs from its handle on the grid; longer ones stand on their tips
+handles Ø23 x 95 on a 60 shaft (tip to handle): closest pair 6.1 apart, closest to the bin 0.0, top 195 high, furthest 110 out from the panel
+handles Ø23 x 95 on a 75 shaft (tip to handle): closest pair 6.1 apart, closest to the bin 0.0, top 195 high, furthest 110 out from the panel
+handles Ø23 x 95 on a 100 shaft (tip to handle): closest pair 6.7 apart, closest to the bin 2.5, top 199 high, furthest 121 out from the panel
+handles Ø23 x 95 on a 150 shaft (tip to handle): closest pair 13.2 apart, closest to the bin 52.1, top 249 high, furthest 144 out from the panel
+hooks vs bin: 0.000 mm3 over 12 Bridge hook 1Us (3 columns x 4 rows; ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
+hooks vs grid: 0.000 mm3
+on the bed: centre of mass y 18.1, z 46.9; foot from y -0.9 to 31.9 (the bin runs -32.5 to 32.5): the centre of mass is over the foot
+lean_bin_4x4x65_bin_print: 101.3 x 65.0 x 101.3, faces 250, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
+lean_bin_4x4x65_grid_print: 97.9 x 61.1 x 20.7, faces 80, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
+lean_bin_4x4x65_all_parts.3mf: bin and grid on one plate, 303.2 wide
+lean_bin_4x4x65_pocket_coupon_print: 16.0 x 10.1 x 101.3, faces 66, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0

@@ -1,0 +1,86 @@
+# Omniwall lean bin (own design, 2026-10-27): a bin whose front leans out from the
+# panel, so screwdrivers, pencils and markers lie back against the sloped front and
+# lean toward you, easy to see and grab. Zeid's brief: a slanted bin facing away
+# from the panel, not tilted too much, easier to see what is in it. He picked the
+# lean option from the mockups (https://claude.ai/artifact/WeGnPMjU9gYLkcH7NsHo1D)
+# and sketched the side view he wants, leaning more (2026-10-27).
+# Hangs on the same hooks as the drawers, trays and tool bins, by dovetail pockets
+# in its back wall (as the tool bins). This file holds the shared defaults; each
+# size is a folder (such as 3x3x65) whose params.yaml overrides them key by key.
+# Build with: build.py <folder>. All sizes in mm.
+# Source tags: given (Zeid), derived, assumed (chosen for the design).
+# Coordinates as the tool bins: x across from the left face, y out from the panel
+# face (back face at y = 0), z up from the bin's bottom edge.
+
+unit:
+  file_prefix: lean_bin      # start of every output file name (set by each folder)
+
+bin:
+  cells: 3                   # set by each folder
+  rows: 3                    # set by each folder: housing rows tall at the back (a hook in every row of every column)
+  gap: 0.3                   # as the drawers, trays and bins: width = cells x pitch - gap, so it tiles with them
+  depth: 65                  # given (the drawers' and bins' 65): the nose, the front's furthest point from the panel
+  front_lean: 42.0           # given (Zeid's sketch, 2026-10-27, measured 42.1): front face from vertical; tools lie back on it. Under 45, so it prints without supports
+  rim_slope: 32.0            # given (Zeid's sketch, measured 32.3): rim, from the back's flat top down to the nose, below horizontal
+  top_flat: 16.5             # given (Zeid's sketch, 16.5 at a 75.9 back): flat top at the back, from the panel face
+  nose_radius: 6.0           # assumed (Zeid's sketch rounds the nose): the rim into the front, side view
+  top_bend: 4.0              # assumed: the flat top into the rim, side view
+  plan_front_radius: 6.0     # as the tool bins: the front's outer corners, across the lean
+  wall: 2.4                  # as the tool bins: side and front walls (6 perimeters at 0.4)
+  floor: 2.4                 # as the tool bins
+  back_front_wall: 2.0       # as the trays and bins: solid in front of the pocket floor (back wall 10.075 thick)
+  inner_back_radius: 3.5     # as the tool bins: inside corners against the back wall
+  cove: 3.5                  # as the tool bins: floor into every wall, inside
+  bed_chamfer: 0.6           # assumed: every bottom edge (elephant's foot). The tool bins' 2.0 + roll does not fit the 42 deg front, where a 45 deg chamfer would face the bed
+  lip_round: 1.0             # as the tool bins: top edges of the walls
+  hull_slot:                 # Zeid, 2026-10-28: the drawers' wall gap (../arc-drawer, 2026-10-27), so the floor's solid top layers don't show as a hull line outside
+    inset: 0.85              # as the drawers: outer face to the slot, the 2 outer wall lines (0.42 + 0.45)
+    width: 0.4               # as the drawers (Zeid's test print, 0.4 looked best)
+    below_floor: 1.1         # as the drawers' below_plate: starts this far under the floor's top
+    past_floor: 1.0          # as the drawers' past_plate: ends this far above it
+    pocket_margin: 1.0       # as the drawers: solid this far either side of each pocket where it opens in the bottom face
+
+pocket:                      # as the tool bins: the drawer housing's print-tested pocket, printed upright with a 45 deg gable top
+  spine_clearance: 0.15      # as the tool bins
+  flank_gap: 0.1             # as the tool bins
+  ridge_height: 0.40         # as the tool bins: print-tested upright (Zeid, 2026-10-21)
+  ridges_every_row: true     # Zeid's rule (2026-10-18): a ridge pair every pitch below the seat, one per hook row
+
+print:                       # Bambu Studio settings written into every 3MF, on top of ../../bambu/project_settings.config
+  project:                   # every part
+    sparse_infill_density: 15%      # the H2C template's (bambu/h2c.3mf)
+    sparse_infill_pattern: zig-zag  # as the tool bins
+    seam_position: back             # as the tool bins: Bambu's back is the plate's +Y, so the bin prints front to the plate's front
+    wall_generator: arachne         # as the tool bins
+    wall_loops: 3                   # as the tool bins
+    layer_height: 0.2               # AGENTS.md
+  bin: {}                    # the bin's own, on top of project
+  grid:                      # the grid's own
+    wall_loops: 4            # as the tool bins' grid: the 1.6 tabs and ribs come out as solid walls
+
+coupon:                      # test prints (test-prints/, git-ignored)
+  half_width: 8.0            # as the tool bins: pocket coupon, the back wall round one pocket, upright
+
+grid:                        # optional drop-in grid (Zeid, 2026-10-27: offer an insert): a holed plate across the opening, tools fanned out
+  drop: 6.0                  # assumed: grid top this far under the rim's slope (square to it); at the back wall that is 3 under the flat top
+  thickness: 8.0             # as the tool bins' grid: rib depth, guides the tools
+  clearance: 0.4             # as the tool bins: grid to the back wall and the ramp
+  side_clearance: 0.2        # as the tool bins: grid to the side walls, where the tabs are (the ridges preload 0.1)
+  ledge: 2.0                 # as the tool bins: ledge on the back wall under the grid, 45 deg underneath; the grid's front rests on the ramp
+  border: 2.0                # as the tool bins: solid frame round the holes
+  top_chamfer: 0.6           # as the tool bins: lead-in round every hole (the grid prints top down)
+  tip_floor: 1.0             # assumed: each hole aims at a point this far above the floor
+  rows:                      # assumed, from the back: [hole diameter, holes, centre along the grid from its back edge, tip from the back wall]
+    - [9.5, 4, 9.0, 4.0]     # pencils, picks, hex keys: nearly upright at the back
+    - [11.0, 3, 27.0, 9.0]   # screwdrivers, between the back row's holes
+    - [13.0, 4, 46.0, 13.5]  # markers, fat drivers: at the front, leaning most
+
+snap:                        # as the tool bins' grid (spring tabs, Zeid picked option B, 2026-10-19; v2 fit approved 2026-10-20)
+  tab_length: 20.0
+  tab_thickness: 1.6
+  slot: 1.6
+  slot_chamfer: 0.5
+  pad: 5.0
+  ridge: 0.9
+  groove: 0.6
+  groove_extra: 1.0
