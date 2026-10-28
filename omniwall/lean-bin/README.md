@@ -100,7 +100,10 @@ Upright, as it hangs, with the front toward the plate's front, so the seam
 lands on the back wall. No supports: the front's 42° is the steepest overhang,
 along with the pockets' and ledges' 45°. Every bottom edge has a 0.6 mm chamfer
 against elephant's foot. Empty, its centre of mass sits over the foot, so it
-does not lean forward on the bed. PLA or PETG, 0.2 mm layers, 3+ walls.
+does not lean forward on the bed. As the drawers, a 0.4 mm slot runs
+round the inside of the outer walls, 0.85 mm in, from 1.1 mm under the floor's
+top to 1 mm above it (broken round the pockets), so the floor's solid top
+layers don't leave a hull line on the outside. PLA or PETG, 0.2 mm layers, 3+ walls.
 
 The grid prints top face down, so its top is the smooth bed face and the hole
 chamfers sit on the bed; the slanted holes lean at most 29° from vertical.

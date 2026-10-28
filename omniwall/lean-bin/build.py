@@ -232,14 +232,45 @@ def front_block():
     return extrude(f, 200, both=True)
 
 
+def inset_block(d, z0, z1):
+    """The outside, d inside every outer face, between heights z0 and z1: the back
+    and sides moved in, the front moved back square to its lean, its corners rounded
+    plan_front_radius less d"""
+    pl = Plane(origin=(0, YFOOT, 0), x_dir=(1, 0, 0), z_dir=UP)
+    f = face([(d, -200, 0), (W - d, -200, 0), (W - d, -d, RF - d), (d, -d, RF - d)], lambda u, v: pl.from_local_coords((u, v)))
+    return solid(extrude(f, 200, both=True) & Pos(d, d, z0) * Box(W - 2 * d, 200, z1 - z0, align=Align.MIN))
+
+
+def hull_slot():
+    """Empty slot round all four outer walls, just behind the outer wall lines, from
+    about 1 mm under the floor's top to 1 mm above it, as the drawers' (Zeid,
+    2026-10-28). The floor's top layers print solid infill over the whole bin with
+    long layer times, which leaves a hull line round the outside; with the slot the
+    slicer walls it off, so the outside is the same thin skin all the way up. It
+    breaks round any pocket it would cut into, where the pockets open in the bottom."""
+    sl = BN["hull_slot"]
+    a, w = sl["inset"], sl["width"]
+    z0, z1 = F - sl["below_floor"], F + sl["past_floor"]
+    ring = solid(inset_block(a, z0, z1) - inset_block(a + w, z0 - 1, z1 + 1))
+    for xc in hook_cols:
+        pb = pocket(xc).bounding_box()
+        m = sl["pocket_margin"]
+        ring = ring - Pos(pb.min.X - m, -1, z0 - 1) * Box(pb.size.X + 2 * m, a + w + m + 1, z1 - z0 + 2, align=Align.MIN)
+    return ring.solids()
+
+
 def shell():
     """Solid outer body: the side view, the front's corners rounded, every bottom edge
-    chamfered (elephant's foot), pockets cut."""
+    chamfered (elephant's foot), pockets cut, the hull slot in the walls."""
     body = solid(side_profile() & front_block())
     bot = [e for e in body.edges() if e.bounding_box().max.Z < 1e-3]
     body = check("bed chamfer", body, solid(body.chamfer(BN["bed_chamfer"], None, bot)))
     for xc in hook_cols:
         body = check("pocket", body, solid(body - pocket(xc)))
+    slot = hull_slot()
+    log(f"hull slot: {len(slot)} pieces round the walls (broken at the pockets)")
+    for piece in slot:
+        body = check("hull slot", body, solid(body - piece))
     return body
 
 
@@ -495,6 +526,8 @@ def bad_faces(part, limit=45.0, above=None):
     for f in part.faces():
         if above is not None and f.bounding_box().max.Z < above:
             continue
+        if f.geom_type == GeomType.PLANE and 2 * f.area / sum(e.length for e in f.edges()) < BN["hull_slot"]["width"] / math.cos(LEAN) + 0.05:
+            continue                                         # the hull slot's ceiling, 0.4 (0.54 across the leaning front): too short to sag, as the drawers'
         worst, where = 1.0, None
         for u in (0.0, 0.1, 0.5, 0.9, 1.0):
             for w in (0.0, 0.1, 0.5, 0.9, 1.0):
@@ -511,10 +544,13 @@ def bad_faces(part, limit=45.0, above=None):
 
 
 def steepest_down(part, above=0.05):
-    """flattest downward-facing angle (deg from vertical) on any face reaching above `above`"""
+    """flattest downward-facing angle (deg from vertical) on any face reaching above `above`,
+    leaving out the hull slot's ceiling (as bad_faces)"""
     worst = 1.0
     for f in part.faces():
         if f.bounding_box().max.Z < above:
+            continue
+        if f.geom_type == GeomType.PLANE and 2 * f.area / sum(e.length for e in f.edges()) < BN["hull_slot"]["width"] / math.cos(LEAN) + 0.05:
             continue
         for u in (0.0, 0.1, 0.5, 0.9, 1.0):
             for w in (0.0, 0.1, 0.5, 0.9, 1.0):

@@ -33,6 +33,12 @@ bin:
   cove: 3.5                  # as the tool bins: floor into every wall, inside
   bed_chamfer: 0.6           # assumed: every bottom edge (elephant's foot). The tool bins' 2.0 + roll does not fit the 42 deg front, where a 45 deg chamfer would face the bed
   lip_round: 1.0             # as the tool bins: top edges of the walls
+  hull_slot:                 # Zeid, 2026-10-28: the drawers' wall gap (../arc-drawer, 2026-10-27), so the floor's solid top layers don't show as a hull line outside
+    inset: 0.85              # as the drawers: outer face to the slot, the 2 outer wall lines (0.42 + 0.45)
+    width: 0.4               # as the drawers (Zeid's test print, 0.4 looked best)
+    below_floor: 1.1         # as the drawers' below_plate: starts this far under the floor's top
+    past_floor: 1.0          # as the drawers' past_plate: ends this far above it
+    pocket_margin: 1.0       # as the drawers: solid this far either side of each pocket where it opens in the bottom face
 
 pocket:                      # as the tool bins: the drawer housing's print-tested pocket, printed upright with a 45 deg gable top
   spine_clearance: 0.15      # as the tool bins

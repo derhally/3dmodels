@@ -1,8 +1,9 @@
-lean_bin_3x3x65: 75.9 wide, 75.9 tall at the back, nose 65 out at z 43.6 (rounded R6), foot 29.0 deep; front leans 42 deg, rim falls 32 deg from a 16.5 flat top; back wall 10.075 thick; pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7, 54.1], seat z 71.80, gable eaves z 71.55
-bin: 75.90 x 65.00 x 75.90 mm, volume 80781.2 mm3, 156 faces, solids 1, valid True, max edge tolerance 6.0e-04
+hull slot: 2 pieces round the walls (broken at the pockets)
+lean_bin_3x3x65: 75.9 wide, 75.9 tall at the back, nose 65 out at z 43.6 (rounded R6), foot 29.0 deep; front leans 42.0 deg, rim falls 32 deg from a 16.5 flat top; back wall 10.075 thick; pockets at x [25.25, 50.65], hook bottoms z [3.3, 28.7, 54.1], seat z 71.80, gable eaves z 71.55
+bin: 75.90 x 65.00 x 75.90 mm, volume 80601.6 mm3, 180 faces, solids 1, valid True, max edge tolerance 6.0e-04
 grid: 72.50 x 60.05 x 8.00 mm in its own frame, volume 22379.1 mm3, 11 holes, valid True, max edge tolerance 1.2e-05; top 6 under the rim's slope, 3.06 under the flat top at the back wall
 measured: 4 gable faces in the pockets (expect 4), z 71.530 to 73.275 (eaves 71.550, the hook's top corners at 71.800)
-measured: inside of the front (the ramp the tools lie on): 2 faces (the grid's front ledge crosses it), z 3.6 to 41.3, 50.8 long up the lean, 71.1 wide between the walls
+measured: inside of the front (the ramp the tools lie on): 3 faces (the grid's front ledge crosses it), z 1.3 to 41.3, 53.8 long up the lean, 71.1 wide between the walls
 grid row 1: hole 9.5 at x 15.2, tool leans 3.2 deg, tip at y 14.1 (floor 10.1 to 28.8)
 grid row 1: hole 9.5 at x 30.4, tool leans 3.2 deg, tip at y 14.1 (floor 10.1 to 28.8)
 grid row 1: hole 9.5 at x 45.5, tool leans 3.2 deg, tip at y 14.1 (floor 10.1 to 28.8)
@@ -19,8 +20,8 @@ grid vs bin seated: overlap 4.1600 mm3 (the tab ridges pressing 0.10 into the gr
 grid 2.0 higher (on its way in, along the slope's square): overlap 15.680 mm3, the ridges 0.7 into the walls: what each tab bends to get past
 hooks vs bin: 0.000 mm3 over 6 Bridge hook 1Us (2 columns x 3 rows; ridges 0.40 tall, room for 0.48 in a seated hook's notch: overlap only if taller)
 hooks vs grid: 0.000 mm3
-on the bed: centre of mass y 18.3, z 34.6; foot from y 4.1 to 31.9 (the bin runs -32.5 to 32.5): the centre of mass is over the foot
-lean_bin_3x3x65_bin_print: 75.9 x 65.0 x 75.9, faces 156, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
+on the bed: centre of mass y 18.3, z 34.7; foot from y 4.1 to 31.9 (the bin runs -32.5 to 32.5): the centre of mass is over the foot
+lean_bin_3x3x65_bin_print: 75.9 x 65.0 x 75.9, faces 180, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
 lean_bin_3x3x65_grid_print: 72.5 x 60.0 x 8.0, faces 70, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
 lean_bin_3x3x65_all_parts.3mf: bin and grid on one plate, 252.4 wide
-lean_bin_3x3x65_pocket_coupon_print: 16.0 x 10.1 x 75.9, faces 48, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
+lean_bin_3x3x65_pocket_coupon_print: 16.0 x 10.1 x 75.9, faces 58, flattest face pointing down 45.0 deg from vertical (above the 0.6 bed chamfer), overhangs flatter than 45 deg: 0
