@@ -1,0 +1,19 @@
+# Lean bin, 4 cells x 4 rows (101.3 wide, 101.3 tall at the back), nose 65 out, with
+# the screwdriver grid. Prototype (Zeid, 2026-10-28): 4 cells wide, the foot 5 mm
+# further out than the 3 x 3's, a row taller, Ø5 holes for screwdrivers with short guide tubes.
+unit:
+  file_prefix: lean_bin_4x4x65
+bin:
+  cells: 4
+  rows: 4                    # Zeid, 2026-10-28: one row taller than the first prototype, so the tools sit deeper
+  foot: 34.0                 # given (Zeid, 2026-10-28: the bottom out about 5 more than the 3 x 3's 29.0); the front leans to land here
+grid:                        # screwdriver grid (Zeid, 2026-10-28): Ø5 holes, handles assumed Ø23, a gap just big enough to pick one
+  handle: 23.0               # given (Zeid, 2026-10-28): screwdriver handle diameter
+  handle_length: 95.0        # assumed: a typical driver's handle, for the clearance check
+  shafts: [60, 75, 100, 150] # assumed: tip to handle, short to long drivers, for the clearance check
+  tube: 12.0                 # assumed: guide tubes this far under the grid (Zeid: they need not go deep)
+  tube_wall: 1.6             # as the spring tabs: 4 perimeters at 0.4
+  rows:                      # hex rows 3-2-3 for 8 drivers: [hole, holes, centre along the grid, tip from the back wall, outer axes in from the bin's sides]
+    - [5.0, 3, 9.0, 2.0, 14.4]       # axes 14.4 in: a handle resting on the grid clears the side walls' rims by 0.5; 36.25 apart
+    - [5.0, 2, 31.5, 7.0, 32.525]    # between them, half a step in
+    - [5.0, 3, 54.0, 12.0, 14.4]     # rows 22.5 apart: handles resting on the grid keep about 5 between them

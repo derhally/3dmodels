@@ -608,11 +608,17 @@ if __name__ == "__main__":
         f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
     if GR.get("handle"):        # screwdriver grid: handles of a sample driver on every axis
         hd, hl = GR["handle"], GR["handle_length"]
+        reach = []              # tip to where the handle's lower rim rests on the grid's top: a shorter shaft hangs there
+        for k, c, tip, dia in tool_axes(blank):
+            ax = (c - tip).normalized()
+            reach.append((c - tip).length + hd / 2 * math.tan(math.acos(ax.dot(NRIM))))
+        log(f"screwdriver grid: a shaft shorter than {min(reach):.0f} to {max(reach):.0f} (back row to front) hangs "
+            f"from its handle on the grid; longer ones stand on their tips")
         for sh in GR["shafts"]:
             segs = []
-            for k, c, tip, dia in tool_axes(blank):
+            for (k, c, tip, dia), rc in zip(tool_axes(blank), reach):
                 ax = (c - tip).normalized()
-                segs.append(Solid.make_cylinder(hd / 2, hl, Plane(origin=tip + ax * sh, z_dir=ax)))
+                segs.append(Solid.make_cylinder(hd / 2, hl, Plane(origin=tip + ax * max(sh, rc), z_dir=ax)))
             gaps = [a.distance_to(b) for i, a in enumerate(segs) for b in segs[i + 1:]]
             log(f"handles Ø{hd:g} x {hl:g} on a {sh:g} shaft (tip to handle): closest pair {min(gaps):.1f} apart, "
                 f"closest to the bin {min(body.distance_to(s) for s in segs):.1f}, top {max(s.bounding_box().max.Z for s in segs):.0f} "
