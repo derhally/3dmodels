@@ -13,6 +13,7 @@ falling to a rounded nose, the front leaning back down to a short foot.
 | Bin | Folder, file prefix | W × D × H, mm | Hooks |
 |---|---|---|---|
 | Lean bin 3 × 3 | [`3x3x65/`](3x3x65/), `lean_bin_3x3x65_*` | 75.9 × 65 × 75.9 | 2 columns × 3 rows |
+| Lean bin 4 × 4, screwdrivers | [`4x4x65/`](4x4x65/), `lean_bin_4x4x65_*` | 101.3 × 65 × 101.3 | 3 columns × 4 rows |
 
 ## The shape
 
@@ -25,6 +26,11 @@ In the side view:
   drawers, trays and tool bins.
 - The front leans 42° from vertical, down to a 29 mm deep foot. Its inside is
   the ramp the tools lie on: 50.8 mm long up the lean and 71.1 mm wide.
+
+That is the 3 × 3. A size can set `foot` instead of `front_lean`: the front
+then leans whatever it takes to land there with the nose still at 65. The 4 × 4
+sets a 34 mm foot (Zeid wanted the bottom further out), so its taller front
+leans 25°.
 
 The width is cells × 25.4 − 0.3, so it tiles with the other parts. The walls
 and floor are 2.4 mm, the inside corners are rounded and coved into the floor,
@@ -50,6 +56,28 @@ into a V groove in each side wall; the side walls are square to the grid, so
 the snap is the tested one unchanged, with 0.2 mm clearance at the sides and the
 ridges pressing 0.1 mm into the grooves. Push it in square to the rim; pull it
 out by any hole.
+
+## The screwdriver grid (4 × 4)
+
+Zeid's brief: holes of about 5 mm for screwdrivers with 23 mm handles, spaced
+just far enough that the handles don't bump and you can pick one out, with the
+holes extruded down so the drivers can't tip or knock into each other, but not
+deep. It is the same tilted grid with the same tabs and ledges, holding 8
+drivers in rows of 3, 2 and 3:
+
+- Ø5 holes with guide tubes (1.6 mm wall) 12 mm under the 8 mm plate.
+- The full rows' outer holes are 14.4 mm in from the bin's sides, so a handle
+  resting on the grid clears the side walls' rims. The rows are 22.5 mm apart
+  along the grid, the middle row half a step across.
+- Each hole aims at a spot on the floor, so the rows lean 4°, 14° and 27° and
+  the handles fan apart. Handles resting on the grid are about 6 mm apart, and
+  more on longer drivers.
+- A shaft shorter than about 75 mm (back row) to 96 mm (front row) does not
+  reach the floor. That driver hangs by its handle, which rests on the back
+  wall's top or the nose.
+
+`report.txt` has the handle check: sample Ø23 × 95 handles on 60, 75, 100 and
+150 mm shafts, how far apart they are and how close they come to the bin.
 
 ## Hardware
 

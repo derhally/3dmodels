@@ -1,5 +1,5 @@
 # Lean bin, 4 cells x 4 rows (101.3 wide, 101.3 tall at the back), nose 65 out, with
-# the screwdriver grid. Prototype (Zeid, 2026-10-28): 4 cells wide, the foot 5 mm
+# the screwdriver grid (Zeid, 2026-10-28): 4 cells wide, the foot 5 mm
 # further out than the 3 x 3's, a row taller, Ø5 holes for screwdrivers with short guide tubes.
 unit:
   file_prefix: lean_bin_4x4x65

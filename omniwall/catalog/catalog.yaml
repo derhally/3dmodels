@@ -587,6 +587,34 @@ parts:
       - omniwall/lean-bin/3x3x65/print/lean_bin_3x3x65_grid_print.stl
       - omniwall/lean-bin/3x3x65/step/lean_bin_3x3x65_assembly.step
 
+  - id: lean-bin-4x4x65
+    kind: assembly
+    category: tool-bins
+    name: Lean bin 4×4, screwdrivers
+    folder: omniwall/lean-bin/4x4x65
+    front: [0, 1, 0]
+    status: design
+    summary: A taller, wider lean bin with a screwdriver grid that holds 8 drivers fanned out, handles clear of each other.
+    how: >-
+      The lean bin four cells wide and four rows tall, with its foot 34 mm out,
+      so the front leans 25° to the nose 65 mm from the panel. The grid holds 8
+      screwdrivers in rows of 3, 2 and 3: Ø5 holes with 12 mm guide tubes under
+      them, each aimed at a spot on the floor, so the rows lean 4°, 14° and 27°
+      and the Ø23 handles stay about 6 mm apart. Drivers too short to reach the
+      floor hang by their handles. It clicks in with the tool bins' spring tabs.
+    specs:
+      Size: 101.3 × 65 × 101.3 mm (W × D × H), nose 69.9 up, foot 34 deep
+      Lean: front 25° from vertical, rim 32° below level
+      Screwdriver grid: 97.9 × 61.1 mm, 8 × Ø5 with 12 mm guide tubes, for Ø23 handles
+      Hooks: 3 columns × 4 rows, Bridge hook 1U or Slot hook 1U
+      Grid: 4 × 4 cells
+    print: Bin upright as it hangs, grid top face down with the tubes up. No supports. PLA or PETG, 0.2 mm layers.
+    downloads:
+      - omniwall/lean-bin/4x4x65/print/lean_bin_4x4x65_all_parts.3mf
+      - omniwall/lean-bin/4x4x65/print/lean_bin_4x4x65_bin_print.stl
+      - omniwall/lean-bin/4x4x65/print/lean_bin_4x4x65_grid_print.stl
+      - omniwall/lean-bin/4x4x65/step/lean_bin_4x4x65_assembly.step
+
   - id: stripper-holder
     kind: assembly
     category: tool-holders
