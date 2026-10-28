@@ -14,6 +14,6 @@ track:
   stop: 49.5                     # derived: depth - 15.5, the same as 68.5 in the 84 deep unit, so the arc, gate, hook and exit sit the same distance from the front
 
 scoop_pins:
-  width: 40.0                    # the 2x2 face is only 43.5 wide and its r4 top corners leave 41.4 at the recess top, so the scoop is 40 here (46 on the 3-cell drawers)
-  front_width: 24.0              # given (Zeid, 2026-10-19: handles look the same on all sizes): 6 narrower than the face width, like 46/30, so the sides have the same angle
+  width: 40.0                    # the 2x2 face is only 43.5 wide and its r4 top corners leave 41.4 at the recess top, so the scoop is 40 here (50 on the 3-cell drawers)
+  front_width: 20.0              # given (Zeid, 2026-10-28: flatter sides, like the 3-cell drawers; was 24): 20 narrower than the back (10 each side), like 50/30, so the sides have the same angle
   boss_x: 11.75                  # sockets in with the sides: 14.7 clear between the tubes for a finger

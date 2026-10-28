@@ -120,8 +120,8 @@ column of the back plate to check this pocket before printing the housing.
   walls' outer top edges follow the same curve. The face's top is 0.5 mm under
   the housing roof (`drawer.top_gap`). The pull (`front.pull: scoop_pins`,
   `scoop_pins:` in params.yaml, `handle_geometry.py`) is Zeid's scoop look as a
-  separate part on two snap pins: a hollow hood, open below, 46 mm wide at the
-  face and 30 at its lip (40 and 24 on the 2 × 2, whose face is narrower, so the sides keep the same angle), its top sloping 45° down to the lip 11 mm out, every
+  separate part on two snap pins: a hollow hood, open below, 50 mm wide at the
+  face and 30 at its lip (40 and 20 on the 2 × 2, whose face is narrower, so the sides keep the same angle: each steps in 10 mm over the 11 mm reach), its top sloping 45° down to the lip 11 mm out, every
   visible edge rounded 1 mm. Its back plate sits in a 2 mm recess in the face
   (the recess's top is 45°, so the drawer still prints upright). The pins (barbs
   6.4 mm and the legs of pin C from the handle test, the neck 2 mm shorter to
