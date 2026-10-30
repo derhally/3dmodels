@@ -29,6 +29,7 @@ const cond = (expr, v) => !expr || Function(...Object.keys(v), `return (${expr})
 // a number, or an "= expression" of the other fields worked out (as configure.py)
 const num = (x, v) => (typeof x === 'string' && x.startsWith('=') ? Number(cond(x.slice(1), v)) : Number(x));
 const lo = (f, v) => num(f.min, v), hi = (f, v) => num(f.max, v);
+const unitFor = (f, x) => (x === 1 && /s$/.test(f.unit || '') ? f.unit.slice(0, -1) : f.unit || '');   // 1 channel, 2 channels
 function normalise(kind, given) {
   const v = {};
   for (const f of TYPES[kind].fields) v[f.id] = f.id in (given || {}) ? given[f.id] : f.default;
@@ -78,10 +79,10 @@ function renderFields() {
     if (f.kind === 'int') {
       const [a, b] = [lo(f, v), hi(f, v)];
       h += b <= a
-        ? `<div class="cfg-step"><output>${v[f.id]} ${E(f.unit || '')}</output><span class="cfg-range">set by the width</span></div>`
+        ? `<div class="cfg-step"><output>${v[f.id]} ${E(unitFor(f, v[f.id]))}</output><span class="cfg-range">set by the width</span></div>`
         : `<div class="cfg-step" role="group" aria-labelledby="l-${f.id}">
         <button type="button" data-step="${f.id}" data-by="-1" aria-label="fewer" ${v[f.id] <= a ? 'disabled' : ''}>−</button>
-        <output>${v[f.id]} ${E(f.unit || '')}</output>
+        <output>${v[f.id]} ${E(unitFor(f, v[f.id]))}</output>
         <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${v[f.id] >= b ? 'disabled' : ''}>+</button>
         <span class="cfg-range">${a}–${b}</span></div>`;
     } else if (f.kind === 'number') {
