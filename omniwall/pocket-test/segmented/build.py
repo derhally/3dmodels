@@ -114,7 +114,7 @@ def plate(D, orient):
     depth = yf + (wp if back else 0.0) + PL["front_wall"]        # on its back the floor has a gable
     seats, LIP, WINDOW = D.seats, D.lip, D.window
     z_top = seats[0] + wp + PL["top"]
-    z_bot = seats[-1] - LIP - WINDOW - P["floor"]
+    z_bot = seats[-1] - LIP                                      # the bottom hook's bottom: its pocket is open at the bottom
     hw = PL["half_width"]
     body = Pos(cx, depth / 2, (z_top + z_bot) / 2) * Box(2 * hw, depth, z_top - z_bot)
     body = chamfer(body.edges(), PL["chamfer"])
@@ -132,18 +132,22 @@ def plate(D, orient):
     top_of = (lambda S: S) if back else (lambda S: S - (wp - w_hook))
     void = channel(z_bot - 1, top_of(seats[0])) if D.short else None
     for S in seats:
-        zr, zw = S - LIP, S - LIP - WINDOW
+        last = S == seats[-1]
+        # The bottom hook needs no window: held `push` high the part's bottom is above it,
+        # so it goes into the open bottom of its pocket on the way down, as today's pocket.
+        zr = S - LIP
+        zw = zr - WINDOW if not last else zr - 1
         ze = S - (wp - w_hook)                                   # gable eaves (upright)
-        lips = pocket_void(dm, S, 0.0, zr)
+        lips = pocket_void(dm, S, 0.0, zw if last else zr)
         if not back:
-            lips = lips & Pos(cx, yf / 2, (zr + ze) / 2) * Box(20, yf + 10, ze - zr)
+            lips = lips & Pos(cx, yf / 2, (zw + ze) / 2) * Box(20, yf + 10, ze - zw)
         ramp = Plane.XZ * Polygon((cx - wp - e, zr - e), (cx + wp + e, zr - e), (cx + wn, zr + wp - wn),
                                   (cx - wn, zr + wp - wn), align=None)
         ramp = Pos(0, yf, 0) * extrude(ramp, yf + 1)            # Plane.XZ extrudes toward -y
-        window = Pos(cx, (yf - 1) / 2, (zw + zr) / 2) * Box(2 * wp, yf + 1, WINDOW)
-        seg = lips + ramp + window
+        window = Pos(cx, (yf - 1) / 2, (zw + zr) / 2) * Box(2 * wp, yf + 1, zr - zw)
+        seg = lips + ramp + window                               # (last: the ramp is the open bottom's lead-in)
         if not D.short:
-            seg = seg + channel(zw if S != seats[-1] else z_bot - 1, top_of(S))
+            seg = seg + channel(zw, top_of(S))
         if back:
             floor = Polygon((cx - wp - e, yf), (cx + wp + e, yf), (cx, yf + wp + e), align=None)
             seg = seg + Pos(0, 0, zw) * extrude(floor, S - zw)
@@ -223,17 +227,16 @@ def build(D, out, gap):
         export_step(pb, str(out / f"{stem}_plate_print.step"))
         export_stl(pb, str(out / f"{stem}_plate_print.stl"))
         # One plate: the hooks first (short), then the plate a print-head clearance away (by-object order).
-        # The hooks are one object: printed by object, separate hooks 10 apart conflict once the
-        # plate (taller than the nozzle) is on the bed too (Bambu Studio error -63 on zd-01).
+        # Each hook is its own object (Zeid arranges them, 2026-10-30): 10 apart they conflict in
+        # by-object printing once the plate is on the bed (Bambu Studio error -63) until moved.
         hw, n = hp.bounding_box().size.X, len(D.seats)
-        hooks = Compound(children=[Pos(i * (hw + 10.0), 0, 0) * hp for i in range(n)])
-        objs = [("hooks", hooks, P["print"]["hook"])]
+        objs = [(f"hook {i + 1}", Pos(i * (hw + 10.0), 0, 0) * hp, P["print"]["hook"]) for i in range(n)]
         x_hooks = (n - 1) * (hw + 10.0) + hw / 2
         objs.append(("plate", Pos(x_hooks + gap + pb.bounding_box().size.X / 2, 0, 0) * pb, P["orientations"][orient]["print"]))
         span = x_hooks + gap + pb.bounding_box().size.X + hw / 2
         objs = [(nm, Pos(-span / 2 + hw / 2, 0, 0) * s, st) for nm, s, st in objs]
         write_bambu_project([(f"{NAME} {orient}", objs)], out / f"{stem}_print.3mf", template=TEMPLATE)
-        log(f"  {stem}_print.3mf: {n} hooks (one object) and the plate on one plate, {span:.0f} wide")
+        log(f"  {stem}_print.3mf: {n} hooks and the plate on one plate, {span:.0f} wide")
         if orient == "back":
             export_step(Compound(children=[body, *hks], label=f"{NAME} seated"), str(out / f"{NAME}_assembly_seated.step"))
             export_step(Compound(children=[Pos(0, 0, PUSH) * body, *hks], label=f"{NAME} pushed on"),

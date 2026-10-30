@@ -24,11 +24,13 @@ designs:                     # each builds its own plate, hooks and 3MFs
   skip_row:                  # option 1 (Zeid's idea): after "we just made it weaker" (Zeid, 2026-10-30), the full rail on normal hooks
     file_prefix: segmented_skip_row
     head: null               # normal Slot hook 1U, the full 16.3 rail
-    every: 2                 # a seat on every second row; the rows between stay empty (a hook there hits the wall)
+    every: 2                 # a seat on every second row; the rows between stay empty (a hook there hits the wall).
+                             # Zeid, 2026-10-30: always hooks in the top and the bottom row (a 3U part: rows 1 and 3)
     lip: 16.3                # the whole rail
     window: 22.6             # the 16.3 head goes in anywhere in it: 3.1 of aim up and down at the push height
     push: 16.7               # 0.4 more than the lips, so the head clears them going on
-floor: 2.0                   # solid under the lowest window
+                             # the bottom hook has no window: its pocket is open at the part's bottom (Zeid, 2026-10-30:
+                             # the bottom hook goes in the last row), so the part ends at the bottom hook's bottom
 
 plate:
   half_width: 8.0            # as the tool bin and tray pocket coupons
