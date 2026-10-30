@@ -39,7 +39,7 @@ types:
     prefix: tool_bin_{front}_{cells}x{rows}x{depth}
     fields:
       - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
-      - {id: rows, label: Height, kind: int, min: 2, max: 4, default: 2, unit: rows, set: {bin: {rows: "= rows"}}}
+      - {id: rows, label: Height, kind: int, min: 2, max: 8, default: 2, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
       - id: front
         label: Front
@@ -47,8 +47,8 @@ types:
         default: level
         choices:
           - {id: level, label: Level}
-          - {id: tall, label: One row lower, when: "rows >= 3", set: {bin: {front_height: "= (rows - 1) * 25.4 - 0.3"}}}
-        note: One row lower is the tall bins' S-curve sides.
+          - {id: tall, label: One row lower, when: "rows >= 3 and depth >= 60", set: {bin: {front_height: "= (rows - 1) * 25.4 - 0.3"}}}
+        note: One row lower is the tall bins' S-curve sides; it needs 3 rows or more and 60 mm deep or more.
       - id: divider
         label: Divider
         kind: choice
@@ -89,7 +89,7 @@ types:
     prefix: lean_bin_{cells}x{rows}x{depth}
     fields:
       - {id: cells, label: Width, kind: int, min: 3, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
-      - {id: rows, label: Height, kind: int, min: 3, max: 4, default: 3, unit: rows, set: {bin: {rows: "= rows"}}}
+      - {id: rows, label: Height, kind: int, min: 3, max: 6, default: 3, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 60, max: 100, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
       - id: seats
         label: Takes an insert
@@ -158,7 +158,7 @@ types:
     prefix: arc_drawer_{cells}x{rows}x{depth}
     fields:
       - {id: cells, label: Width, kind: int, min: 2, max: 5, default: 3, unit: cells, set: {unit: {cells: "= cells"}}}
-      - {id: rows, label: Height, kind: int, min: 2, max: 3, default: 2, unit: rows, set: {unit: {rows: "= rows"}}}
+      - {id: rows, label: Height, kind: int, min: 2, max: 5, default: 2, unit: rows, set: {unit: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 45, max: 150, step: 1, default: 65, unit: mm, set: {unit: {depth: "= depth"}, track: {stop: "= depth - 15.5"}}}
     always:
       - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder

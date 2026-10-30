@@ -55,7 +55,8 @@ To build one configuration without a browser:
 ## Ranges
 
 Every range in `options.yaml` was built natively (2026-10-30): tool bins 2 to
-6 cells, 2 to 4 rows, 40 to 150 deep; lean bins 3 to 6 cells, 3 to 4 rows,
-60 to 100 deep (55 fails a fillet); trays 2 to 6 cells, 40 to 150 deep; arc
-drawers 2 to 5 cells, 2 to 3 rows, 45 to 150 deep. Sizes that aren't on main
+6 cells, 2 to 8 rows, 40 to 150 deep (the lower tall front needs 60 deep: the
+S-curve sides fail below that); lean bins 3 to 6 cells, 3 to 6 rows, 60 to 100
+deep (55 fails a fillet); trays 2 to 6 cells, 40 to 150 deep; arc drawers 2 to
+5 cells, 2 to 5 rows, 45 to 150 deep. Sizes that aren't on main
 are not print-tested; the page says so.
