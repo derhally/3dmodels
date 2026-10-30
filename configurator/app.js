@@ -30,6 +30,18 @@ const cond = (expr, v) => !expr || Function(...Object.keys(v), `return (${expr})
 const num = (x, v) => (typeof x === 'string' && x.startsWith('=') ? Number(cond(x.slice(1), v)) : Number(x));
 const lo = (f, v) => num(f.min, v), hi = (f, v) => num(f.max, v);
 const unitFor = (f, x) => (x === 1 && /s$/.test(f.unit || '') ? f.unit.slice(0, -1) : f.unit || '');   // 1 channel, 2 channels
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const allowedAt = (f, v, y) => !f.allowed || cond(f.allowed, { ...v, [f.id]: y });
+function nearestAllowed(f, v) {        // the closest value in range that meets `allowed`, the larger one first (as configure.py)
+  const [a, b, x] = [lo(f, v), hi(f, v), v[f.id]];
+  for (let d = 1; d <= b - a; d++) for (const y of [x + d, x - d]) if (y >= a && y <= b && allowedAt(f, v, y)) return y;
+  return x;
+}
+// the next allowed value from x in direction `by`, or null at the end of the range
+function stepFrom(f, v, by) {
+  for (let y = v[f.id] + by; y >= lo(f, v) && y <= hi(f, v); y += by) if (allowedAt(f, v, y)) return y;
+  return null;
+}
 function normalise(kind, given) {
   const v = {};
   for (const f of TYPES[kind].fields) v[f.id] = f.id in (given || {}) ? given[f.id] : f.default;
@@ -39,6 +51,7 @@ function normalise(kind, given) {
       if (!Number.isFinite(x)) x = num(f.default, v);
       x = Math.min(Math.max(x, lo(f, v)), hi(f, v));
       v[f.id] = f.kind === 'int' ? Math.round(x) : Math.round(x / (f.step || 1)) * (f.step || 1);
+      if (f.allowed && !cond(f.allowed, v)) v[f.id] = nearestAllowed(f, v);
     }
   }
   for (const f of TYPES[kind].fields) {
@@ -81,10 +94,10 @@ function renderFields() {
       h += b <= a
         ? `<div class="cfg-step"><output>${v[f.id]} ${E(unitFor(f, v[f.id]))}</output><span class="cfg-range">set by the width</span></div>`
         : `<div class="cfg-step" role="group" aria-labelledby="l-${f.id}">
-        <button type="button" data-step="${f.id}" data-by="-1" aria-label="fewer" ${v[f.id] <= a ? 'disabled' : ''}>−</button>
+        <button type="button" data-step="${f.id}" data-by="-1" aria-label="fewer" ${stepFrom(f, v, -1) === null ? 'disabled' : ''}>−</button>
         <output>${v[f.id]} ${E(unitFor(f, v[f.id]))}</output>
-        <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${v[f.id] >= b ? 'disabled' : ''}>+</button>
-        <span class="cfg-range">${a}–${b}</span></div>`;
+        <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${stepFrom(f, v, 1) === null ? 'disabled' : ''}>+</button>
+        <span class="cfg-range">${f.allowed ? range(a, b).filter((y) => allowedAt(f, v, y)).join(', ') : `${a}–${b}`}</span></div>`;
     } else if (f.kind === 'number') {
       h += `<div class="cfg-step"><input id="f-${f.id}" type="number" inputmode="decimal" data-num="${f.id}" min="${f.min}" max="${f.max}" step="${f.step || 1}"
         value="${v[f.id]}" aria-labelledby="l-${f.id}"><span class="cfg-unit">${E(f.unit || '')}</span><span class="cfg-range">${f.min}–${f.max}</span></div>`;
@@ -113,7 +126,10 @@ $('form').addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (!b || b.disabled) return;
   if (b.dataset.kind) { state.kind = b.dataset.kind; values(); toHash(); renderTypes(); renderFields(); }
-  else if (b.dataset.step) setValue(b.dataset.step, values()[b.dataset.step] + Number(b.dataset.by));
+  else if (b.dataset.step) {
+    const f = TYPES[state.kind].fields.find((g) => g.id === b.dataset.step), y = stepFrom(f, values(), Number(b.dataset.by));
+    if (y !== null) setValue(f.id, y);
+  }
   else if (b.dataset.k) setValue(b.dataset.k, b.dataset.v);
 });
 $('form').addEventListener('change', (e) => { if (e.target.dataset.num) setValue(e.target.dataset.num, e.target.value); });

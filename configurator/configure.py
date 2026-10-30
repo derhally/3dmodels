@@ -70,6 +70,16 @@ def enabled(cond, values):
     return cond is None or bool(_eval(cond, values))
 
 
+def _nearest_allowed(f, v):
+    """the closest value in range that meets the field's `allowed`, the larger one first"""
+    lo, hi, x = _value(f["min"], v), _value(f["max"], v), v[f["id"]]
+    for d in range(1, int(hi - lo) + 1):
+        for y in (x + d, x - d):
+            if lo <= y <= hi and enabled(f["allowed"], {**v, f["id"]: y}):
+                return y
+    return x
+
+
 def normalise(kind, values):
     """the full set of field values: defaults filled in, numbers clamped, and a
     choice whose condition no longer holds moved to the first one that does"""
@@ -84,6 +94,8 @@ def normalise(kind, values):
                 x = float(_value(f["default"], v))
             x = min(max(x, _value(f["min"], v)), _value(f["max"], v))
             v[f["id"]] = int(round(x)) if f["kind"] == "int" else _num(round(x / f.get("step", 1)) * f.get("step", 1))
+            if f.get("allowed") and not enabled(f["allowed"], v):
+                v[f["id"]] = _nearest_allowed(f, v)
     for f in t["fields"]:
         if f["kind"] == "choice":
             ok = [c["id"] for c in f["choices"] if enabled(c.get("when"), v)]

@@ -12,13 +12,16 @@ def pocket_columns(cells, pitch, edge, count=None):
     """x of the hook pocket columns across an object `cells` wide: one at every
     seam between cells (cells - 1), or `count` of them (Zeid, 2026-10-30): both
     end seams always, then pairs working inward from the edges, and for an odd
-    count the centre seam (just left of centre when there is none)."""
+    count the centre seam. An odd count on an odd width (no centre seam) would be
+    lopsided, so it is refused."""
     seams = list(range(1, cells))
     n = len(seams) if count is None else int(count)
     if n >= len(seams):
         keep = seams
     else:
         assert n >= 2, f"at least 2 pocket columns (asked for {n})"
+        assert n % 2 == 0 or len(seams) % 2, (f"{n} pocket columns can't be centred on {cells} cells "
+                                              "(Zeid, 2026-10-30: no lopsided layouts)")
         k = n // 2
         keep = seams[:k] + seams[len(seams) - k:]
         if n % 2:

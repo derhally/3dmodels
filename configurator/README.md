@@ -23,8 +23,9 @@ computer. Nothing is pre-built and no server is needed.
 Back channels: every builder takes a `channels` count (`bin`, `tray` or `unit`
 in params.yaml; null = one pocket at every seam, as on main). `pocket_columns` in
 `omniwall/hook_geometry.py` keeps both ends and works inward from the edges,
-adding the middle seam for an odd count (just left of centre on 5, 7 and 9
-cells). Fewer channels add `_<n>ch` to the file names.
+adding the middle seam for an odd count. 5, 7 and 9 cells have no middle seam,
+so they take even counts only (Zeid: no lopsided layouts). Fewer channels add
+`_<n>ch` to the file names.
 
 To offer a new choice, add it to `options.yaml`. When it needs geometry the
 builder can't make yet, add a switch to the builder's params (as

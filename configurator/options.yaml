@@ -16,7 +16,8 @@
 #             so join conditions with & and | in brackets, not and / or.
 #             An int field's min, max and default can be "= expressions" too
 #             (Back channels: max "= cells - 1"). follow_max: a field left at
-#             its maximum follows it when another field changes. in_name: added
+#             its maximum follows it when another field changes. allowed: a
+#             condition the value must meet (the stepper skips the rest). in_name: added
 #             to the file names when the field isn't at its default.
 #   always    sets for every build, each with an optional `when`
 #   checks    what the report must show (configurator/checks.py)
@@ -54,10 +55,11 @@ types:
         max: "= cells - 1"     # one at every seam between cells
         default: "= cells - 1"
         unit: channels
+        allowed: "(cells % 2 == 0) | (channels % 2 == 0)"   # no lopsided counts (Zeid, 2026-10-30): an odd count needs a centre seam, which odd widths lack
         follow_max: true
         in_name: "_{channels}ch"
         set: {bin: {channels: "= channels"}}
-        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
       - id: front
         label: Front
         kind: choice
@@ -115,10 +117,11 @@ types:
         max: "= cells - 1"     # one at every seam between cells
         default: "= cells - 1"
         unit: channels
+        allowed: "(cells % 2 == 0) | (channels % 2 == 0)"   # no lopsided counts (Zeid, 2026-10-30): an odd count needs a centre seam, which odd widths lack
         follow_max: true
         in_name: "_{channels}ch"
         set: {bin: {channels: "= channels"}}
-        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
       - id: seats
         label: Takes an insert
         kind: choice
@@ -170,10 +173,11 @@ types:
         max: "= cells - 1"     # one at every seam between cells
         default: "= cells - 1"
         unit: channels
+        allowed: "(cells % 2 == 0) | (channels % 2 == 0)"   # no lopsided counts (Zeid, 2026-10-30): an odd count needs a centre seam, which odd widths lack
         follow_max: true
         in_name: "_{channels}ch"
         set: {tray: {channels: "= channels"}}
-        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
       - id: style
         label: Style
         kind: choice
@@ -206,10 +210,11 @@ types:
         max: "= cells - 1"     # one at every seam between cells
         default: "= cells - 1"
         unit: channels
+        allowed: "(cells % 2 == 0) | (channels % 2 == 0)"   # no lopsided counts (Zeid, 2026-10-30): an odd count needs a centre seam, which odd widths lack
         follow_max: true
         in_name: "_{channels}ch"
         set: {unit: {channels: "= channels"}}
-        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
     always:
       - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder
     checks:
