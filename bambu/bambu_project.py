@@ -95,6 +95,23 @@ def bambu_object_gap(template):
     return math.ceil(float(config["extruder_clearance_max_radius"]) / 10) * 10 + 4
 
 
+def plates_in_a_row(name, objects, gap, bed_width, margin=10.0):
+    """`objects` ([(object_name, shape, ...)], shapes centred on x = 0) side by
+    side `gap` apart on one plate called `name`, or, when that row is wider than
+    the bed less `margin`, each on a plate of its own. Returns (plates for
+    write_bambu_project, width of the row). Builders exec this file after
+    `from build123d import *`, so Pos is theirs."""
+    widths = [o[1].bounding_box().size.X for o in objects]
+    row = sum(widths) + gap * (len(objects) - 1)
+    if len(objects) > 1 and row > bed_width - margin:
+        return [(f"{name} {o[0]}", [o]) for o in objects], row
+    x, placed = -row / 2, []
+    for (label, shape, *own), w in zip(objects, widths):
+        placed.append((label, Pos(x + w / 2, 0, 0) * shape, *own))  # noqa: F405
+        x += w + gap
+    return [(name, placed)], row
+
+
 def write_bambu_project(plates, path, bed=None, template=None, settings=None):
     """Write a Bambu Studio 3MF with one build plate per entry in `plates`.
 

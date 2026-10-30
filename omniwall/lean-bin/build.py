@@ -595,14 +595,10 @@ def plate(items, path):
     each part's own print.<kind> (items are (label, part, kind)), as the tool bins"""
     gap = bambu_object_gap(TEMPLATE)
     items = sorted(items, key=lambda it: it[1].bounding_box().size.Z)
-    widths = [p.bounding_box().size.X for _, p, _ in items]
-    x = -(sum(widths) + gap * (len(items) - 1)) / 2
-    objs = []
-    for (label, p, kind), wd in zip(items, widths):
-        objs.append((label, Pos(x + wd / 2, 0, 0) * p, P["print"].get(kind) or {}))
-        x += wd + gap
-    write_bambu_project([(NAME, objs)], path, template=TEMPLATE, settings=P["print"]["project"])
-    return sum(widths) + gap * (len(items) - 1)
+    objs = [(label, p, P["print"].get(kind) or {}) for label, p, kind in items]
+    plates, row = plates_in_a_row(NAME, objs, gap, bambu_bed(bambu_config(TEMPLATE))[0])  # too wide: a plate each
+    write_bambu_project(plates, path, template=TEMPLATE, settings=P["print"]["project"])
+    return row if len(plates) == 1 else None
 
 
 # ---------------------------------------------------------------- build
@@ -698,7 +694,7 @@ if __name__ == "__main__":
         pg = to_bed(Rot(180, 0, 0) * gr_local)    # the grid top face down, as the tool bins' grid
         write_print(f"{NAME}_grid_print", pg, HERE / "print")
         wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
-        log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+        log(f"{NAME}_all_parts.3mf: bin and grid " + (f"on one plate, {wd:.1f} wide" if wd else "on a plate each (too wide together for the bed)"))
     else:
         wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
         log(f"{NAME}_all_parts.3mf: the bin, {wd:.1f} wide")

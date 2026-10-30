@@ -45,7 +45,7 @@ types:
     builder: omniwall/tool-bin
     prefix: tool_bin_{front}_{cells}x{rows}x{depth}
     fields:
-      - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
+      - {id: cells, label: Width, kind: int, min: 2, max: 8, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 2, max: 8, default: 2, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
       - id: channels
@@ -107,7 +107,7 @@ types:
     builder: omniwall/lean-bin
     prefix: lean_bin_{cells}x{rows}x{depth}
     fields:
-      - {id: cells, label: Width, kind: int, min: 3, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
+      - {id: cells, label: Width, kind: int, min: 3, max: 8, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 3, max: 6, default: 3, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 60, max: 100, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
       - id: channels
@@ -164,7 +164,7 @@ types:
     builder: omniwall/tray
     prefix: tray_{style}_{cells}x1x{depth}
     fields:
-      - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {tray: {cells: "= cells"}}}
+      - {id: cells, label: Width, kind: int, min: 2, max: 8, default: 3, unit: cells, set: {tray: {cells: "= cells"}}}
       - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {tray: {depth: "= depth"}}}
       - id: channels
         label: Back channels
@@ -200,7 +200,7 @@ types:
     builder: omniwall/arc-drawer
     prefix: arc_drawer_{cells}x{rows}x{depth}
     fields:
-      - {id: cells, label: Width, kind: int, min: 2, max: 5, default: 3, unit: cells, set: {unit: {cells: "= cells"}}}
+      - {id: cells, label: Width, kind: int, min: 2, max: 8, default: 3, unit: cells, set: {unit: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 2, max: 5, default: 2, unit: rows, set: {unit: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 45, max: 150, step: 1, default: 65, unit: mm, set: {unit: {depth: "= depth"}, track: {stop: "= depth - 15.5"}}}
       - id: channels

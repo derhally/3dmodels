@@ -396,17 +396,14 @@ for s in parts:
     printed.append((s.label, p))
 # One plate: the parts side by side, far enough apart to print by object
 # (bambu_object_gap), centred on the origin: a Bambu Studio project with the
-# template's settings.
+# template's settings. A row too wide for the bed gets a plate per part.
 gap = bambu_object_gap(TEMPLATE)
-widths = [p.bounding_box().size.X for _, p in printed]
-x = -(sum(widths) + gap * (len(printed) - 1)) / 2
-objs = []
-for (label, p), wd in zip(printed, widths):
-    # print.<part> in params.yaml: that part's own Bambu Studio settings (such as the dish's finer layers)
-    objs.append((label, Pos(x + wd / 2, 0, 0) * p, {k: str(v) for k, v in P.get("print", {}).get(label, {}).items()}))
-    x += wd + gap
-write_bambu_project([(NAME, objs)], HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
-log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} on one plate, {sum(widths) + gap * (len(printed) - 1):.1f} wide")
+# print.<part> in params.yaml: that part's own Bambu Studio settings (such as the dish's finer layers)
+objs = [(label, p, {k: str(v) for k, v in P.get("print", {}).get(label, {}).items()}) for label, p in printed]
+plates, row = plates_in_a_row(NAME, objs, gap, bambu_bed(bambu_config(TEMPLATE))[0])
+write_bambu_project(plates, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
+log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} "
+    + (f"on one plate, {row:.1f} wide" if len(plates) == 1 else "on a plate each (too wide together for the bed)"))
 
 # Pocket test print: the back wall round the first pocket, upright like the tray.
 hc = P["coupon"]["half_width"]

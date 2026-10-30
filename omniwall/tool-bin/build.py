@@ -513,14 +513,10 @@ def plate(items, path):
     # lowest first: by object, Bambu Studio prints the parts in this order, and a
     # part taller than the head's clearance under its rod has to come last
     items = sorted(items, key=lambda it: it[1].bounding_box().size.Z)
-    widths = [p.bounding_box().size.X for _, p, _ in items]
-    x = -(sum(widths) + gap * (len(items) - 1)) / 2
-    objs = []
-    for (label, p, kind), wd in zip(items, widths):
-        objs.append((label, Pos(x + wd / 2, 0, 0) * p, P["print"].get(kind) or {}))
-        x += wd + gap
-    write_bambu_project([(NAME, objs)], path, template=TEMPLATE, settings=P["print"]["project"])
-    return sum(widths) + gap * (len(items) - 1)
+    objs = [(label, p, P["print"].get(kind) or {}) for label, p, kind in items]
+    plates, row = plates_in_a_row(NAME, objs, gap, bambu_bed(bambu_config(TEMPLATE))[0])  # too wide: a plate each
+    write_bambu_project(plates, path, template=TEMPLATE, settings=P["print"]["project"])
+    return row if len(plates) == 1 else None
 
 
 # ---------------------------------------------------------------- build
@@ -577,7 +573,7 @@ if __name__ == "__main__":
         pg = to_bed(Rot(180, 0, 0) * gr)
         write_print(f"{NAME}_grid_print", pg, HERE / "print")
         wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
-        log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+        log(f"{NAME}_all_parts.3mf: bin and grid " + (f"on one plate, {wd:.1f} wide" if wd else "on a plate each (too wide together for the bed)"))
     else:
         wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
         log(f"{NAME}_all_parts.3mf: the bin, {wd:.1f} wide")
@@ -596,5 +592,5 @@ if __name__ == "__main__":
         rb = Pos(-rb.bounding_box().center().X, -rb.bounding_box().center().Y, 0) * rb
         write_print(f"{NAME}_snap_test_band_print", rb, HERE / "test-prints")
         wd = plate([("snap test band", rb, "bin"), ("grid", pg, "grid")], HERE / "test-prints" / f"{NAME}_snap_test.3mf")
-        log(f"snap test (test-prints): the bin from z {z0:.1f} to {min(zt, H):.1f} ({min(zt, H) - z0:.1f} tall band) and the whole grid, one plate {wd:.1f} wide")
+        log(f"snap test (test-prints): the bin from z {z0:.1f} to {min(zt, H):.1f} ({min(zt, H) - z0:.1f} tall band) and the whole grid, " + (f"one plate {wd:.1f} wide" if wd else "a plate each (too wide together for the bed)"))
     (HERE / "report.txt").write_text("\n".join(lines) + "\n")

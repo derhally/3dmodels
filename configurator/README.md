@@ -62,8 +62,10 @@ To build one configuration without a browser:
 ## Ranges
 
 Every range in `options.yaml` was built natively (2026-10-30): tool bins 2 to
-6 cells, 2 to 8 rows, 40 to 150 deep (the lower tall front needs 60 deep: the
-S-curve sides fail below that); lean bins 3 to 6 cells, 3 to 6 rows, 60 to 100
-deep (55 fails a fillet); trays 2 to 6 cells, 40 to 150 deep; arc drawers 2 to
-5 cells, 2 to 5 rows, 45 to 150 deep. Sizes that aren't on main
+8 cells, 2 to 8 rows, 40 to 150 deep (the lower tall front needs 60 deep: the
+S-curve sides fail below that); lean bins 3 to 8 cells, 3 to 6 rows, 60 to 100
+deep (55 fails a fillet); trays 2 to 8 cells, 40 to 150 deep; arc drawers 2 to
+8 cells, 2 to 5 rows, 45 to 150 deep. From 5 cells a bin (or tray) and its
+insert are too wide side by side for the H2C's 330 mm bed, so the 3MF puts them
+on a plate each (`plates_in_a_row` in bambu/bambu_project.py). Sizes that aren't on main
 are not print-tested; the page says so.
