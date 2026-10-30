@@ -55,6 +55,17 @@ def defaults(kind):
     return {f["id"]: f["default"] for f in OPTIONS["types"][kind]["fields"]}
 
 
+def _value(x, values):
+    """a number, or an "= expression" of the other fields worked out"""
+    return _eval(x[1:], values) if isinstance(x, str) and x.startswith("=") else x
+
+
+def at_default(kind, values):
+    """the fields whose value is their (worked out) default"""
+    return {f["id"] for f in OPTIONS["types"][kind]["fields"]
+            if f["kind"] != "choice" and values[f["id"]] == _num(float(_value(f["default"], values)))}
+
+
 def enabled(cond, values):
     return cond is None or bool(_eval(cond, values))
 
@@ -65,10 +76,13 @@ def normalise(kind, values):
     t = OPTIONS["types"][kind]
     v = defaults(kind)
     v.update({k: x for k, x in (values or {}).items() if k in v})
-    for f in t["fields"]:
+    for f in t["fields"]:                             # in order, so "= cells - 1" sees the clamped cells
         if f["kind"] in ("int", "number"):
-            x = float(v[f["id"]])
-            x = min(max(x, f["min"]), f["max"])
+            try:
+                x = float(_value(v[f["id"]], v))
+            except (TypeError, ValueError):
+                x = float(_value(f["default"], v))
+            x = min(max(x, _value(f["min"], v)), _value(f["max"], v))
             v[f["id"]] = int(round(x)) if f["kind"] == "int" else _num(round(x / f.get("step", 1)) * f.get("step", 1))
     for f in t["fields"]:
         if f["kind"] == "choice":
@@ -92,7 +106,10 @@ def params(kind, values):
     for a in t.get("always", []):
         if enabled(a.get("when"), v):
             _merge(out, _resolve(a["set"], v))
-    prefix = t["prefix"].format(**{k: str(_num(x)).replace("-", "_") for k, x in v.items()})
+    names = {k: str(_num(x)).replace("-", "_") for k, x in v.items()}
+    dflt = at_default(kind, v)
+    prefix = t["prefix"].format(**names) + "".join(f["in_name"].format(**names) for f in t["fields"]
+                                                   if f.get("in_name") and f["id"] not in dflt)
     out.setdefault("unit", {})["file_prefix"] = prefix
     return out, prefix, v
 
@@ -100,7 +117,10 @@ def params(kind, values):
 def tested(kind, values):
     """True when these choices are one of main's folders"""
     v = normalise(kind, values)
-    return any(all(v.get(k) == x for k, x in s.items()) for s in OPTIONS["types"][kind].get("tested", []))
+    t = OPTIONS["types"][kind]
+    if any(f.get("in_name") and f["id"] not in at_default(kind, v) for f in t["fields"]):
+        return False                                  # main's folders all use the defaults (every channel)
+    return any(all(v.get(k) == x for k, x in s.items()) for s in t.get("tested", []))
 
 
 def write_folder(root, kind, values, folder="configured"):

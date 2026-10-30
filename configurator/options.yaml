@@ -14,6 +14,10 @@
 #             with "=" is worked out from the fields, such as "= depth - 15.5".
 #             `when` runs as Python (configure.py) and as JavaScript (app.js),
 #             so join conditions with & and | in brackets, not and / or.
+#             An int field's min, max and default can be "= expressions" too
+#             (Back channels: max "= cells - 1"). follow_max: a field left at
+#             its maximum follows it when another field changes. in_name: added
+#             to the file names when the field isn't at its default.
 #   always    sets for every build, each with an optional `when`
 #   checks    what the report must show (configurator/checks.py)
 #   tested    the sizes on main (field values), so the page can say which are print-tested
@@ -43,6 +47,17 @@ types:
       - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 2, max: 8, default: 2, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
+      - id: channels
+        label: Back channels
+        kind: int
+        min: 2
+        max: "= cells - 1"     # one at every seam between cells
+        default: "= cells - 1"
+        unit: channels
+        follow_max: true
+        in_name: "_{channels}ch"
+        set: {bin: {channels: "= channels"}}
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
       - id: front
         label: Front
         kind: choice
@@ -93,6 +108,17 @@ types:
       - {id: cells, label: Width, kind: int, min: 3, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 3, max: 6, default: 3, unit: rows, set: {bin: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 60, max: 100, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
+      - id: channels
+        label: Back channels
+        kind: int
+        min: 2
+        max: "= cells - 1"     # one at every seam between cells
+        default: "= cells - 1"
+        unit: channels
+        follow_max: true
+        in_name: "_{channels}ch"
+        set: {bin: {channels: "= channels"}}
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
       - id: seats
         label: Takes an insert
         kind: choice
@@ -137,6 +163,17 @@ types:
     fields:
       - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {tray: {cells: "= cells"}}}
       - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {tray: {depth: "= depth"}}}
+      - id: channels
+        label: Back channels
+        kind: int
+        min: 2
+        max: "= cells - 1"     # one at every seam between cells
+        default: "= cells - 1"
+        unit: channels
+        follow_max: true
+        in_name: "_{channels}ch"
+        set: {tray: {channels: "= channels"}}
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
       - id: style
         label: Style
         kind: choice
@@ -162,6 +199,17 @@ types:
       - {id: cells, label: Width, kind: int, min: 2, max: 5, default: 3, unit: cells, set: {unit: {cells: "= cells"}}}
       - {id: rows, label: Height, kind: int, min: 2, max: 5, default: 2, unit: rows, set: {unit: {rows: "= rows"}}}
       - {id: depth, label: Depth, kind: number, min: 45, max: 150, step: 1, default: 65, unit: mm, set: {unit: {depth: "= depth"}, track: {stop: "= depth - 15.5"}}}
+      - id: channels
+        label: Back channels
+        kind: int
+        min: 2
+        max: "= cells - 1"     # one at every seam between cells
+        default: "= cells - 1"
+        unit: channels
+        follow_max: true
+        in_name: "_{channels}ch"
+        set: {unit: {channels: "= channels"}}
+        note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one). Fewer channels means fewer hooks holding it.
     always:
       - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder
     checks:

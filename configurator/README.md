@@ -20,6 +20,12 @@ computer. Nothing is pre-built and no server is needed.
   than 45 degrees, hooks fit, the insert snaps in, the lean bin stands, the
   drawer moves freely. A failed check says not to print it.
 
+Back channels: every builder takes a `channels` count (`bin`, `tray` or `unit`
+in params.yaml; null = one pocket at every seam, as on main). `pocket_columns` in
+`omniwall/hook_geometry.py` keeps both ends and works inward from the edges,
+adding the middle seam for an odd count (just left of centre on 5, 7 and 9
+cells). Fewer channels add `_<n>ch` to the file names.
+
 To offer a new choice, add it to `options.yaml`. When it needs geometry the
 builder can't make yet, add a switch to the builder's params (as
 `grid.seats` and `grid.include` were added to the tool and lean bins).

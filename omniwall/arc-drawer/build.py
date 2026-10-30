@@ -70,7 +70,7 @@ edge = U["gap"] / 2                                  # unit inset from its nomin
 # Hooks: the hook's top bar rests on the bottom edge of the upper vertical slot,
 # which starts pitch - length/2 above the peg-hole row at the unit's bottom.
 hook_z0 = (pitch - panel["slot"]["length"] / 2) - hook["bar_bottom"] - edge
-hook_cols = [k * pitch - edge for k in range(1, U["cells"])]
+hook_cols = pocket_columns(U["cells"], pitch, edge, U.get("channels"))
 hook_rows = [hook_z0 + r * pitch for r in range(U["rows"])]
 HH = hook["height"]
 seat_z = hook_rows[-1] + HH + pk["top_clearance"]    # closed top of every pocket channel

@@ -18,6 +18,7 @@ unit:
 tray:
   cells: 3                 # given: 3 cells wide (the 6-cell Ramp sets 6)
   rows: 1                  # assumed: one housing row tall (Zeid's brief: low walls, trays not bins)
+  channels: null           # pocket columns across the back: null = one at every seam (cells - 1); a number keeps both ends and works inward from the edges (Zeid, 2026-10-30; configurator)
   gap: 0.3                 # as the arc drawer: width = cells x pitch - gap, so trays tile with drawers
   depth: 65                # given (Zeid, 2026-10-27: trays to 65 like the drawers; was 60): front lines up with the 65 deep drawer housings
   wall: 2.4                # assumed: side and front walls (6 perimeters at 0.4)

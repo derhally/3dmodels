@@ -26,14 +26,17 @@ const icon = (k) => `<svg viewBox="0 0 40 36" aria-hidden="true" fill="none" str
 // ---------------------------------------------------------------- state
 const state = { kind: Object.keys(TYPES)[0], values: {} };
 const cond = (expr, v) => !expr || Function(...Object.keys(v), `return (${expr});`)(...Object.values(v));
+// a number, or an "= expression" of the other fields worked out (as configure.py)
+const num = (x, v) => (typeof x === 'string' && x.startsWith('=') ? Number(cond(x.slice(1), v)) : Number(x));
+const lo = (f, v) => num(f.min, v), hi = (f, v) => num(f.max, v);
 function normalise(kind, given) {
   const v = {};
   for (const f of TYPES[kind].fields) v[f.id] = f.id in (given || {}) ? given[f.id] : f.default;
-  for (const f of TYPES[kind].fields) {
+  for (const f of TYPES[kind].fields) {               // in order, so "= cells - 1" sees the clamped cells
     if (f.kind === 'int' || f.kind === 'number') {
-      let x = Number(v[f.id]);
-      if (!Number.isFinite(x)) x = f.default;
-      x = Math.min(Math.max(x, f.min), f.max);
+      let x = num(v[f.id], v);
+      if (!Number.isFinite(x)) x = num(f.default, v);
+      x = Math.min(Math.max(x, lo(f, v)), hi(f, v));
       v[f.id] = f.kind === 'int' ? Math.round(x) : Math.round(x / (f.step || 1)) * (f.step || 1);
     }
   }
@@ -57,7 +60,9 @@ function toHash() {
   history.replaceState(null, '', '#' + [state.kind, ...Object.entries(v).map(([k, x]) => `${k}=${x}`)].join('&'));
 }
 const values = () => (state.values[state.kind] ||= normalise(state.kind, {}));
-const isTested = (kind, v) => (TYPES[kind].tested || []).some((s) => Object.entries(s).every(([k, x]) => String(v[k]) === String(x)));
+const atDefault = (kind, v, f) => v[f.id] === num(f.default, v);
+const isTested = (kind, v) => TYPES[kind].fields.every((f) => !f.in_name || atDefault(kind, v, f))   // main's folders use every channel
+  && (TYPES[kind].tested || []).some((s) => Object.entries(s).every(([k, x]) => String(v[k]) === String(x)));
 
 // ---------------------------------------------------------------- the form
 function renderTypes() {
@@ -71,11 +76,14 @@ function renderFields() {
   for (const f of TYPES[state.kind].fields) {
     h += `<div class="cfg-field"><span class="cfg-label" id="l-${f.id}">${E(f.label)}</span>`;
     if (f.kind === 'int') {
-      h += `<div class="cfg-step" role="group" aria-labelledby="l-${f.id}">
-        <button type="button" data-step="${f.id}" data-by="-1" aria-label="fewer" ${v[f.id] <= f.min ? 'disabled' : ''}>−</button>
+      const [a, b] = [lo(f, v), hi(f, v)];
+      h += b <= a
+        ? `<div class="cfg-step"><output>${v[f.id]} ${E(f.unit || '')}</output><span class="cfg-range">set by the width</span></div>`
+        : `<div class="cfg-step" role="group" aria-labelledby="l-${f.id}">
+        <button type="button" data-step="${f.id}" data-by="-1" aria-label="fewer" ${v[f.id] <= a ? 'disabled' : ''}>−</button>
         <output>${v[f.id]} ${E(f.unit || '')}</output>
-        <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${v[f.id] >= f.max ? 'disabled' : ''}>+</button>
-        <span class="cfg-range">${f.min}–${f.max}</span></div>`;
+        <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${v[f.id] >= b ? 'disabled' : ''}>+</button>
+        <span class="cfg-range">${a}–${b}</span></div>`;
     } else if (f.kind === 'number') {
       h += `<div class="cfg-step"><input id="f-${f.id}" type="number" inputmode="decimal" data-num="${f.id}" min="${f.min}" max="${f.max}" step="${f.step || 1}"
         value="${v[f.id]}" aria-labelledby="l-${f.id}"><span class="cfg-unit">${E(f.unit || '')}</span><span class="cfg-range">${f.min}–${f.max}</span></div>`;
@@ -93,7 +101,10 @@ function renderFields() {
   $('summary').textContent = `${t.name}: ${w} wide × ${hgt} tall × ${v.depth} deep (mm)` + (isTested(state.kind, v) ? ' · a size on main' : '');
 }
 function setValue(k, x) {
-  state.values[state.kind] = normalise(state.kind, { ...values(), [k]: x });
+  const before = values(), next = { ...before, [k]: x };
+  for (const f of TYPES[state.kind].fields)           // a field at its maximum (every channel) follows it
+    if (f.follow_max && f.id !== k && before[f.id] === hi(f, before)) delete next[f.id];
+  state.values[state.kind] = normalise(state.kind, next);
   toHash();
   renderFields();
 }
