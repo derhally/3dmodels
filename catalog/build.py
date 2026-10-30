@@ -24,6 +24,9 @@ from core import CACHE, HERE, REPO, SITE, Ctx, Renderer, rel  # noqa: E402
 import generic  # noqa: E402
 import pages  # noqa: E402
 
+sys.path.insert(0, str(REPO / "configurator"))
+import publish  # noqa: E402
+
 CFG = yaml.safe_load((HERE / "site.yaml").read_text(encoding="utf-8"))
 BUILT = CACHE / "built.json"            # what the last renders made, for `pages` runs
 
@@ -176,6 +179,8 @@ def main(args):
     shutil.copytree(HERE / "web", SITE, dirs_exist_ok=True)
     (SITE / ".nojekyll").write_text("")
     pages.write_site(CFG, colls, built, build_info())
+    n = publish.write(SITE / "configurator")
+    print(f"configurator: {n} builder files copied")
     print("site written to", rel(SITE))
 
 

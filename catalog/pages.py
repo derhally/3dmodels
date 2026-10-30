@@ -57,6 +57,7 @@ class Site:
     def page(self, title, body, depth, desc="", scripts=""):
         up = "../" * depth
         nav = "".join(f'<a href="{up}{c["id"]}/index.html">{E(c["name"])}</a>' for c in self.colls)
+        nav += f'<a href="{up}configurator/index.html">Build your own</a>'
         sha = self.info["sha"]
         commit = (f' from <a href="{self.repo}/commit/{sha}"><code>{sha[:7]}</code></a>' if sha else "")
         return f"""<!doctype html>
@@ -245,6 +246,16 @@ class Site:
                 (root / f'{part["id"]}.html').write_text(self.part(coll, part), encoding="utf-8")
             (root / "index.html").write_text(self.collection(coll), encoding="utf-8")
         (SITE / "index.html").write_text(self.home(), encoding="utf-8")
+        (SITE / "configurator").mkdir(exist_ok=True)
+        (SITE / "configurator" / "index.html").write_text(self.configurator(), encoding="utf-8")
+
+    def configurator(self):
+        """the Omniwall configurator (../configurator): its body in this site's frame;
+        configurator/publish.py copies its scripts and the builders next to it"""
+        body = (REPO / "configurator" / "page.html").read_text(encoding="utf-8")
+        return self.page("Build your own · " + self.cfg["title"], body, 1,
+                         "Build an Omniwall bin, tray or drawer to your size, in the browser, with the catalog's own build123d scripts.",
+                         '<link rel="stylesheet" href="app.css">\n<script type="module" src="app.js"></script>')
 
 
 def write_site(cfg, colls, built, info):

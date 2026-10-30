@@ -13,3 +13,6 @@ test-prints/
 # them, the catalog workflow publishes the site.
 _site/
 catalog/cache/
+
+# The configurator's size folder (configurator/build_one.py, the local test server)
+configured/

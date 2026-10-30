@@ -1,0 +1,40 @@
+<!-- The configurator page's body; catalog/pages.py puts it in the catalog's page
+     frame (header, footer, theme) as configurator/index.html. -->
+<section class="wrap cfg">
+  <div class="crumbs"><a href="../index.html">3D models</a><span>/</span>Build your own</div>
+  <div class="cfg-head">
+    <h1>Build your own</h1>
+    <p class="lede">Pick an Omniwall part, set its size and insert, and build it here in your browser.
+    It runs the same build123d scripts as every model in this catalog, so you get the same checks and a
+    Bambu Studio 3MF with the H2C settings, plus STLs and a STEP.</p>
+  </div>
+  <div class="cfg-grid">
+    <form class="cfg-panel" id="form" autocomplete="off">
+      <fieldset class="cfg-types" id="types"><legend>What hangs on the wall</legend></fieldset>
+      <fieldset class="cfg-fields" id="fields"><legend>Size and insert</legend></fieldset>
+      <div class="cfg-go">
+        <button class="cta" id="build" type="submit" disabled>Build</button>
+        <span class="cfg-sum" id="summary"></span>
+      </div>
+    </form>
+    <div class="cfg-out">
+      <div class="cfg-engine" id="engine" role="status">
+        <div class="cfg-engine-row"><span id="engine-text">Starting the CAD engine</span><span id="engine-time" class="cfg-faint"></span></div>
+        <div class="cfg-bar"><i id="engine-bar"></i></div>
+      </div>
+      <div class="cfg-stage" id="stage">
+        <div class="cfg-empty" id="empty">
+          <p><b>Nothing built yet.</b> Choose the options on the left and press Build. The first build waits for the CAD engine to load, about 30 seconds; after that, a part takes 10 to 40 seconds.</p>
+        </div>
+      </div>
+      <div class="cfg-result" id="result" hidden>
+        <div class="cfg-result-head"><h2 id="result-title"></h2><span id="result-chip"></span></div>
+        <ul class="cfg-checks" id="checks"></ul>
+        <h3>Download</h3>
+        <ul class="cfg-files" id="files"></ul>
+        <details><summary>The size folder's params.yaml</summary><pre id="params"></pre></details>
+        <details><summary>Build report</summary><pre id="report"></pre></details>
+      </div>
+    </div>
+  </div>
+</section>

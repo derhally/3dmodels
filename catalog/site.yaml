@@ -24,7 +24,7 @@ more:
     from their STEP and print files.
 
 # folder names never treated as models
-skip: [test-prints, solidcraft, cache, _site, node_modules]
+skip: [test-prints, solidcraft, cache, _site, node_modules, configured]
 skip_prefix: [old-, .]
 
 # the three renders in the home page's header, as collection/part

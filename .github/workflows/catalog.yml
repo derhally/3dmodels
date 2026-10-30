@@ -18,6 +18,11 @@ on:
       - "omniwall/panel.yaml"
       - "omniwall/panel-diagram.svg"
       - "catalog/**"
+      - "configurator/**"
+      - "omniwall/*/build.py"
+      - "omniwall/*/params.yaml"
+      - "omniwall/*.py"
+      - "bambu/**"
       - "omniwall/catalog/**"
       - ".github/workflows/catalog.yml"
   workflow_dispatch:

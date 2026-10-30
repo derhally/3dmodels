@@ -40,6 +40,8 @@ TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"   # printer, filame
 _export_step = export_step
 
 U, BN, PK, GR, SN = P["unit"], P["bin"], P["pocket"], P["grid"], P["snap"]
+SEATS = GR.get("seats", True)                         # the ledges and tab grooves the grid snaps into
+WITH_GRID = SEATS and GR.get("include", True)         # the grid itself, as a part and in the 3MF
 NAME = U["file_prefix"]
 pitch = panel["pitch"]
 hook = panel["bridge_hook"]
@@ -319,11 +321,12 @@ def bin_body():
     body = shell()
     body = check("cavity", body, solid(body - cavity()))
     body = round_tops(body, BN["lip_round"])
-    back, front, grooves = grid_seats()
-    body = check("back ledge", body, solid(body + back))
-    body = check("front ledge", body, solid(body + front))
-    for gv in grooves:
-        body = check("snap groove", body, solid(body - gv))
+    if SEATS:
+        back, front, grooves = grid_seats()
+        body = check("back ledge", body, solid(body + back))
+        body = check("front ledge", body, solid(body + front))
+        for gv in grooves:
+            body = check("snap groove", body, solid(body - gv))
     body.label = "bin"
     return body
 
@@ -381,7 +384,18 @@ def tool_axes(g):
     bb = g.bounding_box()
     x0, x1 = bb.min.X + SN["pad"], bb.max.X - SN["pad"]
     out = []
+    step = None                                        # the row before's hole spacing
     for k, (dia, n, v, tip_y, *inset) in enumerate(GR["rows"]):
+        # A null count fills the width at grid.pitch[k] apart (so any width gets a
+        # full grid); a null inset sits half the row before's spacing in from its inset.
+        if inset and inset[0] is None:
+            inset = [prev_inset + step / 2]
+        if n is None:
+            p = GR["pitch"][k]
+            n = max(1, int((W - 2 * inset[0]) // p) + 1) if inset else max(1, round((x1 - x0) / p))
+        if inset:
+            step = (W - 2 * inset[0]) / (n - 1) if n > 1 else 0
+            prev_inset = inset[0]
         for i in range(n):
             if inset:
                 u = W / 2 if n == 1 else inset[0] + (W - 2 * inset[0]) * i / (n - 1)
@@ -606,14 +620,15 @@ if __name__ == "__main__":
     log(f"bin: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm, volume {body.volume:.1f} mm3, "
         f"{len(body.faces())} faces, solids {len(body.solids())}, valid {body.is_valid}, max edge tolerance {tol:.1e}")
     export_step(body, HERE / "step" / f"{NAME}_bin.step")
-    gr_local, nholes = grid()
-    gr = from_grid(gr_local)
-    gr.label = "grid"
-    gbb = gr_local.bounding_box()
-    log(f"grid: {gbb.size.X:.2f} x {gbb.size.Y:.2f} x {gbb.size.Z:.2f} mm in its own frame, volume {gr.volume:.1f} mm3, "
-        f"{nholes} holes, valid {gr.is_valid}, max edge tolerance {tolerance(gr):.1e}; top {GR['drop']:g} under the rim's slope, "
-        f"{H - GO.Z:.2f} under the flat top at the back wall")
-    export_step(gr, HERE / "step" / f"{NAME}_grid.step")
+    if WITH_GRID:
+        gr_local, nholes = grid()
+        gr = from_grid(gr_local)
+        gr.label = "grid"
+        gbb = gr_local.bounding_box()
+        log(f"grid: {gbb.size.X:.2f} x {gbb.size.Y:.2f} x {gbb.size.Z:.2f} mm in its own frame, volume {gr.volume:.1f} mm3, "
+            f"{nholes} holes, valid {gr.is_valid}, max edge tolerance {tolerance(gr):.1e}; top {GR['drop']:g} under the rim's slope, "
+            f"{H - GO.Z:.2f} under the flat top at the back wall")
+        export_step(gr, HERE / "step" / f"{NAME}_grid.step")
 
     # Measured on the solid, not read from the code.
     roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 1e-3
@@ -626,46 +641,48 @@ if __name__ == "__main__":
     rz = [v.Z for f in ramp for v in f.vertices()]
     log(f"measured: inside of the front (the ramp the tools lie on): {len(ramp)} faces (the grid's front ledge crosses it), z {min(rz):.1f} to {max(rz):.1f}, "
         f"{(max(rz) - min(rz)) / math.cos(LEAN):.1f} long up the lean, {W - 2 * T:.1f} wide between the walls")
-    for k, c, tip, dia in tool_axes(grid_blank()):
-        ax = (c - tip).normalized()
-        log(f"grid row {k + 1}: hole {dia:g} at x {c.X:.1f}, tool leans {math.degrees(math.acos(ax.Z)):.1f} deg, "
-            f"tip at y {tip.Y:.1f} (floor {B:.1f} to {y_inside(tip.Z):.1f})")
-    blank = grid_blank()
-    hs = [h & blank for h in grid_holes(blank)]
-    rib = min(a.distance_to(b) for i, a in enumerate(hs) for b in hs[i + 1:])
-    edge_gap = min(min(f.distance_to(h) for f in blank.faces() if abs(f.normal_at(f.center()).Z) < 0.99) for h in hs)
-    log(f"grid: thinnest rib between holes {rib:.2f}, thinnest frame at the edge {edge_gap:.2f}")
-    log(f"grid vs bin seated: overlap {overlap(body, gr):.4f} mm3 (the tab ridges pressing "
-        f"{SN['ridge'] - GR['side_clearance'] - SN['groove']:.2f} into the grooves, as the tool bins); "
-        f"grid lifted 0.05: clearance {body.distance_to(from_grid(Pos(0, 0, 0.05) * gr_local)):.3f}")
-    push = 2.0
-    log(f"grid {push:.1f} higher (on its way in, along the slope's square): overlap "
-        f"{overlap(body, from_grid(Pos(0, 0, push) * gr_local)):.3f} mm3, the ridges "
-        f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
-    if GR.get("handle"):        # screwdriver grid: handles of a sample driver on every axis
-        hd, hl = GR["handle"], GR["handle_length"]
-        reach = []              # tip to where the handle's lower rim rests on the grid's top: a shorter shaft hangs there
-        for k, c, tip, dia in tool_axes(blank):
+    if WITH_GRID:
+        for k, c, tip, dia in tool_axes(grid_blank()):
             ax = (c - tip).normalized()
-            reach.append((c - tip).length + hd / 2 * math.tan(math.acos(ax.dot(NRIM))))
-        log(f"screwdriver grid: a shaft shorter than {min(reach):.0f} to {max(reach):.0f} (back row to front) hangs "
-            f"from its handle on the grid; longer ones stand on their tips")
-        for sh in GR["shafts"]:
-            segs = []
-            for (k, c, tip, dia), rc in zip(tool_axes(blank), reach):
+            log(f"grid row {k + 1}: hole {dia:g} at x {c.X:.1f}, tool leans {math.degrees(math.acos(ax.Z)):.1f} deg, "
+                f"tip at y {tip.Y:.1f} (floor {B:.1f} to {y_inside(tip.Z):.1f})")
+        blank = grid_blank()
+        hs = [h & blank for h in grid_holes(blank)]
+        rib = min(a.distance_to(b) for i, a in enumerate(hs) for b in hs[i + 1:])
+        edge_gap = min(min(f.distance_to(h) for f in blank.faces() if abs(f.normal_at(f.center()).Z) < 0.99) for h in hs)
+        log(f"grid: thinnest rib between holes {rib:.2f}, thinnest frame at the edge {edge_gap:.2f}")
+        log(f"grid vs bin seated: overlap {overlap(body, gr):.4f} mm3 (the tab ridges pressing "
+            f"{SN['ridge'] - GR['side_clearance'] - SN['groove']:.2f} into the grooves, as the tool bins); "
+            f"grid lifted 0.05: clearance {body.distance_to(from_grid(Pos(0, 0, 0.05) * gr_local)):.3f}")
+        push = 2.0
+        log(f"grid {push:.1f} higher (on its way in, along the slope's square): overlap "
+            f"{overlap(body, from_grid(Pos(0, 0, push) * gr_local)):.3f} mm3, the ridges "
+            f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
+        if GR.get("handle"):        # screwdriver grid: handles of a sample driver on every axis
+            hd, hl = GR["handle"], GR["handle_length"]
+            reach = []              # tip to where the handle's lower rim rests on the grid's top: a shorter shaft hangs there
+            for k, c, tip, dia in tool_axes(blank):
                 ax = (c - tip).normalized()
-                segs.append(Solid.make_cylinder(hd / 2, hl, Plane(origin=tip + ax * max(sh, rc), z_dir=ax)))
-            gaps = [a.distance_to(b) for i, a in enumerate(segs) for b in segs[i + 1:]]
-            log(f"handles Ø{hd:g} x {hl:g} on a {sh:g} shaft (tip to handle): closest pair {min(gaps):.1f} apart, "
-                f"closest to the bin {min(body.distance_to(s) for s in segs):.1f}, top {max(s.bounding_box().max.Z for s in segs):.0f} "
-                f"high, furthest {max(s.bounding_box().max.Y for s in segs):.0f} out from the panel")
+                reach.append((c - tip).length + hd / 2 * math.tan(math.acos(ax.dot(NRIM))))
+            log(f"screwdriver grid: a shaft shorter than {min(reach):.0f} to {max(reach):.0f} (back row to front) hangs "
+                f"from its handle on the grid; longer ones stand on their tips")
+            for sh in GR["shafts"]:
+                segs = []
+                for (k, c, tip, dia), rc in zip(tool_axes(blank), reach):
+                    ax = (c - tip).normalized()
+                    segs.append(Solid.make_cylinder(hd / 2, hl, Plane(origin=tip + ax * max(sh, rc), z_dir=ax)))
+                gaps = [a.distance_to(b) for i, a in enumerate(segs) for b in segs[i + 1:]]
+                log(f"handles Ø{hd:g} x {hl:g} on a {sh:g} shaft (tip to handle): closest pair {min(gaps):.1f} apart, "
+                    f"closest to the bin {min(body.distance_to(s) for s in segs):.1f}, top {max(s.bounding_box().max.Z for s in segs):.0f} "
+                    f"high, furthest {max(s.bounding_box().max.Y for s in segs):.0f} out from the panel")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
     log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
         f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
         f"overlap only if taller)")
-    log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
-    export_step(Compound(children=[body, gr, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
+    if WITH_GRID:
+        log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
+    export_step(Compound(children=[body, gr, *hks] if WITH_GRID else [body, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 
     # Print orientation: the bin as it hangs, front toward the plate's front, so
     # Bambu Studio's seam at "back" lands on the back wall (as the tool bins).
@@ -676,11 +693,15 @@ if __name__ == "__main__":
     log(f"on the bed: centre of mass y {com.Y:.1f}, z {com.Z:.1f}; foot from y {min(foot):.1f} to {max(foot):.1f} "
         f"(the bin runs {pbb.min.Y:.1f} to {pbb.max.Y:.1f}): the centre of mass is "
         + ("over the foot" if min(foot) <= com.Y <= max(foot) else "OUTSIDE the foot"))
-    pg = to_bed(Rot(180, 0, 0) * gr_local)    # the grid top face down, as the tool bins' grid
     write_print(f"{NAME}_bin_print", pb, HERE / "print")
-    write_print(f"{NAME}_grid_print", pg, HERE / "print")
-    wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
-    log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+    if WITH_GRID:
+        pg = to_bed(Rot(180, 0, 0) * gr_local)    # the grid top face down, as the tool bins' grid
+        write_print(f"{NAME}_grid_print", pg, HERE / "print")
+        wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+    else:
+        wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        log(f"{NAME}_all_parts.3mf: the bin, {wd:.1f} wide")
 
     # Test print: the back wall round the first pocket, upright (as the tool bins).
     hc = P["coupon"]["half_width"]

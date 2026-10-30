@@ -77,6 +77,8 @@ TI = GR["thickness"]
 ZL = HF - GR["below_rim"] - TI                        # ledge top: the grid rests here
 ZM = ZL + TI / 2                                      # snap height: tab ridges and wall grooves
 DIV = BN["divider"]
+SEATS = GR.get("seats", True)                         # the ledge and tab grooves the grid snaps into
+WITH_GRID = SEATS and GR.get("include", True)         # the grid itself, as a part and in the 3MF
 
 lines = []
 
@@ -315,9 +317,9 @@ def bin_body():
     body = shell()
     comps = compartments()
     for i, c in enumerate(comps):
-        body = check("cavity", body, solid(body - cavity(c, ledge=(i == 0))))
+        body = check("cavity", body, solid(body - cavity(c, ledge=(i == 0 and SEATS))))
     body = round_tops(body, BN["lip_round"], HF)
-    for g in snap_grooves(comps[0]):
+    for g in snap_grooves(comps[0]) if SEATS else []:
         body = check("snap groove", body, solid(body - g))
     body = check("label holder", body, solid(body + label_holder(W / 2)))
     body.label = "bin"
@@ -356,8 +358,16 @@ def hole_faces(x0, y0, x1, y1):
     elif pat == "mixed":
         (db, nb), (ds, ns, rs) = GR["mixed"]["big"], GR["mixed"]["small"]
         Lx = x1 - x0
+        # a count left null fills the space: as many holes across as fit with a rib
+        # between, as many small rows as leave the front slot mixed.slot_min deep
+        nb = nb or max(1, int((Lx + rib) // (db + rib)))
+        ns = ns or max(1, int((Lx + rib) // (ds + rib)))
+        if rs is None:
+            rs = max(0, int((y1 - y0 - db - rib - GR["mixed"].get("slot_min", 8.0)) // (ds + rib)))
 
         def row(d, n, y):
+            if n == 1:
+                return [Pos((x0 + x1) / 2, y) * Circle(d / 2)]
             step = (Lx - d) / (n - 1)
             assert step - d >= rib - 1e-6, f"holes of {d} too close ({step - d:.2f} between)"
             return [Pos(x0 + d / 2 + k * step, y) * Circle(d / 2) for k in range(n)]
@@ -518,11 +528,13 @@ if __name__ == "__main__":
     for sub in ("step", "print", "test-prints"):
         (HERE / sub).mkdir(exist_ok=True)
     body = bin_body()
-    gr, nholes = grid()
-    parts = [body, gr]
+    gr, nholes = grid() if WITH_GRID else (None, 0)
+    parts = [body, gr] if WITH_GRID else [body]
     log(f"{NAME}: {W:.1f} wide, {D:g} deep, {H:.1f} tall" + (f" at the back, {HF:.1f} at the front" if HF < H else "")
         + f"; back wall {B:.3f} thick; pockets at x {[round(x, 2) for x in hook_cols]}, hook bottoms z "
-        f"{[round(z, 2) for z in hook_rows]}, seat z {seat_z:.2f}, gable eaves z {eaves:.2f}; ledge top z {ZL:.2f}, snap z {ZM:.2f}")
+        f"{[round(z, 2) for z in hook_rows]}, seat z {seat_z:.2f}, gable eaves z {eaves:.2f}"
+        + (f"; ledge top z {ZL:.2f}, snap z {ZM:.2f}" if SEATS else "; no grid ledge or tab grooves")
+        + ("" if WITH_GRID else "; no grid part"))
     for s in parts:
         bb = s.bounding_box()
         tol = tolerance(s)
@@ -530,7 +542,8 @@ if __name__ == "__main__":
         log(f"{s.label}: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm, volume {s.volume:.1f} mm3, "
             f"{len(s.faces())} faces, solids {len(s.solids())}, valid {s.is_valid}, max edge tolerance {tol:.1e}")
         export_step(s, HERE / "step" / f"{NAME}_{s.label}.step")
-    log(f"grid: {U['pattern']} pattern, {nholes} holes")
+    if WITH_GRID:
+        log(f"grid: {U['pattern']} pattern, {nholes} holes")
 
     # Measured on the solids, not read from the code.
     roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 1e-3
@@ -538,42 +551,50 @@ if __name__ == "__main__":
     zs = [v.Z for f in roof for v in f.vertices()]
     log(f"measured: {len(roof)} gable faces in the pockets (expect {2 * len(hook_cols)}), z {min(zs):.3f} to {max(zs):.3f} "
         f"(eaves {eaves:.3f}, the hook's top corners at {seat_z:.3f})")
-    ledge = [f for f in body.faces() if abs(f.center().Z - ZL) < 1e-3 and f.normal_at(f.center()).Z > 0.99]
-    log(f"measured: ledge faces at z {ZL:.2f}: {len(ledge)}, area {sum(f.area for f in ledge):.1f} mm2; "
-        f"grid underside z {gr.bounding_box().min.Z:.3f}, grid top {gr.bounding_box().max.Z:.3f} ({HF - gr.bounding_box().max.Z:.2f} under the front rim)")
-    log(f"grid vs bin seated: overlap {overlap(body, gr):.4f} mm3 (the tab ridges pressing {SN['ridge'] - GR['side_clearance'] - SN['groove']:.2f} into the grooves, the preload that holds the grid centred); "
-        f"grid lifted 0.05: clearance {body.distance_to(Pos(0, 0, 0.05) * gr):.3f}")
-    push = 2.0                                             # grid held this much higher: ridges against the plain wall above the grooves
-    log(f"grid {push:.1f} higher (on its way in): overlap {overlap(body, Pos(0, 0, push) * gr):.3f} mm3, the ridges "
-        f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
+    if SEATS:
+        ledge = [f for f in body.faces() if abs(f.center().Z - ZL) < 1e-3 and f.normal_at(f.center()).Z > 0.99]
+        log(f"measured: ledge faces at z {ZL:.2f}: {len(ledge)}, area {sum(f.area for f in ledge):.1f} mm2"
+            + (f"; grid underside z {gr.bounding_box().min.Z:.3f}, grid top {gr.bounding_box().max.Z:.3f} ({HF - gr.bounding_box().max.Z:.2f} under the front rim)" if WITH_GRID else ""))
+    if WITH_GRID:
+        log(f"grid vs bin seated: overlap {overlap(body, gr):.4f} mm3 (the tab ridges pressing {SN['ridge'] - GR['side_clearance'] - SN['groove']:.2f} into the grooves, the preload that holds the grid centred); "
+            f"grid lifted 0.05: clearance {body.distance_to(Pos(0, 0, 0.05) * gr):.3f}")
+        push = 2.0                                         # grid held this much higher: ridges against the plain wall above the grooves
+        log(f"grid {push:.1f} higher (on its way in): overlap {overlap(body, Pos(0, 0, push) * gr):.3f} mm3, the ridges "
+            f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
     log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
         f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
         f"overlap only if taller)")
-    log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
+    if WITH_GRID:
+        log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[*parts, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
 
     # Print orientation: the bin as it hangs, the grid top face down.
     pb = to_bed(Rot(0, 0, 180) * body)    # front toward the plate's front, so Bambu Studio's seam at "back" lands on the back wall
-    pg = to_bed(Rot(180, 0, 0) * gr)
     write_print(f"{NAME}_bin_print", pb, HERE / "print")
-    write_print(f"{NAME}_grid_print", pg, HERE / "print")
-    wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
-    log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+    if WITH_GRID:
+        pg = to_bed(Rot(180, 0, 0) * gr)
+        write_print(f"{NAME}_grid_print", pg, HERE / "print")
+        wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        log(f"{NAME}_all_parts.3mf: bin and grid on one plate, {wd:.1f} wide")
+    else:
+        wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        log(f"{NAME}_all_parts.3mf: the bin, {wd:.1f} wide")
 
     # Test prints: the back wall round the first pocket; the bin's top band with the whole grid (snap test).
     hc = P["coupon"]["half_width"]
     cp = to_bed(Rot(0, 0, 180) * solid(body & Pos(hook_cols[0], B / 2 - 0.5, H / 2) * Box(2 * hc, B + 1, H + 2)))
     write_print(f"{NAME}_pocket_coupon_print", cp, HERE / "test-prints")
     plate([("pocket coupon", cp, "bin")], HERE / "test-prints" / f"{NAME}_pocket_coupon_print.3mf")
-    z0 = ZL - GR["ledge"] - P["coupon"]["ring_below_ledge"]
-    zt = min(H, HF + 3) + 1                               # the tall bin: cut its rising back off just above the front rim
-    band = body & Pos(W / 2, D / 2, (z0 + zt) / 2) * Box(W + 10, D + 10, zt - z0)
-    band = max(band.solids(), key=lambda s: s.volume)
-    rb = Pos(0, 0, -z0) * band
-    rb = Pos(-rb.bounding_box().center().X, -rb.bounding_box().center().Y, 0) * rb
-    write_print(f"{NAME}_snap_test_band_print", rb, HERE / "test-prints")
-    wd = plate([("snap test band", rb, "bin"), ("grid", pg, "grid")], HERE / "test-prints" / f"{NAME}_snap_test.3mf")
-    log(f"snap test (test-prints): the bin from z {z0:.1f} to {min(zt, H):.1f} ({min(zt, H) - z0:.1f} tall band) and the whole grid, one plate {wd:.1f} wide")
+    if WITH_GRID:
+        z0 = ZL - GR["ledge"] - P["coupon"]["ring_below_ledge"]
+        zt = min(H, HF + 3) + 1                           # the tall bin: cut its rising back off just above the front rim
+        band = body & Pos(W / 2, D / 2, (z0 + zt) / 2) * Box(W + 10, D + 10, zt - z0)
+        band = max(band.solids(), key=lambda s: s.volume)
+        rb = Pos(0, 0, -z0) * band
+        rb = Pos(-rb.bounding_box().center().X, -rb.bounding_box().center().Y, 0) * rb
+        write_print(f"{NAME}_snap_test_band_print", rb, HERE / "test-prints")
+        wd = plate([("snap test band", rb, "bin"), ("grid", pg, "grid")], HERE / "test-prints" / f"{NAME}_snap_test.3mf")
+        log(f"snap test (test-prints): the bin from z {z0:.1f} to {min(zt, H):.1f} ({min(zt, H) - z0:.1f} tall band) and the whole grid, one plate {wd:.1f} wide")
     (HERE / "report.txt").write_text("\n".join(lines) + "\n")

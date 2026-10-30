@@ -55,6 +55,8 @@ label:                       # the arc drawers' U holder for the bin label (../.
   below_rim: 3.0             # assumed: side rails' tops this far below the front rim
 
 grid:                        # the drop-in grid: rests on a ledge round the inside, snaps in with a spring tab each side
+  seats: true                # the ledge and tab grooves in the bin (false: a plain bin that takes no grid)
+  include: true              # the grid as a part, in the 3MF (false: the bin alone, still with its ledge)
   thickness: 8.0             # assumed: rib depth, guides the tools upright
   below_rim: 1.0             # assumed: grid top under the lowest rim
   clearance: 0.4             # assumed (the trays' dish uses 0.4): grid to bin, back and front
@@ -66,8 +68,9 @@ grid:                        # the drop-in grid: rests on a ledge round the insi
   square_cell: 13.0          # assumed: square pattern, target cell (stretched to fill the frame); markers are ~12
   hex_flats: 13.0            # assumed: hex pattern, across the flats
   mixed:                     # assumed: back row big holes, middle rows small, a slot at the front
-    big: [13.0, 4]           # diameter, count: markers, fat handles
-    small: [9.0, 6, 2]       # diameter, count per row, rows: pencils, picks, hex keys
+    big: [13.0, null]        # diameter, count: markers, fat handles (null: as many as fit across)
+    small: [8.6, null, null] # diameter, count per row, rows: pencils, picks, hex keys (null: as many as fit; 8.6 as the caddy, takes a hex pencil)
+    slot_min: 8.0            # assumed: with the rows left null, the front slot keeps at least this depth
   min_hole_area: 40          # cells cut down by the frame smaller than this are left solid
 
 snap:                        # Zeid picked spring tabs (option B, 2026-10-19)

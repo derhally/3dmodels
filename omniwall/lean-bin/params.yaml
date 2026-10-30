@@ -62,6 +62,8 @@ coupon:                      # test prints (test-prints/, git-ignored)
   half_width: 8.0            # as the tool bins: pocket coupon, the back wall round one pocket, upright
 
 grid:                        # optional drop-in grid (Zeid, 2026-10-27: offer an insert): a holed plate across the opening, tools fanned out
+  seats: true                # the ledges and tab grooves in the bin (false: a plain bin that takes no grid)
+  include: true              # the grid as a part, in the 3MF (false: the bin alone, still with its ledges)
   drop: 6.0                  # assumed: grid top this far under the rim's slope (square to it); at the back wall that is 3 under the flat top
   thickness: 8.0             # as the tool bins' grid: rib depth, guides the tools
   clearance: 0.4             # as the tool bins: grid to the back wall and the ramp
@@ -74,6 +76,7 @@ grid:                        # optional drop-in grid (Zeid, 2026-10-27: offer an
     - [9.5, 4, 9.0, 4.0]     # pencils, picks, hex keys: nearly upright at the back
     - [11.0, 3, 27.0, 9.0]   # screwdrivers, between the back row's holes
     - [13.0, 4, 46.0, 13.5]  # markers, fat drivers: at the front, leaning most
+  pitch: [15.2, 20.2, 15.2]  # with a row's count null: holes this far apart, as many as fill the width (the 3 x 3's 4, 3, 4)
 
 snap:                        # as the tool bins' grid (spring tabs, Zeid picked option B, 2026-10-19; v2 fit approved 2026-10-20)
   tab_length: 20.0

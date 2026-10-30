@@ -1,0 +1,173 @@
+# Omniwall configurator: what the page offers and how each choice becomes a
+# size folder's params.yaml. The configurator writes that file on top of the
+# builder's own shared params.yaml, as the folders on main do (cup-2x2x65 and
+# so on), and runs the builder's own build.py in the browser (Pyodide +
+# OCP.wasm). Nothing here repeats a size or a setting from the builders.
+#
+# Per type:
+#   builder   the builder folder (its build.py and shared params.yaml)
+#   prefix    the output file names; {field} takes the field's value
+#   fields    in the order they show. kind int (a stepper), number (typed in,
+#             mm) or choice; `when` (on a field or a choice) is a condition on
+#             the other fields, shown greyed out when false; `set` is merged
+#             into the size folder's params.yaml. A string value starting
+#             with "=" is worked out from the fields, such as "= depth - 15.5".
+#   always    sets for every build, each with an optional `when`
+#   checks    what the report must show (configurator/checks.py)
+#   tested    the sizes on main (field values), so the page can say which are print-tested
+
+engine:
+  pyodide: 314.0.7           # Python 3.14 for the browser; the OCP.wasm wheels are built for it (cp314, pyemscripten_2026_0)
+  build123d: 0.13.0          # as zd-01 builds with
+
+# repo files every builder reads, copied into the browser's file system
+files:
+  - omniwall/*.py
+  - omniwall/panel.yaml
+  - omniwall/hook/*_measured.step
+  - bambu/*.py
+  - bambu/project_settings.config
+  - bambu/process/*.json
+  - configurator/*.py
+  - configurator/options.yaml
+
+types:
+  tool-bin:
+    name: Tool bin
+    blurb: Upright bin with a drop-in grid for pencils, picks and markers
+    builder: omniwall/tool-bin
+    prefix: tool_bin_{front}_{cells}x{rows}x{depth}
+    fields:
+      - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
+      - {id: rows, label: Height, kind: int, min: 2, max: 4, default: 2, unit: rows, set: {bin: {rows: "= rows"}}}
+      - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
+      - id: front
+        label: Front
+        kind: choice
+        default: level
+        choices:
+          - {id: level, label: Level}
+          - {id: tall, label: One row lower, when: "rows >= 3", set: {bin: {front_height: "= (rows - 1) * 25.4 - 0.3"}}}
+        note: One row lower is the tall bins' S-curve sides.
+      - id: divider
+        label: Divider
+        kind: choice
+        default: none
+        choices:
+          - {id: none, label: None}
+          - {id: middle, label: Middle, when: "cells >= 4", set: {bin: {divider: 2.4}, grid: {square_cell: 11.0}}}   # as split-4x2x65
+        note: Middle puts the grid on the left and leaves an open well on the right.
+      - id: seats
+        label: Takes an insert
+        kind: choice
+        default: "yes"
+        choices:
+          - {id: "yes", label: "Yes"}
+          - {id: "no", label: "No", set: {grid: {seats: false}}}
+        note: No makes a plain cavity with no ledge or tab grooves.
+      - id: insert
+        label: Insert
+        kind: choice
+        default: square
+        choices:
+          - {id: none, label: None, set: {grid: {include: false}}}
+          - {id: square, label: Square grid, when: "seats == 'yes'", set: {unit: {pattern: square}}}
+          - {id: hex, label: Honeycomb, when: "seats == 'yes'", set: {unit: {pattern: hex}}}
+          - {id: caddy, label: Tool caddy, when: "seats == 'yes'", set: {unit: {pattern: mixed}}}
+        note: Tool caddy has big holes at the back, small ones in the middle and a slot at the front.
+    tested:                  # main's folders, as field values: cup-2x2x65, caddy-3x2x65, tall-3x3x65, tall-3x4x65, split-4x2x65
+      - {cells: 2, rows: 2, depth: 65, front: level, divider: none, seats: "yes", insert: hex}
+      - {cells: 3, rows: 2, depth: 65, front: level, divider: none, seats: "yes", insert: caddy}
+      - {cells: 3, rows: 3, depth: 65, front: tall, divider: none, seats: "yes", insert: square}
+      - {cells: 3, rows: 4, depth: 65, front: tall, divider: none, seats: "yes", insert: square}
+      - {cells: 4, rows: 2, depth: 65, front: level, divider: middle, seats: "yes", insert: square}
+
+  lean-bin:
+    name: Lean bin
+    blurb: The front leans out, so tools lie back toward you
+    builder: omniwall/lean-bin
+    prefix: lean_bin_{cells}x{rows}x{depth}
+    fields:
+      - {id: cells, label: Width, kind: int, min: 3, max: 6, default: 3, unit: cells, set: {bin: {cells: "= cells"}}}
+      - {id: rows, label: Height, kind: int, min: 3, max: 4, default: 3, unit: rows, set: {bin: {rows: "= rows"}}}
+      - {id: depth, label: Depth, kind: number, min: 60, max: 100, step: 1, default: 65, unit: mm, set: {bin: {depth: "= depth"}}}
+      - id: seats
+        label: Takes an insert
+        kind: choice
+        default: "yes"
+        choices:
+          - {id: "yes", label: "Yes"}
+          - {id: "no", label: "No", set: {grid: {seats: false}}}
+      - id: insert
+        label: Insert
+        kind: choice
+        default: pencil
+        choices:
+          - {id: none, label: None, set: {grid: {include: false}}}
+          - id: pencil
+            label: Pencil grid
+            when: "seats == 'yes'"
+            set: {grid: {rows: [[9.5, null, 9.0, 4.0], [11.0, null, 27.0, 9.0], [13.0, null, 46.0, 13.5]]}}
+          - id: screwdriver
+            label: Screwdriver grid
+            when: "seats == 'yes'"
+            set:                   # the 4 x 4's grid (Zeid, 2026-10-28), holes 36.2 apart across any width
+              grid:
+                handle: 23.0
+                handle_length: 95.0
+                shafts: [60, 75, 100, 150]
+                tube: 12.0
+                tube_wall: 1.6
+                pitch: [36.2, 36.2, 36.2]
+                rows: [[5.0, null, 9.0, 2.0, 14.4], [5.0, null, 31.5, 7.0, null], [5.0, null, 54.0, 12.0, 14.4]]
+        note: Pencil grid has three rows fanned out. Screwdriver grid has Ø5 holes with short guide tubes, spaced for Ø23 handles.
+    always:
+      - {when: "rows >= 4", set: {bin: {foot: 34.0}}}   # the 4 x 4's foot (Zeid, 2026-10-28)
+    tested:                  # 3x3x65, 4x4x65
+      - {cells: 3, rows: 3, depth: 65, seats: "yes", insert: pencil}
+      - {cells: 4, rows: 4, depth: 65, seats: "yes", insert: screwdriver}
+
+  tray:
+    name: Tray
+    blurb: One row tall with a low lip, for small parts
+    builder: omniwall/tray
+    prefix: tray_{style}_{cells}x1x{depth}
+    fields:
+      - {id: cells, label: Width, kind: int, min: 2, max: 6, default: 3, unit: cells, set: {tray: {cells: "= cells"}}}
+      - {id: depth, label: Depth, kind: number, min: 40, max: 150, step: 1, default: 65, unit: mm, set: {tray: {depth: "= depth"}}}
+      - id: style
+        label: Style
+        kind: choice
+        default: cove
+        choices:
+          - {id: cove, label: Cove, set: {unit: {style: cove}}}
+          - {id: ramp, label: Ramp, set: {unit: {style: ramp}}}
+          - {id: shallow-ramp, label: Shallow ramp, set: {unit: {style: ramp}, ramp: {lip: 7.5, front_floor: 4.9, back_cove: 5.0}}}
+          - {id: dish, label: Lift-out dish, set: {unit: {style: dish}}}
+        note: Shallow ramp is the 6-cell ramp's gentler scoop. Lift-out dish is a cradle with a separate dish.
+    tested:                  # cove-3x1x65, ramp-3x1x65, ramp-6x1x65, dish-3x1x65
+      - {cells: 3, depth: 65, style: cove}
+      - {cells: 3, depth: 65, style: ramp}
+      - {cells: 6, depth: 65, style: shallow-ramp}
+      - {cells: 3, depth: 65, style: dish}
+
+  arc-drawer:
+    name: Arc drawer
+    blurb: Housing with a drawer that tilts open on an arc
+    builder: omniwall/arc-drawer
+    prefix: arc_drawer_{cells}x{rows}x{depth}
+    fields:
+      - {id: cells, label: Width, kind: int, min: 2, max: 5, default: 3, unit: cells, set: {unit: {cells: "= cells"}}}
+      - {id: rows, label: Height, kind: int, min: 2, max: 3, default: 2, unit: rows, set: {unit: {rows: "= rows"}}}
+      - {id: depth, label: Depth, kind: number, min: 45, max: 150, step: 1, default: 65, unit: mm, set: {unit: {depth: "= depth"}, track: {stop: "= depth - 15.5"}}}
+    always:
+      - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder
+    checks:
+      expected_flat_z: [11.1]  # the hull slot's 0.4 wide roof (housing.hull_slot), bridged like any small hole
+    tested:                  # 2x2x65, 3x2x65, 3x3x65, 4x2x65, 5x2x65, 3x2x90
+      - {cells: 2, rows: 2, depth: 65}
+      - {cells: 3, rows: 2, depth: 65}
+      - {cells: 3, rows: 3, depth: 65}
+      - {cells: 4, rows: 2, depth: 65}
+      - {cells: 5, rows: 2, depth: 65}
+      - {cells: 3, rows: 2, depth: 90}
