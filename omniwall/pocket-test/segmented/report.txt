@@ -1,9 +1,27 @@
-segmented_pocket_a: 16.00 x 10.08 x 78.20 mm, volume 10843.1 mm3, valid True; 3 seats at z [17.7, -7.7, -33.1] (hook tops), each: lips 4.4 (45 deg ramp 0.75), window 18.5, roof 2.5
-seated: overlap with each hook [0.14, 0.14, 0.14] mm3
-held 4.8 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
-pushed down 4.8 to seated: worst overlap 0.574 mm3 per hook (the snap ridges riding over the heads)
-goes on straight when held 3.40 to 5.20 high
-control, held 0.0 high: worst overlap going on 2.68 mm3 (must hit)
-control, held 2.0 high: worst overlap going on 1.37 mm3 (must hit)
-control, held 6.0 high: worst overlap going on 12.71 mm3 (must hit)
-print: flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
+short-head Slot hook 1U: head on the top 11.0 of its 16.3 front, volume 316.5 mm3, valid True
+  hook as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
+    90.0 deg, 10.45 mm2 at (-0.7, 2.3, 0.8)
+    90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)
+    62.0 deg, 0.57 mm2 at (-3.0, 4.3, 0.1)
+    62.0 deg, 0.57 mm2 at (-3.8, 4.3, 0.1)
+3 seats at z [15.5, -9.9, -35.3] (hook tops = slot tops); each row: lips 11.0 (45 deg ramp at the bottom), window 11.8, roof 2.6 behind the spine channel; push 11.4
+back: plate 16.00 x 10.08 x 79.82 mm, volume 11062.6 mm3, valid True
+  seated: overlap with each hook [0.14, 0.14, 0.14] mm3 (the snap ridges, if any)
+  held 11.4 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
+  pushed down 11.4 to seated: worst overlap 0.573 mm3 per hook (the snap ridges riding over the heads)
+  goes on straight when held 10.0 to 11.8 high
+  control, held 0.0 high: worst overlap going on 8.15 mm3 (must hit)
+  control, held 6.0 high: worst overlap going on 3.03 mm3 (must hit)
+  control, held 14.0 high: worst overlap going on 15.51 mm3 (must hit)
+  plate as printed: 16.0 x 79.8 x 10.1, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
+  segmented_short_head_back_print.3mf: 3 hooks and the plate on one plate, 201 wide
+upright: plate 16.00 x 8.35 x 79.82 mm, volume 9058.5 mm3, valid True
+  seated: overlap with each hook [0.0, 0.0, 0.0] mm3 (the snap ridges, if any)
+  held 11.4 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
+  pushed down 11.4 to seated: worst overlap 0.196 mm3 per hook (the snap ridges riding over the heads)
+  goes on straight when held 10.0 to 11.8 high
+  control, held 0.0 high: worst overlap going on 10.70 mm3 (must hit)
+  control, held 6.0 high: worst overlap going on 4.07 mm3 (must hit)
+  control, held 14.0 high: worst overlap going on 17.38 mm3 (must hit)
+  plate as printed: 16.0 x 8.4 x 79.8, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
+  segmented_short_head_upright_print.3mf: 3 hooks and the plate on one plate, 201 wide

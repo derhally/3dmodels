@@ -1,31 +1,45 @@
-# Segmented pocket test plate (layout A, Zeid 2026-10-30): one pocket column with a
-# seat on every hook row, for a part taller than two rows to hang on a hook in every
-# row with every seat carrying weight. Hold the plate 4.8 high, push it straight onto
-# the panel (each hook head goes into a window), then push it down 4.8: the lips slide
-# over the heads, the snaps click and every seat sits on its hook. Hook and pocket
-# values come from ../../panel.yaml (bridge_hook, dovetail_mount) via ../../hook_geometry.py.
+# Segmented pocket test (Zeid, 2026-10-30): one pocket column with a seat on every
+# hook row, so a part taller than two rows hangs on a hook in every row and every
+# seat carries weight. Hold the plate `push` high, push it straight onto the panel
+# (each hook head goes into a window), then push it down `push`: the lips slide over
+# the heads, the snaps click and every seat sits on its hook.
+# Layout A on Bridge hook 1U (4.4 of lips on a 17.7 head) printed and worked, but held
+# too little of each head (Zeid, 2026-10-30). This is option 2: Slot hook 1U (its top
+# is a slot's top edge, so parts line up with the cells) with its dovetail head only
+# on the top `head` mm and just the spine below, so the roof that seats the next hook
+# fits under the short head while the spine passes it in the open spine channel.
+# Hook and pocket values come from ../../panel.yaml via ../../hook_geometry.py.
 unit:
-  file_prefix: segmented_pocket_a
+  file_prefix: segmented_short_head
   rows: 3                    # Zeid asked: a plate for 3 1U hooks
+  hooks_on_plate: 3          # Zeid asked to print the hooks with the plate: one per row
+
+hook:
+  head: 11.0                 # dovetail head on the top 11 of Slot hook 1U's 16.3 front: 2 x head + 2 x 0.4 + roof 2.6 = 25.4
 
 segment:                     # per hook row, from the seat down (sum = pitch, 25.4)
-  lip: 4.4                   # dovetail lips under each seat: all a row has room for, with the window and roof below.
-                             # Their bottom 0.75 is a 45 deg ramp that steers the heads in
-  window: 18.5               # full-width opening the 17.7 head goes in by: 0.4 above and below it at the push height
-  push: 4.8                  # how high the plate is held going on, and how far it is then pushed down
-  floor: 2.0                 # solid under the lowest window (closed bottom)
+  lip: 11.0                  # the whole short head; the bottom 0.75 is a 45 deg ramp that steers the heads in
+  window: 11.8               # full-width opening the 11 head goes in by: 0.4 above and below it at the push height
+  push: 11.4                 # how high the plate is held going on, and how far it is then pushed down
+  floor: 2.0                 # solid under the lowest window (the spine channel stays open through it)
 
 plate:
   half_width: 8.0            # as the tool bin and tray pocket coupons
-  front_wall: 2.0            # as the drawer housing (back_front_wall): solid in front of the pocket floor's gable
-  top: 2.5                   # solid over the top seat
+  front_wall: 2.0            # as the tool bins and drawer housing: solid in front of the pocket floor (or its gable)
+  top: 2.5                   # solid over the top seat's gable
   chamfer: 0.6               # 45 deg on every outside edge (no sharp corners on a test piece)
 
-pocket:                      # Zeid, 2026-10-30: prints on its back, pocket face down, like the drawer housing, so its print-tested pocket
-  spine_clearance: -0.1      # as arc-drawer housing.pocket (coupon 3): lips' 45 deg back starts 0.1 below the spine's front
-  flank_gap: 0.1             # as the housing
-  ridge_height: 0.53         # as the housing: print-tested on its back (0.28 interference per side)
+orientations:                # Zeid, 2026-10-30: shelves and bins print upright, the drawer case pocket face down, no supports
+  back:                      # on its back, as the drawer housing: its print-tested pocket and 45 deg gables
+    pocket: {spine_clearance: -0.1, flank_gap: 0.1, ridge_height: 0.53}
+    print: {}                # the template, as the drawer housing
+  upright:                   # as it hangs, as the tool bins: their print-tested pocket and gable seats
+    pocket: {spine_clearance: 0.15, flank_gap: 0.1, ridge_height: 0.40}
+    print: {sparse_infill_density: 10%, sparse_infill_pattern: zig-zag, wall_generator: arachne, wall_loops: 3, layer_height: 0.2}
 
-print:                       # Bambu Studio settings written into the 3MF, on top of ../../../bambu/project_settings.config
-  project: {}                # as the drawer housing: the template as saved from Bambu Studio
-  plate: {}
+print:                       # Bambu Studio settings per object, on top of ../../../bambu/project_settings.config
+  hook:                      # as ../../hook/params.yaml: 0.12 layers, 5 walls, Arachne, fit faces as outer walls
+    layer_height: 0.12
+    wall_loops: 5
+    wall_generator: arachne
+    wall_sequence: inner-outer-inner wall
