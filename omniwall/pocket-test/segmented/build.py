@@ -1,15 +1,16 @@
-# Segmented pocket test: a plate with one pocket column and a seat on every hook row,
-# and the short-head Slot hook 1U it hangs on (params.yaml says what each value is and
-# where it came from). Hold the plate `push` high, push it straight onto the panel
+# Segmented pocket test: a plate with one pocket column and a seat on several hook rows,
+# and the Slot hook 1U it hangs on, for each design in params.yaml (it says what each
+# value is and where it came from). Hold the plate `push` high, push it straight onto the panel
 # (each head goes into its window), push it down `push` (the lips slide over the
 # heads, the ridges click into the notches, every seat sits on a hook top).
-# The hook is Slot hook 1U with its dovetail head only on the top `head` mm; the
+# short_head: Slot hook 1U with its dovetail head only on the top `head` mm; the
 # plate's spine channel stays open from top to bottom, so the spine under each short
-# head passes the roofs that seat the hooks below. Pocket lips, ridges and hooks come
+# head passes the roofs that seat the hooks below. skip_row: normal Slot hook 1U, a
+# seat on every second row, solid wall between the segments. Pocket lips, ridges and hooks come
 # from ../../hook_geometry.py and ../../panel.yaml.
 # Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
-# It writes test-prints/ (git-ignored): per print orientation (back: pocket face
+# It writes test-prints/ (git-ignored), per design: per print orientation (back: pocket face
 # down, as the drawer housing; upright: as the tool bins) the plate's print STEP/STL
 # and a Bambu Studio 3MF with the plate and the hooks; the hook's print STEP/STL;
 # the plate on its hooks seated and held at the push height; and report.txt.
@@ -30,18 +31,30 @@ exec((ROOT / "hook_geometry.py").read_text())
 exec((ROOT.parent / "bambu" / "bambu_project.py").read_text())
 TEMPLATE = ROOT.parent / "bambu" / "project_settings.config"
 
-U, HK, SG, PL = P["unit"], P["hook"], P["segment"], P["plate"]
-NAME, ROWS = U["file_prefix"], U["rows"]
-LIP, WINDOW, PUSH, HEAD = SG["lip"], SG["window"], SG["push"], HK["head"]
+U, PL = P["unit"], P["plate"]
+ROWS = U["rows"]
 pitch = panel["pitch"]
 s1 = panel["slot_hook_1u"]
 TOP = s1["height"]                                               # hook top: the slot's top edge
 FRONT = s1["height"] + s1["printed"]["rim_notch"]["depth"]       # dovetail front, top to bottom
 YP = s1["panel_front_y"]
-ROOF = pitch - LIP - WINDOW
-seats = [TOP - k * pitch for k in range(ROWS)]                   # hook tops, top row first
-assert ROOF > 0, "no roof left between segments"
-assert LIP <= HEAD and PUSH >= LIP and PUSH + HEAD <= LIP + WINDOW, "the head doesn't fit the window at the push height"
+
+
+class Design:
+    """One segmented pocket design from params.yaml's designs."""
+    def __init__(self, d):
+        self.name = d["file_prefix"]
+        self.head = d["head"] or FRONT                           # dovetail head length (null: the whole front)
+        self.short = self.head < FRONT
+        self.every, self.lip, self.window, self.push = d["every"], d["lip"], d["window"], d["push"]
+        self.roof = self.every * pitch - self.lip - self.window   # solid between a window and the seat under it
+        self.rows = list(range(0, ROWS, self.every))             # rows with a seat, top first
+        self.seats = [TOP - k * pitch for k in self.rows]        # hook tops
+        assert self.roof > 0, "no roof left between segments"
+        assert self.lip <= self.head and self.push >= self.lip and self.push + self.head <= self.lip + self.window, \
+            "the head doesn't fit the window at the push height"
+
+
 lines = []
 
 
@@ -68,23 +81,23 @@ def to_bed(s):
 
 
 # ---------------------------------------------------------------- the hook
-def short_head_hook():
-    """Slot hook 1U as printed, its dovetail head cut off below the top HEAD mm (the
-    spine stays the full height). Panel front at y = 0, slot's bottom edge at z = 0."""
+def hook(D):
+    """Slot hook 1U, its dovetail head cut off below the top D.head mm on a short-head
+    design (the spine stays the full height). Panel front at y = 0, slot's bottom edge at z = 0."""
     dv = panel["dovetail_mount"]["dovetail"]
     h = slot_hook_1u(panel, ROOT)
-    y_neck = YP + dv["block_depth"]                              # the spine's front: neck and head start here
-    z_cut = TOP - HEAD
-    cut = Pos(-5, y_neck, -5) * Box(20, 20, z_cut + 5, align=Align.MIN)
-    h = solid(h - cut)
+    if D.short:
+        y_neck = YP + dv["block_depth"]                          # the spine's front: neck and head start here
+        cut = Pos(-5, y_neck, -5) * Box(20, 20, TOP - D.head + 5, align=Align.MIN)
+        h = solid(h - cut)
     h = Pos(0, -YP, 0) * h
-    h.label = "short-head slot hook 1U"
+    h.label = "short-head slot hook 1U" if D.short else "slot hook 1U"
     return h
 
 
 # ---------------------------------------------------------------- the plate
-def plate(orient):
-    """The test plate for one print orientation ('back' or 'upright'), as it hangs."""
+def plate(D, orient):
+    """D's test plate for one print orientation ('back' or 'upright'), as it hangs."""
     o = P["orientations"][orient]
     dm = copy.deepcopy(panel["dovetail_mount"])
     dv, pk = dm["dovetail"], dm["pocket"]
@@ -99,19 +112,25 @@ def plate(orient):
     yb = dv["block_depth"] + pk["spine_clearance"]               # back of the lips and roofs
     yf = dv["block_depth"] + dv["depth"] + pk["depth_clearance"]   # pocket floor
     depth = yf + (wp if back else 0.0) + PL["front_wall"]        # on its back the floor has a gable
+    seats, LIP, WINDOW = D.seats, D.lip, D.window
     z_top = seats[0] + wp + PL["top"]
-    z_bot = seats[-1] - LIP - WINDOW - SG["floor"]
+    z_bot = seats[-1] - LIP - WINDOW - P["floor"]
     hw = PL["half_width"]
     body = Pos(cx, depth / 2, (z_top + z_bot) / 2) * Box(2 * hw, depth, z_top - z_bot)
     body = chamfer(body.edges(), PL["chamfer"])
     e = 0.02    # ramps and gables start a hair outside the walls on their 45 deg lines, so no flat strip is left
-    # Spine channel: open from the top seat out through the bottom, so the spine
-    # under each short head passes the roofs.
-    z_chan = seats[0] if back else seats[0] - (wp - w_hook)      # upright: up to the top gable's eaves, no flat top
-    void = Pos(cx, (yb - 1) / 2, (z_bot - 1 + z_chan) / 2) * Box(2 * wp, yb + 1, z_chan - z_bot + 1)
-    if back:
-        chan = Polygon((cx - wp - e, yb), (cx + wp + e, yb), (cx, yb + wp + e), align=None)
-        void = void + Pos(0, 0, z_bot - 1) * extrude(chan, seats[0] - z_bot + 1)
+    def channel(z0, z1):
+        """Spine channel from z0 to z1 (on its back with a 45 deg gable over it)."""
+        v = Pos(cx, (yb - 1) / 2, (z0 + z1) / 2) * Box(2 * wp, yb + 1, z1 - z0)
+        if back:
+            chan = Polygon((cx - wp - e, yb), (cx + wp + e, yb), (cx, yb + wp + e), align=None)
+            v = v + Pos(0, 0, z0) * extrude(chan, z1 - z0)
+        return v
+    # short head: the spine channel is open from the top seat out through the bottom, so
+    # the spine under each short head passes the roofs. Upright it stops at the top
+    # gable's eaves (no flat top). Full rail: a channel per segment, solid wall between.
+    top_of = (lambda S: S) if back else (lambda S: S - (wp - w_hook))
+    void = channel(z_bot - 1, top_of(seats[0])) if D.short else None
     for S in seats:
         zr, zw = S - LIP, S - LIP - WINDOW
         ze = S - (wp - w_hook)                                   # gable eaves (upright)
@@ -123,15 +142,17 @@ def plate(orient):
         ramp = Pos(0, yf, 0) * extrude(ramp, yf + 1)            # Plane.XZ extrudes toward -y
         window = Pos(cx, (yf - 1) / 2, (zw + zr) / 2) * Box(2 * wp, yf + 1, WINDOW)
         seg = lips + ramp + window
+        if not D.short:
+            seg = seg + channel(zw if S != seats[-1] else z_bot - 1, top_of(S))
         if back:
             floor = Polygon((cx - wp - e, yf), (cx + wp + e, yf), (cx, yf + wp + e), align=None)
             seg = seg + Pos(0, 0, zw) * extrude(floor, S - zw)
         else:
             roof = extrude(Plane.XZ * Polygon((cx - wp - e, ze - e), (cx + wp + e, ze - e), (cx, ze + wp), align=None), -(yf + 1))
             seg = seg + Pos(0, -1, 0) * roof
-        void = void + seg
+        void = seg if void is None else void + seg
     body = solid(body - void)
-    body.label = f"{NAME} plate ({orient})"
+    body.label = f"{D.name} plate ({orient})"
     return body, depth
 
 
@@ -165,26 +186,24 @@ def report_print(name, p):
 
 
 # ---------------------------------------------------------------- build
-if __name__ == "__main__":
-    out = HERE / "test-prints"
-    out.mkdir(exist_ok=True)
-    hk = short_head_hook()
+def build(D, out, gap):
+    NAME, LIP, WINDOW, PUSH = D.name, D.lip, D.window, D.push
+    hk = hook(D)
     hks = []
-    for k in range(ROWS):
+    for k in D.rows:
         h = Pos(0, 0, -k * pitch) * hk
-        h.label = f"hook {k + 1}"
+        h.label = f"hook row {k + 1}"
         hks.append(h)
-    log(f"short-head Slot hook 1U: head on the top {HEAD} of its {FRONT:.1f} front, volume {hk.volume:.1f} mm3, valid {hk.is_valid}")
+    log(f"\n{NAME}: {hk.label}, head on the top {D.head:.1f} of its {FRONT:.1f} front, volume {hk.volume:.1f} mm3, valid {hk.is_valid}")
     hp = to_bed(Rot(Y=-90) * hk)                                 # on its flat side, as ../../hook/build_hooks.py
     report_print("hook", hp)
     export_step(hp, str(out / f"{NAME}_hook_print.step"))
     export_stl(hp, str(out / f"{NAME}_hook_print.stl"))
-    log(f"{ROWS} seats at z {[round(s, 2) for s in seats]} (hook tops = slot tops); each row: lips {LIP} (45 deg ramp at the bottom), "
-        f"window {WINDOW}, roof {ROOF:.1f} behind the spine channel; push {PUSH}")
+    log(f"{len(D.seats)} seats at z {[round(s, 2) for s in D.seats]} (hook tops = slot tops, rows {[k + 1 for k in D.rows]} of {ROWS}); "
+        f"each: lips {LIP} (45 deg ramp at the bottom), window {WINDOW}, {'roof' if D.short else 'wall'} {D.roof:.1f}; push {PUSH}")
     sweep = [12, 9, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1, 0.5, 0.25, 0]
-    gap = bambu_object_gap(TEMPLATE)
     for orient in ("back", "upright"):
-        body, depth = plate(orient)
+        body, depth = plate(D, orient)
         bb = body.bounding_box()
         log(f"{orient}: plate {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm, volume {body.volume:.1f} mm3, valid {body.is_valid}")
         def going_on(lift):
@@ -193,9 +212,10 @@ if __name__ == "__main__":
         log(f"  held {PUSH} high, pushed straight on from 12 mm out: worst overlap {going_on(PUSH):.4f} mm3")
         down = [max(overlap(Pos(0, 0, PUSH * i / 30) * body, h) for h in hks) for i in range(31)]
         log(f"  pushed down {PUSH} to seated: worst overlap {max(down):.3f} mm3 per hook (the snap ridges riding over the heads)")
-        ok = [l / 10 for l in range(80, 151) if going_on(l / 10) < 1e-4]
+        lo, hi = round((PUSH - 5) * 10), round((PUSH + 5) * 10)
+        ok = [l / 10 for l in range(lo, hi + 1) if going_on(l / 10) < 1e-4]
         log(f"  goes on straight when held {min(ok):.1f} to {max(ok):.1f} high" if ok else "  never goes on straight")
-        for lift in (0.0, 6.0, 14.0):
+        for lift in (0.0, round(PUSH - 6, 1), round(PUSH + 6, 1)):
             log(f"  control, held {lift} high: worst overlap going on {going_on(lift):.2f} mm3 (must hit)")
         pb = to_bed(Rot(90, 0, 0) * body) if orient == "back" else to_bed(Rot(0, 0, 180) * body)
         report_print("plate", pb)
@@ -205,17 +225,25 @@ if __name__ == "__main__":
         # One plate: the hooks first (short), then the plate a print-head clearance away (by-object order).
         # The hooks are one object: printed by object, separate hooks 10 apart conflict once the
         # plate (taller than the nozzle) is on the bed too (Bambu Studio error -63 on zd-01).
-        hw = hp.bounding_box().size.X
-        hooks = Compound(children=[Pos(i * (hw + 10.0), 0, 0) * hp for i in range(U["hooks_on_plate"])])
+        hw, n = hp.bounding_box().size.X, len(D.seats)
+        hooks = Compound(children=[Pos(i * (hw + 10.0), 0, 0) * hp for i in range(n)])
         objs = [("hooks", hooks, P["print"]["hook"])]
-        x_hooks = (U["hooks_on_plate"] - 1) * (hw + 10.0) + hw / 2
+        x_hooks = (n - 1) * (hw + 10.0) + hw / 2
         objs.append(("plate", Pos(x_hooks + gap + pb.bounding_box().size.X / 2, 0, 0) * pb, P["orientations"][orient]["print"]))
         span = x_hooks + gap + pb.bounding_box().size.X + hw / 2
-        objs = [(n, Pos(-span / 2 + hw / 2, 0, 0) * s, st) for n, s, st in objs]
+        objs = [(nm, Pos(-span / 2 + hw / 2, 0, 0) * s, st) for nm, s, st in objs]
         write_bambu_project([(f"{NAME} {orient}", objs)], out / f"{stem}_print.3mf", template=TEMPLATE)
-        log(f"  {stem}_print.3mf: {U['hooks_on_plate']} hooks and the plate on one plate, {span:.0f} wide")
+        log(f"  {stem}_print.3mf: {n} hooks (one object) and the plate on one plate, {span:.0f} wide")
         if orient == "back":
             export_step(Compound(children=[body, *hks], label=f"{NAME} seated"), str(out / f"{NAME}_assembly_seated.step"))
             export_step(Compound(children=[Pos(0, 0, PUSH) * body, *hks], label=f"{NAME} pushed on"),
                         str(out / f"{NAME}_assembly_pushed_on.step"))
-    (HERE / "report.txt").write_text("\n".join(lines) + "\n", newline="\n")
+
+
+if __name__ == "__main__":
+    out = HERE / "test-prints"
+    out.mkdir(exist_ok=True)
+    gap = bambu_object_gap(TEMPLATE)
+    for d in P["designs"].values():
+        build(Design(d), out, gap)
+    (HERE / "report.txt").write_text("\n".join(lines).lstrip("\n") + "\n", newline="\n")

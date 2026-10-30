@@ -1,27 +1,34 @@
-# Segmented pocket test (Zeid, 2026-10-30): one pocket column with a seat on every
-# hook row, so a part taller than two rows hangs on a hook in every row and every
+# Segmented pocket test (Zeid, 2026-10-30): one pocket column with a seat on several
+# hook rows, so a part taller than two rows hangs on several hooks and each
 # seat carries weight. Hold the plate `push` high, push it straight onto the panel
 # (each hook head goes into a window), then push it down `push`: the lips slide over
 # the heads, the snaps click and every seat sits on its hook.
 # Layout A on Bridge hook 1U (4.4 of lips on a 17.7 head) printed and worked, but held
-# too little of each head (Zeid, 2026-10-30). This is option 2: Slot hook 1U (its top
-# is a slot's top edge, so parts line up with the cells) with its dovetail head only
-# on the top `head` mm and just the spine below, so the roof that seats the next hook
-# fits under the short head while the spine passes it in the open spine channel.
+# too little of each head (Zeid, 2026-10-30). Both designs below use Slot hook 1U (its
+# top is a slot's top edge, so parts line up with the cells). short_head: the dovetail
+# head only on the top `head` mm and just the spine below, so the roof that seats the
+# next hook fits under the short head while the spine passes it in the open spine
+# channel. skip_row: normal hooks and their full rail, a seat on every second row.
 # Hook and pocket values come from ../../panel.yaml via ../../hook_geometry.py.
 unit:
-  file_prefix: segmented_short_head
   rows: 3                    # Zeid asked: a plate for 3 1U hooks
-  hooks_on_plate: 3          # Zeid asked to print the hooks with the plate: one per row
 
-hook:
-  head: 11.0                 # dovetail head on the top 11 of Slot hook 1U's 16.3 front: 2 x head + 2 x 0.4 + roof 2.6 = 25.4
-
-segment:                     # per hook row, from the seat down (sum = pitch, 25.4)
-  lip: 11.0                  # the whole short head; the bottom 0.75 is a 45 deg ramp that steers the heads in
-  window: 11.8               # full-width opening the 11 head goes in by: 0.4 above and below it at the push height
-  push: 11.4                 # how high the plate is held going on, and how far it is then pushed down
-  floor: 2.0                 # solid under the lowest window (the spine channel stays open through it)
+designs:                     # each builds its own plate, hooks and 3MFs
+  short_head:                # option 2, Zeid picked it 2026-10-30
+    file_prefix: segmented_short_head
+    head: 11.0               # dovetail head on the top 11 of Slot hook 1U's 16.3 front: 2 x head + 2 x 0.4 + roof 2.6 = 25.4
+    every: 1                 # a seat on every row
+    lip: 11.0                # the whole short head; the bottom 0.75 is a 45 deg ramp that steers the heads in
+    window: 11.8             # full-width opening the 11 head goes in by: 0.4 above and below it at the push height
+    push: 11.4               # how high the plate is held going on, and how far it is then pushed down
+  skip_row:                  # option 1 (Zeid's idea): after "we just made it weaker" (Zeid, 2026-10-30), the full rail on normal hooks
+    file_prefix: segmented_skip_row
+    head: null               # normal Slot hook 1U, the full 16.3 rail
+    every: 2                 # a seat on every second row; the rows between stay empty (a hook there hits the wall)
+    lip: 16.3                # the whole rail
+    window: 22.6             # the 16.3 head goes in anywhere in it: 3.1 of aim up and down at the push height
+    push: 16.7               # 0.4 more than the lips, so the head clears them going on
+floor: 2.0                   # solid under the lowest window
 
 plate:
   half_width: 8.0            # as the tool bin and tray pocket coupons
