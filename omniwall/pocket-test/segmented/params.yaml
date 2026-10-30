@@ -10,28 +10,22 @@ unit:
 
 segment:                     # per hook row, from the seat down (sum = pitch, 25.4)
   lip: 4.4                   # dovetail lips under each seat: all a row has room for, with the window and roof below.
-                             # Their bottom 0.75 is a 45 deg ramp (prints upright, steers the heads in)
+                             # Their bottom 0.75 is a 45 deg ramp that steers the heads in
   window: 18.5               # full-width opening the 17.7 head goes in by: 0.4 above and below it at the push height
   push: 4.8                  # how high the plate is held going on, and how far it is then pushed down
-  floor: 2.0                 # solid under the lowest window (closed bottom, nothing narrow on the bed)
+  floor: 2.0                 # solid under the lowest window (closed bottom)
 
 plate:
   half_width: 8.0            # as the tool bin and tray pocket coupons
-  front_wall: 2.0            # as the tool bins (back_front_wall): solid in front of the pocket floor
-  top: 2.5                   # solid over the top seat's gable
-  chamfer: 0.6               # 45 deg on every outside edge (the tool bins' bed chamfer; no sharp corners on a test piece)
+  front_wall: 2.0            # as the drawer housing (back_front_wall): solid in front of the pocket floor's gable
+  top: 2.5                   # solid over the top seat
+  chamfer: 0.6               # 45 deg on every outside edge (no sharp corners on a test piece)
 
-pocket:                      # as the tool bins: the upright-printed pocket
-  spine_clearance: 0.15      # panel.yaml's
-  flank_gap: 0.1             # as the drawer housing and tool bins
-  ridge_height: 0.40         # print-tested upright (Zeid, 2026-10-21): 0.15 interference per side
+pocket:                      # Zeid, 2026-10-30: prints on its back, pocket face down, like the drawer housing, so its print-tested pocket
+  spine_clearance: -0.1      # as arc-drawer housing.pocket (coupon 3): lips' 45 deg back starts 0.1 below the spine's front
+  flank_gap: 0.1             # as the housing
+  ridge_height: 0.53         # as the housing: print-tested on its back (0.28 interference per side)
 
 print:                       # Bambu Studio settings written into the 3MF, on top of ../../../bambu/project_settings.config
-  project:                   # as the tool bins (the upright pocket coupons were printed with these)
-    sparse_infill_density: 10%
-    sparse_infill_pattern: zig-zag
-    seam_position: back
-    wall_generator: arachne
-    wall_loops: 3
-    layer_height: 0.2
+  project: {}                # as the drawer housing: the template as saved from Bambu Studio
   plate: {}

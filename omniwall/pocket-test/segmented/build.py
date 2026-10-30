@@ -4,6 +4,7 @@
 # (each head goes into its window), push it down `push` (the lips slide over the
 # heads, the ridges click into the notches, every seat sits on a hook top).
 # Pocket lips, ridges and hooks come from ../../hook_geometry.py and ../../panel.yaml.
+# It prints on its back, pocket face down, like the drawer housing (Zeid, 2026-10-30).
 # Run it from this folder with a plain build123d Python:
 #     uv run --no-project --python 3.12 --with build123d --with pyyaml python build.py
 # It writes test-prints/ (git-ignored: print STEP/STL, a Bambu Studio 3MF, the
@@ -42,9 +43,11 @@ cx = dv["block_width"] / 2                                       # pocket centre
 w_hook = max(dv["head_width"], dv["block_width"]) / 2            # hook front's half width
 wp = w_hook + pk["side_clearance"]                               # pocket's half width
 wn = dv["neck_width"] / 2 + pk["side_clearance"]                 # half width between the lips
+yb = dv["block_depth"] + pk["spine_clearance"]                   # back of the lips
 yf = dv["block_depth"] + dv["depth"] + pk["depth_clearance"]     # pocket floor
 seats = [HH - k * pitch for k in range(ROWS)]                    # hook tops, top row first
-z_top = seats[0] - (wp - w_hook) + wp + PL["top"]                # over the top gable's apex
+bw = dv["block_width"] / 2 + pk["side_clearance"]               # spine channel's half width
+z_top = seats[0] + PL["top"]
 z_bot = seats[-1] - LIP - WINDOW - SG["floor"]
 assert LIP + WINDOW < pitch, "no roof left between segments"
 assert PUSH >= LIP and PUSH + HH <= LIP + WINDOW, "head doesn't fit the window at the push height"
@@ -66,26 +69,26 @@ def solid(s):
 # ---------------------------------------------------------------- the plate
 def segment(S):
     """Void for the seat at z = S: the shared pocket's lips and snap ridges for
-    `lip` under the seat, a 45 deg ramp on the lips' bottom ends, the full-width
-    window under them, and a 45 deg gable over the seat (prints upright with no
-    flat bridge; the hook's top corners bear on it, as the tool bins)."""
-    ze = S - (wp - w_hook)                                     # gable eaves
+    `lip` under the seat (closed flat seat on top), a 45 deg ramp on the lips'
+    bottom ends, the full-width window under them, and the drawer housing's 45 deg
+    gables on the spine channel's end and the pocket floor, so it prints on its back."""
     lips = pocket_void(dm, S, 0.0, S - LIP)
-    lips = lips & Pos(cx, yf / 2, (S - LIP + ze) / 2) * Box(20, yf + 10, ze - S + LIP)
     zr, rp = S - LIP, wp - wn                                  # the ramp at 45 deg rises as far as the lips reach in
-    e = 0.02    # ramp starts a hair below and outside the window's top corners, on the same 45 deg line, so no flat strip is left
+    e = 0.02    # ramp and gables start a hair outside the walls, on their 45 deg lines, so no flat strip is left
     ramp = Plane.XZ * Polygon((cx - wp - e, zr - e), (cx + wp + e, zr - e), (cx + wn, zr + rp), (cx - wn, zr + rp), align=None)
     ramp = Pos(0, yf, 0) * extrude(ramp, yf + 1)                # Plane.XZ extrudes toward -y: the pocket floor to past the back
-    window = Pos(cx, (yf - 1) / 2, (zr - WINDOW + zr) / 2) * Box(2 * wp, yf + 1, WINDOW)
-    e = 0.02    # gable starts a hair wider and lower than the walls, so no flat strip is left
-    roof = extrude(Plane.XZ * Polygon((cx - wp - e, ze - e), (cx + wp + e, ze - e), (cx, ze + wp), align=None), -(yf + 1))
-    roof = Pos(0, -1, 0) * roof
-    return lips + ramp + window + roof
+    zw = zr - WINDOW
+    window = Pos(cx, (yf - 1) / 2, (zw + zr) / 2) * Box(2 * wp, yf + 1, WINDOW)
+    chan = Polygon((cx - bw - e, yb), (cx + bw + e, yb), (cx, yb + bw + e), align=None)
+    floor = Polygon((cx - wp - e, yf), (cx + wp + e, yf), (cx, yf + wp + e), align=None)
+    gables = Pos(0, 0, zw) * (extrude(chan, S - zw) + extrude(floor, S - zw))
+    return lips + ramp + window + gables
 
 
 def plate_body():
     hw = PL["half_width"]
-    body = Pos(cx, (yf + PL["front_wall"]) / 2, (z_top + z_bot) / 2) * Box(2 * hw, yf + PL["front_wall"], z_top - z_bot)
+    d = yf + wp + PL["front_wall"]                             # floor gable's apex + the front wall
+    body = Pos(cx, d / 2, (z_top + z_bot) / 2) * Box(2 * hw, d, z_top - z_bot)
     body = chamfer(body.edges(), PL["chamfer"])
     for S in seats:
         body = solid(body - segment(S))
@@ -142,8 +145,7 @@ if __name__ == "__main__":
     bb = body.bounding_box()
     log(f"{NAME}: {bb.size.X:.2f} x {bb.size.Y:.2f} x {bb.size.Z:.2f} mm, volume {body.volume:.1f} mm3, valid {body.is_valid}; "
         f"{ROWS} seats at z {[round(s, 2) for s in seats]} (hook tops), each: lips {LIP} (45 deg ramp {wp - wn:.2f}), "
-        f"window {WINDOW}, roof {pitch - LIP - WINDOW:.1f}; roof at the gable apex "
-        f"{pitch - LIP - WINDOW - w_hook:.2f} thick")
+        f"window {WINDOW}, roof {pitch - LIP - WINDOW:.1f}")
     # Fit against the hooks: seated, going on at the push height, pushed down.
     log(f"seated: overlap with each hook {[round(overlap(body, h), 3) for h in hks]} mm3")
     sweep = [12, 9, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1, 0.5, 0.25, 0]
@@ -156,8 +158,8 @@ if __name__ == "__main__":
     log(f"goes on straight when held {min(ok):.2f} to {max(ok):.2f} high" if ok else "never goes on straight")
     for lift in (0.0, 2.0, 6.0):
         log(f"control, held {lift} high: worst overlap going on {going_on(lift):.2f} mm3 (must hit)")
-    # Print orientation: upright as it hangs, front toward the plate's front (Bambu's seam at "back" lands on the back face).
-    pb = to_bed(Rot(0, 0, 180) * body)
+    # Print orientation: on its back, the back face (panel side) on the bed, front up, as the drawer housing.
+    pb = to_bed(Rot(90, 0, 0) * body)
     worst, bad = downward(pb)
     log(f"print: flattest downward face {worst:.1f} deg from vertical, faces flatter than 45 deg: {len(bad)}")
     for b in sorted(bad, key=lambda t: -t[1])[:8]:
