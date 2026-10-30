@@ -1,0 +1,9 @@
+segmented_pocket_a: 16.00 x 8.35 x 79.67 mm, volume 9049.6 mm3, valid True; 3 seats at z [17.7, -7.7, -33.1] (hook tops), each: lips 4.4 (45 deg ramp 0.75), window 18.5, roof 2.5; roof at the gable apex 1.02 thick
+seated: overlap with each hook [0.0, 0.0, 0.0] mm3
+held 4.8 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
+pushed down 4.8 to seated: worst overlap 0.196 mm3 per hook (the snap ridges riding over the heads)
+goes on straight when held 3.40 to 5.20 high
+control, held 0.0 high: worst overlap going on 3.44 mm3 (must hit)
+control, held 2.0 high: worst overlap going on 1.60 mm3 (must hit)
+control, held 6.0 high: worst overlap going on 12.71 mm3 (must hit)
+print: flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
