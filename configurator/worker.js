@@ -16,7 +16,8 @@ const secs = () => ((performance.now() - t0) / 1000).toFixed(1);
 async function init(engine) {
   const of = 5;
   post({ type: "status", text: "Loading Python", step: 1, of });
-  importScripts(`https://cdn.jsdelivr.net/pyodide/v${engine.pyodide}/full/pyodide.js`);
+  // Pyodide 314 runs only in a module worker (app.js starts this one with type "module")
+  const { loadPyodide } = await import(`https://cdn.jsdelivr.net/pyodide/v${engine.pyodide}/full/pyodide.mjs`);
   py = await loadPyodide();
   py.setStdout({ batched: (s) => post({ type: "log", text: s }) });
   py.setStderr({ batched: (s) => post({ type: "log", text: s }) });

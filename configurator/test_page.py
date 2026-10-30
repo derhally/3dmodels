@@ -10,6 +10,7 @@ import json
 import subprocess
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -27,7 +28,14 @@ CONFIGS = [   # the address after #: type & field=value
 
 OUT.mkdir(parents=True, exist_ok=True)
 server = subprocess.Popen([sys.executable, str(HERE / "serve.py"), str(PORT), "--no-browser"])
-time.sleep(4)
+for _ in range(240):   # it imports the catalog first, which can take half a minute
+    try:
+        urllib.request.urlopen(f"http://127.0.0.1:{PORT}/configurator/", timeout=2)
+        break
+    except OSError:
+        if server.poll() is not None:
+            sys.exit("serve.py exited")
+        time.sleep(0.5)
 results = []
 try:
     with sync_playwright() as pw:

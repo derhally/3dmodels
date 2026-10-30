@@ -112,7 +112,7 @@ renderTypes();
 renderFields();
 
 // ---------------------------------------------------------------- the engine
-const worker = new Worker('worker.js');
+const worker = new Worker('worker.js', { type: 'module' });   // Pyodide 314 runs only in a module worker
 let ready = false, building = null, nextId = 1;
 const started = performance.now();
 const tick = setInterval(() => { if (!ready) $('engine-time').textContent = `${((performance.now() - started) / 1000).toFixed(0)} s`; }, 500);
