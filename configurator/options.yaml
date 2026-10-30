@@ -12,6 +12,8 @@
 #             the other fields, shown greyed out when false; `set` is merged
 #             into the size folder's params.yaml. A string value starting
 #             with "=" is worked out from the fields, such as "= depth - 15.5".
+#             `when` runs as Python (configure.py) and as JavaScript (app.js),
+#             so join conditions with & and | in brackets, not and / or.
 #   always    sets for every build, each with an optional `when`
 #   checks    what the report must show (configurator/checks.py)
 #   tested    the sizes on main (field values), so the page can say which are print-tested
@@ -47,7 +49,7 @@ types:
         default: level
         choices:
           - {id: level, label: Level}
-          - {id: tall, label: One row lower, when: "rows >= 3 and depth >= 60", set: {bin: {front_height: "= (rows - 1) * 25.4 - 0.3"}}}
+          - {id: tall, label: One row lower, when: "(rows >= 3) & (depth >= 60)", set: {bin: {front_height: "= (rows - 1) * 25.4 - 0.3"}}}
         note: One row lower is the tall bins' S-curve sides; it needs 3 rows or more and 60 mm deep or more.
       - id: divider
         label: Divider
