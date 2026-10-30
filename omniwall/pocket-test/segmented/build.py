@@ -203,8 +203,11 @@ if __name__ == "__main__":
         export_step(pb, str(out / f"{stem}_plate_print.step"))
         export_stl(pb, str(out / f"{stem}_plate_print.stl"))
         # One plate: the hooks first (short), then the plate a print-head clearance away (by-object order).
+        # The hooks are one object: printed by object, separate hooks 10 apart conflict once the
+        # plate (taller than the nozzle) is on the bed too (Bambu Studio error -63 on zd-01).
         hw = hp.bounding_box().size.X
-        objs = [(f"hook {i + 1}", Pos(i * (hw + 10.0), 0, 0) * hp, P["print"]["hook"]) for i in range(U["hooks_on_plate"])]
+        hooks = Compound(children=[Pos(i * (hw + 10.0), 0, 0) * hp for i in range(U["hooks_on_plate"])])
+        objs = [("hooks", hooks, P["print"]["hook"])]
         x_hooks = (U["hooks_on_plate"] - 1) * (hw + 10.0) + hw / 2
         objs.append(("plate", Pos(x_hooks + gap + pb.bounding_box().size.X / 2, 0, 0) * pb, P["orientations"][orient]["print"]))
         span = x_hooks + gap + pb.bounding_box().size.X + hw / 2
