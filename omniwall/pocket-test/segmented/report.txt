@@ -54,7 +54,7 @@ upright: plate 16.00 x 8.35 x 71.32 mm, volume 8285.6 mm3, valid True
   plate as printed: 16.0 x 8.4 x 71.3, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
   segmented_skip_row_upright_print.3mf: 2 hooks and the plate on one plate, 171 wide
 
-segmented_tooth: toothed slot hook 1U, head on the top 16.3 of its 16.3 front, volume 366.6 mm3, valid True
+segmented_tooth: toothed slot hook 1U, head on the top 16.3 of its 16.3 front, volume 366.8 mm3, valid True
   hook as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
     90.0 deg, 15.49 mm2 at (2.0, 2.3, 0.8)
     90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)

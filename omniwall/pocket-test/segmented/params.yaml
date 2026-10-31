@@ -41,7 +41,7 @@ designs:                     # each builds its own plate, hooks and 3MFs
       height: 0.8            # over the slot's top edge, in front of the steel (the finger holds the back)
       depth: 1.5             # out from the panel face
       chamfer: 0.3           # 45 deg on its tip's back edge, a lead-in for the steel when fitting
-      gap: 0.3               # off the steel: flush, it blocks the swing that fits the hook (CAD); 0.3 lets the top tip only 0.3
+      gap: 0.2               # off the steel: flush, it blocks the swing that fits the hook (CAD). Zeid 2026-10-31: all 3 gaps snap in, 0.2 jiggles least; plate held on 0.2 + 0.3 hooks, bottom can't be pulled off
       gaps: [0.2, 0.3, 0.4]  # one hook of each on the 3MFs (1, 2, 3 dimples) to try in the panel
       clearance: 0.2         # notch over each seat = height + this (the spine channel carried up)
                              # the bottom hook has no window: its pocket is open at the part's bottom (Zeid, 2026-10-30:
