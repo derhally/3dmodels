@@ -53,3 +53,50 @@ upright: plate 16.00 x 8.35 x 71.32 mm, volume 8285.6 mm3, valid True
   control, held 22.7 high: worst overlap going on 1.51 mm3 (must hit)
   plate as printed: 16.0 x 8.4 x 71.3, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
   segmented_skip_row_upright_print.3mf: 2 hooks and the plate on one plate, 171 wide
+
+segmented_tooth: toothed slot hook 1U, head on the top 16.3 of its 16.3 front, volume 366.6 mm3, valid True
+  hook as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
+    90.0 deg, 15.49 mm2 at (2.0, 2.3, 0.8)
+    90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)
+    62.0 deg, 0.57 mm2 at (-3.0, 4.3, 0.1)
+    62.0 deg, 0.57 mm2 at (-3.8, 4.3, 0.1)
+  fitting the hook (swing in about the slot's top edge), worst overlap with the steel: plain hook 0.000 mm3
+  tooth 0.8 tall, 0.2 off the steel (1 dimple): fitting overlap 0.048 mm3, top can tip in 0.2 mm (0.7 deg)
+  hook gap 0.2 as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
+    90.0 deg, 15.49 mm2 at (2.0, 2.3, 0.8)
+    90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)
+    62.0 deg, 0.57 mm2 at (-3.0, 4.3, 0.1)
+    62.0 deg, 0.57 mm2 at (-3.8, 4.3, 0.1)
+  tooth 0.8 tall, 0.3 off the steel (2 dimples): fitting overlap 0.000 mm3, top can tip in 0.3 mm (1.1 deg)
+  hook gap 0.3 as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
+    90.0 deg, 15.49 mm2 at (2.0, 2.3, 0.8)
+    90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)
+    62.0 deg, 0.57 mm2 at (-3.0, 4.3, 0.1)
+    62.0 deg, 0.57 mm2 at (-3.8, 4.3, 0.1)
+  tooth 0.8 tall, 0.4 off the steel (3 dimples): fitting overlap 0.000 mm3, top can tip in 0.4 mm (1.5 deg)
+  hook gap 0.4 as printed: 20.3 x 11.2 x 3.0, flattest downward face 90.0 deg from vertical, faces flatter than 45 deg: 4
+    90.0 deg, 15.49 mm2 at (2.0, 2.3, 0.8)
+    90.0 deg, 0.87 mm2 at (-3.4, 4.2, 0.2)
+    62.0 deg, 0.57 mm2 at (-3.0, 4.3, 0.1)
+    62.0 deg, 0.57 mm2 at (-3.8, 4.3, 0.1)
+2 seats at z [15.5, -35.3] (hook tops = slot tops, rows [1, 3] of 3); each: lips 16.3 (45 deg ramp at the bottom), window 22.6, wall 11.9; push 16.7
+back: plate 16.00 x 10.08 x 71.32 mm, volume 10084.7 mm3, valid True
+  seated: overlap with each hook [0.14, 0.14] mm3 (the snap ridges, if any)
+  held 16.7 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
+  pushed down 16.7 to seated: worst overlap 0.572 mm3 per hook (the snap ridges riding over the heads)
+  goes on straight when held 15.3 to 21.7 high
+  control, held 0.0 high: worst overlap going on 12.55 mm3 (must hit)
+  control, held 10.7 high: worst overlap going on 3.52 mm3 (must hit)
+  control, held 22.7 high: worst overlap going on 1.51 mm3 (must hit)
+  plate as printed: 16.0 x 71.3 x 10.1, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
+  segmented_tooth_back_print.3mf: 3 hooks and the plate on one plate, 201 wide
+upright: plate 16.00 x 8.35 x 71.32 mm, volume 8262.5 mm3, valid True
+  seated: overlap with each hook [0.0, 0.0] mm3 (the snap ridges, if any)
+  held 16.7 high, pushed straight on from 12 mm out: worst overlap 0.0000 mm3
+  pushed down 16.7 to seated: worst overlap 0.196 mm3 per hook (the snap ridges riding over the heads)
+  goes on straight when held 15.3 to 21.7 high
+  control, held 0.0 high: worst overlap going on 16.53 mm3 (must hit)
+  control, held 10.7 high: worst overlap going on 4.73 mm3 (must hit)
+  control, held 22.7 high: worst overlap going on 1.51 mm3 (must hit)
+  plate as printed: 16.0 x 8.4 x 71.3, flattest downward face 45.0 deg from vertical, faces flatter than 45 deg: 0
+  segmented_tooth_upright_print.3mf: 3 hooks and the plate on one plate, 201 wide

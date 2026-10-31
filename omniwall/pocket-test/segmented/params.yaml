@@ -29,6 +29,21 @@ designs:                     # each builds its own plate, hooks and 3MFs
     lip: 16.3                # the whole rail
     window: 22.6             # the 16.3 head goes in anywhere in it: 3.1 of aim up and down at the push height
     push: 16.7               # 0.4 more than the lips, so the head clears them going on
+  tooth:                     # skip_row with a front tooth on Slot hook 1U (Zeid, 2026-10-31: a part's back pushing the hook's top
+                             # in while you feel for the windows tips it; 2 deg jams the push-down)
+    file_prefix: segmented_tooth
+    head: null
+    every: 2
+    lip: 16.3
+    window: 22.6
+    push: 16.7
+    tooth:
+      height: 0.8            # over the slot's top edge, in front of the steel (the finger holds the back)
+      depth: 1.5             # out from the panel face
+      chamfer: 0.3           # 45 deg on its tip's back edge, a lead-in for the steel when fitting
+      gap: 0.3               # off the steel: flush, it blocks the swing that fits the hook (CAD); 0.3 lets the top tip only 0.3
+      gaps: [0.2, 0.3, 0.4]  # one hook of each on the 3MFs (1, 2, 3 dimples) to try in the panel
+      clearance: 0.2         # notch over each seat = height + this (the spine channel carried up)
                              # the bottom hook has no window: its pocket is open at the part's bottom (Zeid, 2026-10-30:
                              # the bottom hook goes in the last row), so the part ends at the bottom hook's bottom
 

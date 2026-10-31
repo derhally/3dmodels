@@ -47,6 +47,7 @@ class Design:
         self.head = d["head"] or FRONT                           # dovetail head length (null: the whole front)
         self.short = self.head < FRONT
         self.every, self.lip, self.window, self.push = d["every"], d["lip"], d["window"], d["push"]
+        self.tooth = d.get("tooth")                              # front tooth over the slot's top edge (or None)
         self.roof = self.every * pitch - self.lip - self.window   # solid between a window and the seat under it
         self.rows = list(range(0, ROWS, self.every))             # rows with a seat, top first
         self.seats = [TOP - k * pitch for k in self.rows]        # hook tops
@@ -81,18 +82,44 @@ def to_bed(s):
 
 
 # ---------------------------------------------------------------- the hook
-def hook(D):
+def hook(D, gap=None, dots=0):
     """Slot hook 1U, its dovetail head cut off below the top D.head mm on a short-head
-    design (the spine stays the full height). Panel front at y = 0, slot's bottom edge at z = 0."""
+    design (the spine stays the full height), with a front tooth `gap` off the steel on
+    a tooth design, and `dots` dimples on its top side to tell the gaps apart.
+    Panel front at y = 0, slot's bottom edge at z = 0."""
     dv = panel["dovetail_mount"]["dovetail"]
+    t = s1["thickness"]
     h = slot_hook_1u(panel, ROOT)
     if D.short:
         y_neck = YP + dv["block_depth"]                          # the spine's front: neck and head start here
         cut = Pos(-5, y_neck, -5) * Box(20, 20, TOP - D.head + 5, align=Align.MIN)
         h = solid(h - cut)
+    if D.tooth:
+        # Tooth in front of the steel over the slot's top edge: the finger behind and the
+        # tooth in front hold the steel, so the part's back can't push the top in.
+        T = D.tooth
+        g = T["gap"] if gap is None else gap
+        y0, y1, zt, c = YP + g, YP + T["depth"], TOP + T["height"], T["chamfer"]
+        prof = Polygon((y0, TOP - 0.5), (y1, TOP - 0.5), (y1, zt), (y0 + c, zt), (y0, zt - c), align=None)
+        h = solid(h + extrude(Plane.YZ * prof, t))
+        for i in range(dots):                                    # dimples on the spine's top side (up when printed)
+            h = solid(h - Pos(t - 0.3, YP + dv["block_depth"] / 2, 3.0 + 2.2 * i) * Rot(0, 90, 0) * Cylinder(0.5, 1.0, align=(Align.CENTER, Align.CENTER, Align.MIN)))
     h = Pos(0, -YP, 0) * h
-    h.label = "short-head slot hook 1U" if D.short else "slot hook 1U"
+    h.label = ("toothed " if D.tooth else "") + ("short-head slot hook 1U" if D.short else "slot hook 1U")
     return h
+
+
+def fitting_swing(h):
+    """Worst overlap (mm3) with the steel above the slot while the hook swings in about
+    the slot's top edge, as it's fitted (bottom out 2-30 deg, best of a few pivots)."""
+    yb = s1["panel_back_y"] - YP                                 # panel back, with the panel front at y = 0
+    steel = Pos(1.5, yb / 2, TOP + 5) * Box(20, -yb, 10)
+    piv = [(0.0, TOP), (yb + 0.75, TOP)]
+    worst = 0.0
+    for a in (2, 5, 10, 15, 20, 30):
+        best = min(overlap(Pos(0, py, pz) * Rot(X=a) * Pos(0, -py, -pz) * h, steel) for py, pz in piv)
+        worst = max(worst, best)
+    return worst
 
 
 # ---------------------------------------------------------------- the plate
@@ -130,6 +157,9 @@ def plate(D, orient):
     # the spine under each short head passes the roofs. Upright it stops at the top
     # gable's eaves (no flat top). Full rail: a channel per segment, solid wall between.
     top_of = (lambda S: S) if back else (lambda S: S - (wp - w_hook))
+    notch = D.tooth["height"] + D.tooth["clearance"] if D.tooth else 0.0   # the spine channel carried up over each seat for the tooth
+    if notch:
+        top_of = lambda S: S + notch
     void = channel(z_bot - 1, top_of(seats[0])) if D.short else None
     for S in seats:
         last = S == seats[-1]
@@ -148,6 +178,10 @@ def plate(D, orient):
         seg = lips + ramp + window                               # (last: the ramp is the open bottom's lead-in)
         if not D.short:
             seg = seg + channel(zw, top_of(S))
+        if notch and not back:                                   # 45 deg gable over the notch, as over the seats
+            zn = S + notch
+            nroof = extrude(Plane.XZ * Polygon((cx - wp - e, zn - e), (cx + wp + e, zn - e), (cx, zn + wp + e), align=None), -(yb + 1))
+            seg = seg + Pos(0, -1, 0) * nroof
         if back:
             floor = Polygon((cx - wp - e, yf), (cx + wp + e, yf), (cx, yf + wp + e), align=None)
             seg = seg + Pos(0, 0, zw) * extrude(floor, S - zw)
@@ -203,6 +237,21 @@ def build(D, out, gap):
     report_print("hook", hp)
     export_step(hp, str(out / f"{NAME}_hook_print.step"))
     export_stl(hp, str(out / f"{NAME}_hook_print.stl"))
+    if D.tooth:
+        # One hook per tooth gap on the 3MFs, marked with 1, 2, 3... dimples, to try in the panel.
+        log(f"  fitting the hook (swing in about the slot's top edge), worst overlap with the steel: plain hook "
+            f"{fitting_swing(hook(Design({**P['designs']['skip_row'], 'tooth': None}))):.3f} mm3")
+        prints = []
+        for i, g in enumerate(D.tooth["gaps"]):
+            hg = hook(D, g, i + 1)
+            log(f"  tooth {D.tooth['height']} tall, {g} off the steel ({i + 1} dimple{'s' if i else ''}): fitting overlap "
+                f"{fitting_swing(hg):.3f} mm3, top can tip in {g} mm ({math.degrees(math.atan(g / TOP)):.1f} deg)")
+            pg = to_bed(Rot(Y=-90) * hg)
+            report_print(f"hook gap {g}", pg)
+            export_step(pg, str(out / f"{NAME}_hook_gap{g}_print.step"))
+            prints.append((f"hook gap {g}", pg))
+    else:
+        prints = [(f"hook {i + 1}", hp) for i in range(len(D.seats))]
     log(f"{len(D.seats)} seats at z {[round(s, 2) for s in D.seats]} (hook tops = slot tops, rows {[k + 1 for k in D.rows]} of {ROWS}); "
         f"each: lips {LIP} (45 deg ramp at the bottom), window {WINDOW}, {'roof' if D.short else 'wall'} {D.roof:.1f}; push {PUSH}")
     sweep = [12, 9, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1, 0.5, 0.25, 0]
@@ -229,8 +278,8 @@ def build(D, out, gap):
         # One plate: the hooks first (short), then the plate a print-head clearance away (by-object order).
         # Each hook is its own object (Zeid arranges them, 2026-10-30): 10 apart they conflict in
         # by-object printing once the plate is on the bed (Bambu Studio error -63) until moved.
-        hw, n = hp.bounding_box().size.X, len(D.seats)
-        objs = [(f"hook {i + 1}", Pos(i * (hw + 10.0), 0, 0) * hp, P["print"]["hook"]) for i in range(n)]
+        hw, n = hp.bounding_box().size.X, len(prints)
+        objs = [(nm, Pos(i * (hw + 10.0), 0, 0) * sh, P["print"]["hook"]) for i, (nm, sh) in enumerate(prints)]
         x_hooks = (n - 1) * (hw + 10.0) + hw / 2
         objs.append(("plate", Pos(x_hooks + gap + pb.bounding_box().size.X / 2, 0, 0) * pb, P["orientations"][orient]["print"]))
         span = x_hooks + gap + pb.bounding_box().size.X + hw / 2
