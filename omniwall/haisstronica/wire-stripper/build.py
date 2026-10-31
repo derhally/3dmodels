@@ -181,6 +181,9 @@ def pocket(xc):
     e = 0.0     # the bins' 0.02 lip left 4 unshared edges per pocket (validate fails); flush closes it
     roof = extrude(face([(cx - w_pocket - e, ze - e, 0), (cx + w_pocket + e, ze - e, 0),
                          (cx, ze + w_pocket, 0)], XZ(-1)), yf + 1, dir=(0, 1, 0))
+    n = pk.get("tooth_notch", 0.0)    # the spine channel on up over the seat for Slot hook 1U's tooth, with its own gable
+    if n:
+        roof = roof + Pos(cx, (yb - 1) / 2, (ze + zt + n) / 2) * Box(2 * w_pocket, yb + 1, zt + n - ze) + notch_gable(dm, HH, 0.0)
     return Pos(xc - cx, 0, seat_z - HH) * solid(v + roof)
 
 

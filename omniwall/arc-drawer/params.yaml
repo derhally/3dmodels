@@ -18,6 +18,7 @@ unit:
   cells: 3                 # given: 3 cells wide
   rows: 2                  # given: 2 rows tall
   channels: null           # pocket columns across the back: null = one at every seam (cells - 1); a number keeps both ends and works inward from the edges (Zeid, 2026-10-30; configurator)
+  hook_rows: null          # rows that take hooks, counted from the top (1 = top row): null = top and bottom on units 3+ rows tall (segmented pockets, Zeid 2026-10-31), else one channel down every row; the configurator can pick others (at least 2 rows apart)
   gap: 0.3                 # assumed: gap between tiled neighbours; width = cells x pitch - gap, height = rows x pitch - gap (NOT the bins' +3.0, which cannot tile)
   depth: 84                # assumed: housing from the panel face to its front
 

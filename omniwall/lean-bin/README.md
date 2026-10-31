@@ -82,16 +82,19 @@ drivers in rows of 3, 2 and 3:
 ## Hardware
 
 Hooks only, no screws: a Bridge hook 1U or a Slot hook 1U (`../hook/`) in every
-slot column inside the bin, in every row it spans.
+slot column inside the bin, one in its top row and one in its bottom row (both
+lean bins are 3 or more rows tall; see "Tall parts" in `../README.md`).
 
 ## How it hangs
 
 As the tool bins: the back wall is 10.075 mm thick and carries one dovetail
 pocket per slot column (`dovetail_mount` in `../panel.yaml`, built by
 `pocket_void()` in `../hook_geometry.py`), with 0.40 mm snap ridges (tested
-printed upright) and a ridge pair in every row. Each pocket is open at the
-bottom and closed at the top with a 45° gable, so the bin prints upright.
-Slide the bin down onto the hooks until the ridges click into the hooks'
+printed upright). Each column has two short pockets, seated on the top and
+bottom rows, each with a 45° gable and a 1 mm notch for Slot hook 1U's tooth, so
+the bin prints upright. A window under the top seat's lips takes the top hook,
+and the bottom pocket is open at the bottom. Hold the bin 16.7 mm up, push it
+onto the panel, then push it down until the ridges click into the hooks'
 notches.
 
 ## Printing

@@ -64,6 +64,20 @@ def evaluate(kind, report, cfg=None, ok=True, error=""):
             add(f"Hooks fit the {m.group(1)}", "ok" if per <= 0.2 else "fail",
                 f"{m.group(3)} hooks, {per:.2f} mm³ overlap each (the snap ridges)" if per > 0.001 else f"{m.group(3)} hooks, no overlap")
 
+    # segmented pockets (hooks on chosen rows): the part goes straight on held up
+    # by segmented.push, then pushes down onto its seats (ridges ride over the heads)
+    for l in lines:
+        m = re.search(r"segmented fitting: held ([\d.]+) high, pushed straight on: worst overlap ([\d.]+) mm3; pushed down "
+                      r"[\d.]+: worst ([\d.]+) mm3 per hook.*goes on straight held (never|[\d.]+ to [\d.]+ high)"
+                      r"; Bridge hook 1Us on the same seats: ([\d.]+) mm3", l)
+        if m:
+            on, down, br = float(m.group(2)), float(m.group(3)), float(m.group(5))
+            good = on < 1e-3 and down <= 1.0
+            add("Goes on its hooks", "ok" if good else "fail",
+                (f"in through the windows held {m.group(1)} mm up, then down onto the seats "
+                 f"({down:.2f} mm³ per hook where the snap ridges ride over); Bridge hook 1Us fit the same seats" + ("" if br < 1 else f" ({br:.1f} mm³)"))
+                if good else f"pushed on: {on:.2f} mm³ overlap, pushed down: {down:.2f} mm³ per hook")
+
     # grids: seated without play, ridges in their grooves
     for l in lines:
         m = re.search(r"grid vs bin seated: overlap ([\d.]+) mm3.*clearance ([\d.]+)", l)

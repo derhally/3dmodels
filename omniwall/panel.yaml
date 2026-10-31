@@ -92,6 +92,7 @@ dovetail_mount:
     depth_clearance: 0.15   # assumed: head front to slot floor (Kong uses 0; here the object's back rests on the panel instead)
     flank_gap: 0.4          # Kong measured: slot flanks sit this much further back than the head's (object can pull out ~0.65 before the flanks catch)
     top_clearance: 0.0      # Kong measured: closed top rests on the top of the hook
+    tooth_notch: 1.0        # the spine channel carried up over the seat for Slot hook 1U's 0.8 tooth (+0.2), so pockets take plain and toothed hooks (Zeid, 2026-10-31)
     ridge:                  # rounded ridge on each side wall of the slot, the half of the snap that squeezes
       height: 0.333         # Kong measured: 0.083 interference per side against the 0.25 clearance
       flank_angle: 28       # Kong measured
@@ -99,6 +100,14 @@ dovetail_mount:
       below_top: 2.75       # Kong measured: lines up with the notch when seated
       front_gap: 0.2        # assumed: ridge ends this far behind the notch's front land
     spacing: pitch multiple # pockets a whole number of 25.4 mm cells apart to line up with hooks
+  segmented:                # parts 3+ rows tall: a seat on the top and the bottom hook row of every column, so both carry weight (Zeid, 2026-10-31;
+                            # print-tested as pocket-test/segmented skip_row + tooth on branch claude/project-thread-6n87n3). Hold the part `push`
+                            # high, push it straight on (each hook head goes into a window), push it down: the lips slide over the heads and snap.
+    min_rows: 3             # shorter parts keep one channel seated on the top hook
+    lip: 16.3               # dovetail lips under each seat: Slot hook 1U's whole 16.3 rail (a Bridge hook's 17.7 head runs 1.4 on below them)
+    window: 22.6            # full-width opening under the lips the head goes in by (3.1 of aim up and down at the push height); none under the lowest seat, whose pocket is open at the part's bottom
+    push: 16.7              # how high the part is held going on, then pushed down: 0.4 more than the lips
+    rows_apart: 2           # seats in a column at least this many rows apart (lips + window + a wall); the rows between stay empty
     # Hooks are identical (symmetric dovetail), so no mirrored pair is needed.
 
 # Slot hook 1U: Zeid's 1u hook, measured from their Shapr3D model
@@ -125,6 +134,12 @@ slot_hook_1u:
     cavity_front_y: 6.45    # cavity stops inside the spine: panel_front_y + 2.0 - spine_min (set when block_depth was 2.0; kept)
     foot_top: 3.44          # foot thinned so the shorter foot flexes like the original (stiffness ~ t^3 / L^3: 4.0 x 6.45 / 7.51)
     top_chamfer: 0.5        # finger and body-top edges on the top side and the finger's top corners (Zeid asked 2026-10-17), like Bridge hook 1U's 0.5
+    tooth:                  # front tooth over the slot's top edge, in front of the steel (the finger holds the back), so a part's back pushing the top in while it is fitted can't tip the hook (Zeid, 2026-10-31; print-tested in pocket-test/segmented, gaps 0.2/0.3/0.4: 0.2 jiggles least). Replaces the plain hook (Zeid: "We can remove the plain slot hook 1U")
+      height: 0.8           # over the slot's top edge
+      depth: 1.5            # out from the panel face
+      chamfer: 0.3          # 45 deg on its tip's back edge, a lead-in for the steel when fitting
+      gap: 0.2              # off the steel (flush blocks the swing that fits the hook)
+      below: 0.5            # reaches this far below the slot's top edge, into the hook body
     rim_notch:              # the foot reaches below the slot with a notch cut up into it; pushing the bottom in, the foot flexes and snaps over the slot's bottom rim (Zeid asked 2026-10-17)
       depth: 0.8            # assumed: how far the foot reaches below the rim; about the foot's measured 0.816 lead-in, which it already flexes past going on
       width: 1.5            # Bridge hook 1U's measured 1.5 clamp on the 1.55 steel

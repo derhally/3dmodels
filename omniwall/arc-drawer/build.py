@@ -73,7 +73,10 @@ hook_z0 = (pitch - panel["slot"]["length"] / 2) - hook["bar_bottom"] - edge
 hook_cols = pocket_columns(U["cells"], pitch, edge, U.get("channels"))
 hook_rows = [hook_z0 + r * pitch for r in range(U["rows"])]
 HH = hook["height"]
-seat_z = hook_rows[-1] + HH + pk["top_clearance"]    # closed top of every pocket channel
+SEAT_R = seat_rows(dm, U["rows"], U.get("hook_rows"))   # rows with a seat, from the bottom: top and bottom on 3+ rows (segmented)
+SEGMENTED = len(SEAT_R) > 1
+seats = [hook_z0 + r * pitch + HH + pk["top_clearance"] for r in SEAT_R]   # hook tops, the top one first
+seat_z = seats[0]                                    # closed top of every pocket channel (the top seat)
 cx = dv["block_width"] / 2
 hh = dv["head_width"] / 2 + pk["side_clearance"]     # half width of the pocket's head slot
 bw = dv["block_width"] / 2 + pk["side_clearance"]    # half width of the spine channel
@@ -263,20 +266,24 @@ def pocket(xc):
     """Pocket channel for one hook column: the shared dovetail pocket from
     hook_geometry (open at the bottom, closed seat at the top, snap ridges), a
     ridge pair one pitch lower for every further row of hooks, and 45 deg gables
-    on the spine channel's end and the pocket floor so it prints on its back."""
+    on the spine channel's end and the pocket floor so it prints on its back.
+    3+ rows tall: a seat on the top and bottom rows only (segmented, Zeid 2026-10-31)."""
+    if SEGMENTED:
+        return Pos(xc - cx, 0, 0) * segmented_pocket_void(dm, seats, back=True, z_bottom=0.0)
     zl = -(seat_z - HH) - 1
     zt = HH + pk["top_clearance"]
     v = pocket_void(dm, HH, 0.0, zl)
     r = pk["ridge"]
     y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
-    for k in range(1, U["rows"] if HS["ridges_every_row"] else 1):
+    for k in range(1, SEAT_R[0] + 1 if HS["ridges_every_row"] else 1):
         zc = zt - r["below_top"] - k * pitch
         for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
             v = v - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
     e = 0.02   # gables start a hair wider than the channel, so no flat strip is left at the corners
     chan = Polygon((cx - bw - e, yb), (cx + bw + e, yb), (cx, yb + bw + e), align=None)
     floor = Polygon((cx - hh - e, yf), (cx + hh + e, yf), (cx, yf + hh + e), align=None)
-    v = v + Pos(0, 0, zl) * extrude(chan, zt - zl) + Pos(0, 0, zl) * extrude(floor, zt - zl)
+    # the spine channel's gable runs on up through the tooth notch over the seat
+    v = v + Pos(0, 0, zl) * extrude(chan, zt + pk.get("tooth_notch", 0.0) - zl) + Pos(0, 0, zl) * extrude(floor, zt - zl)
     return Pos(xc - cx, 0, seat_z - HH) * solid(v)
 
 
@@ -500,15 +507,36 @@ def drawer_at(d, state, angle=None, y=None):
     raise ValueError(state)
 
 
-def hooks(rows=None):
-    hk = bridge_hook(panel, ROOT)
+def hooks(rows=None, kind=None, cols=None):
+    """The hooks the unit hangs on: a Bridge hook 1U in every row of every column
+    (or the given rows' bottoms), or on a segmented housing a (toothed) Slot hook 1U
+    on each seat (kind "bridge" puts Bridge hook 1Us on the seats instead)."""
+    if not SEGMENTED or rows is not None:
+        hk, hy, tops = bridge_hook(panel, ROOT), hook, [z + HH for z in (hook_rows[:SEAT_R[0] + 1] if rows is None else rows)]
+    elif kind == "bridge":
+        hk, hy, tops = bridge_hook(panel, ROOT), hook, seats
+    else:
+        hk, hy, tops = slot_hook_1u(panel, ROOT), panel["slot_hook_1u"], seats
     out = []
-    for xc in hook_cols:
-        for z in (hook_rows if rows is None else rows):
-            h = Pos(xc - cx, -hook["panel_front_y"], z) * hk
-            h.label = f"hook x{xc:.1f} z{z:.1f}"
+    for xc in (hook_cols if cols is None else cols):
+        for t in tops:
+            h = Pos(xc - cx, -hy["panel_front_y"], t - hy["height"]) * hk
+            h.label = f"hook x{xc:.1f} z{t - hy['height']:.1f}"
             out.append(h)
     return out
+
+
+def segmented_note(body):
+    """How the segmented housing goes on, from the back plate round the first column
+    on its Slot hook 1Us (every column is the same), and Bridge hook 1Us in the same seats."""
+    xc = hook_cols[0]
+    back = body & Pos(xc, (yf + 3) / 2, H / 2) * Box(20, yf + 3, H + 2)
+    on, down, ok = segmented_fit(dm, back, hooks(cols=[xc]))
+    br = sum(overlap(back, k) for k in hooks(kind="bridge", cols=[xc]))
+    sg = dm["segmented"]
+    return (f"segmented fitting: held {sg['push']} high, pushed straight on: worst overlap {on:.4f} mm3; pushed down "
+            f"{sg['push']}: worst {down:.3f} mm3 per hook (the snap ridges riding over the heads); goes on straight held "
+            + (f"{min(ok):.1f} to {max(ok):.1f} high" if ok else "never") + f"; Bridge hook 1Us on the same seats: {br:.3f} mm3")
 
 
 def overlap(a, b):
@@ -582,10 +610,12 @@ for part in (h, d):
             log(f"    solid volume {so.volume:.2f} at x {b2.min.X:.2f}..{b2.max.X:.2f} y {b2.min.Y:.2f}..{b2.max.Y:.2f} z {b2.min.Z:.2f}..{b2.max.Z:.2f}")
 log(f"back plate {plate_t:.3f}  pin closed y {y_pin:.3f}  travel {travel:.2f} ({travel / (D - y_back) * 100:.0f} % of the drawer)  "
     f"arc radius {R:.2f} to {tilt} deg  gate {gate}  hook radius {r_h} about ({hook_c[0]:.2f}, {hook_c[1]:.2f})  exit channel z {exit_z:.2f} from y {branch_top[0]:.2f}  lift {lift:.2f}  channel width {2 * hw:.2f}  shoulder z {shoulder_z:.2f}  "
-    f"hook columns {[round(x, 2) for x in hook_cols]}  hook bottoms {[round(z, 2) for z in hook_rows]}  seat z {seat_z:.2f}")
+    f"hook columns {[round(x, 2) for x in hook_cols]}  "
+    + (f"segmented, seats (hook tops) z {[round(z, 2) for z in seats]}" if SEGMENTED else f"hook bottoms {[round(z, 2) for z in hook_rows]}  seat z {seat_z:.2f}"))
 # Measured on the solids, not read from the code.
-seats = [f for f in faces_at_z(h, seat_z) if f.normal_at().Z < 0]
-log(f"measured: pocket seats at z {sorted(round(f.center().Z, 3) for f in seats)} (expect {seat_z:.3f} x{len(hook_cols)})")
+for sz in seats:
+    sf = [f for f in faces_at_z(h, sz) if f.normal_at().Z < 0]
+    log(f"measured: pocket seats at z {sorted(round(f.center().Z, 3) for f in sf)} (expect {sz:.3f} x{len(hook_cols)}, either side of the tooth notch)")
 xs = sorted({round(f.center().X, 3) for f in h.faces() if abs(abs(f.normal_at().X) - 1) < 1e-3 and 0.5 < f.center().Y < D - 0.5})
 log(f"measured: housing x faces at {xs} (groove floors expect {HS['side'] - TR['depth']:.1f} and {W - HS['side'] + TR['depth']:.1f}, bay walls {HS['side']} and {W - HS['side']})")
 pin_faces = sorted({round(f.center().X, 3) for f in d.faces() if abs(abs(f.normal_at().X) - 1) < 1e-3})
@@ -596,7 +626,11 @@ export_step(h, str(HERE / "step" / f"{NAME}_housing.step"))
 export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
-log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} hooks (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
+log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} "
+    + (f"Slot hook 1Us (seats on rows {[U['rows'] - r for r in SEAT_R]} from the top)" if SEGMENTED else "Bridge hook 1Us")
+    + f" (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
+if SEGMENTED:
+    log(segmented_note(h))
 cgv = da.center()
 
 
@@ -686,5 +720,5 @@ if SEP:
                                        ("pin 2", Pos(x0 + hw + 2 * gap + 1.5 * pw, 0, 0) * centred(pnp))]))
 write_bambu_project(plates, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts: {', '.join(n for n, _ in plates)}, one plate each")
-(HERE / "report.txt").write_text("\n".join(lines) + "\n")
+(HERE / "report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 result = Compound(children=[h, da, *hks])

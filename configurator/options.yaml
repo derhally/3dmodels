@@ -19,6 +19,10 @@
 #             its maximum follows it when another field changes. allowed: a
 #             condition the value must meet (the stepper skips the rest). in_name: added
 #             to the file names when the field isn't at its default.
+#             kind rows: a button for each row of the field named by `of`; the
+#             value lists the picked rows from the top ("1-3"), `set` gets them
+#             as a list, and default auto is panel.yaml's dovetail_mount.segmented
+#             rule (top and bottom rows from min_rows tall, rows_apart apart).
 #   always    sets for every build, each with an optional `when`
 #   checks    what the report must show (configurator/checks.py)
 #   tested    the sizes on main (field values), so the page can say which are print-tested
@@ -60,6 +64,14 @@ types:
         in_name: "_{channels}ch"
         set: {bin: {channels: "= channels"}}
         note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
+      - id: hooks
+        label: Hook rows
+        kind: rows               # a button per row; the value is the picked rows from the top, such as 1-3
+        of: rows
+        default: auto            # panel.yaml's segmented rule: top and bottom from 3 rows tall, else the top row (Zeid, 2026-10-31)
+        in_name: "_hooks{hooks}"
+        set: {bin: {hook_rows: "= hooks"}}
+        note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
       - id: front
         label: Front
         kind: choice
@@ -122,6 +134,14 @@ types:
         in_name: "_{channels}ch"
         set: {bin: {channels: "= channels"}}
         note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
+      - id: hooks
+        label: Hook rows
+        kind: rows               # a button per row; the value is the picked rows from the top, such as 1-3
+        of: rows
+        default: auto            # panel.yaml's segmented rule: top and bottom from 3 rows tall, else the top row (Zeid, 2026-10-31)
+        in_name: "_hooks{hooks}"
+        set: {bin: {hook_rows: "= hooks"}}
+        note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
       - id: seats
         label: Takes an insert
         kind: choice
@@ -215,6 +235,14 @@ types:
         in_name: "_{channels}ch"
         set: {unit: {channels: "= channels"}}
         note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
+      - id: hooks
+        label: Hook rows
+        kind: rows               # a button per row; the value is the picked rows from the top, such as 1-3
+        of: rows
+        default: auto            # panel.yaml's segmented rule: top and bottom from 3 rows tall, else the top row (Zeid, 2026-10-31)
+        in_name: "_hooks{hooks}"
+        set: {unit: {hook_rows: "= hooks"}}
+        note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
     always:
       - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder
     checks:

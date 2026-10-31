@@ -131,8 +131,116 @@ def pocket_void(dm, H, y_panel, z_lo):
         void = void - v_groove_prism(x_face, inward, zc, yb, y_ridge_end,
                                      r["height"], r["flank_angle"], r["tip_radius"])
     bw = dv["block_width"] / 2 + sc
-    channel = Pos(dv["block_width"] / 2, (y0 - 1 + yb) / 2, (z_lo + top) / 2) * Box(2 * bw, yb - y0 + 1, top - z_lo)
+    # The spine channel runs on up `tooth_notch` over the seat for Slot hook 1U's tooth.
+    top_n = top + pk.get("tooth_notch", 0.0)
+    channel = Pos(dv["block_width"] / 2, (y0 - 1 + yb) / 2, (z_lo + top_n) / 2) * Box(2 * bw, yb - y0 + 1, top_n - z_lo)
     return void + channel
+
+
+def notch_gable(dm, H, y_panel):
+    """45 deg gable over the tooth notch's flat top (pocket_void with its seat at H),
+    for pockets printed upright: the spine channel's width, from behind the back face to the lips."""
+    dv, pk = dm["dovetail"], dm["pocket"]
+    cx, bw = dv["block_width"] / 2, dv["block_width"] / 2 + pk["side_clearance"]
+    yb = y_panel + dv["block_depth"] + pk["spine_clearance"]
+    zn, e = H + pk["top_clearance"] + pk.get("tooth_notch", 0.0), 0.02
+    g = Plane.XZ * Polygon((cx - bw - e, zn - e), (cx + bw + e, zn - e), (cx, zn + bw + e), align=None)
+    return Pos(0, y_panel - 1, 0) * extrude(g, -(yb - y_panel + 1))   # Plane.XZ extrudes toward -y; from y_panel - 1 to yb
+
+
+def seat_rows(dm, rows, picked=None):
+    """Hook rows with a seat, counted from the bottom (0) up: `picked` lists rows
+    counted from the top (1 = top row), or None for the default: the top row only
+    (one channel) on parts under segmented.min_rows, the top and the bottom row on
+    taller ones (Zeid, 2026-10-31)."""
+    sg = dm["segmented"]
+    if picked is None:
+        picked = [1] if rows < sg["min_rows"] else [1, rows]
+    rs = sorted({rows - int(k) for k in picked}, reverse=True)
+    assert rs and all(0 <= r < rows for r in rs), f"hook rows {picked} outside 1..{rows}"
+    assert all(a - b >= sg["rows_apart"] for a, b in zip(rs, rs[1:])), \
+        f"hook rows {picked}: seats must be {sg['rows_apart']}+ rows apart"
+    return rs
+
+
+def segmented_pocket_void(dm, seats, back=False, z_bottom=0.0):
+    """Cut-out for one hook column with a seat at each z in `seats` (hook tops, as
+    pocket_void's H, panel front at y = 0): under each seat the dovetail lips
+    (segmented.lip, a 45 deg lead-in ramp at their bottom), the snap ridges under
+    the seat and the tooth notch over it, and a full-width window under the lips
+    (segmented.window) the head goes in by; under the lowest seat the pocket is
+    open down past z_bottom instead. Printed upright (back False) each seat and
+    notch gets a 45 deg gable; printed on its back (the drawer housing) the spine
+    channel and the floor get 45 deg gables along their length. Print-tested as
+    pocket-test/segmented's plate()."""
+    dv, pk, sg = dm["dovetail"], dm["pocket"], dm["segmented"]
+    lip, window = sg["lip"], sg["window"]
+    cx = dv["block_width"] / 2
+    w_hook = max(dv["head_width"], dv["block_width"]) / 2           # hook front's half width
+    wp = w_hook + pk["side_clearance"]                              # pocket's (and spine channel's) half width
+    wn = dv["neck_width"] / 2 + pk["side_clearance"]                # half width between the lips
+    yb = dv["block_depth"] + pk["spine_clearance"]                  # back of the lips
+    yf = dv["block_depth"] + dv["depth"] + pk["depth_clearance"]    # pocket floor
+    notch = pk.get("tooth_notch", 0.0)
+    e = 0.02    # ramps and gables start a hair outside the walls on their 45 deg lines, so no flat strip is left
+
+    def channel(z0, z1):
+        v = Pos(cx, (yb - 1) / 2, (z0 + z1) / 2) * Box(2 * wp, yb + 1, z1 - z0)
+        if back:
+            v = v + Pos(0, 0, z0) * extrude(Polygon((cx - wp - e, yb), (cx + wp + e, yb), (cx, yb + wp + e), align=None), z1 - z0)
+        return v
+
+    void = None
+    seats = sorted(seats, reverse=True)
+    for S in seats:
+        last = S == seats[-1]
+        zr = S - lip                                                # bottom of the lips
+        zw = z_bottom - 1 if last else zr - window                  # bottom of the window (or past the part's bottom)
+        ze = S - (wp - w_hook)                                      # gable eaves (upright)
+        lips = pocket_void(dm, S, 0.0, zr)
+        if not back:
+            lips = lips & Pos(cx, yf / 2, (zr - 1 + ze) / 2) * Box(20, yf + 10, ze - zr + 1)
+        ramp = Plane.XZ * Polygon((cx - wp - e, zr - e), (cx + wp + e, zr - e), (cx + wn, zr + wp - wn),
+                                  (cx - wn, zr + wp - wn), align=None)
+        ramp = Pos(0, yf, 0) * extrude(ramp, yf + 1)                 # Plane.XZ extrudes toward -y
+        win = Pos(cx, (yf - 1) / 2, (zw + zr) / 2) * Box(2 * wp, yf + 1, zr - zw)
+        top = S + notch if notch else (S if back else ze)
+        seg = lips + ramp + win + channel(zw, top)
+        if back:
+            floor = Polygon((cx - wp - e, yf), (cx + wp + e, yf), (cx, yf + wp + e), align=None)
+            seg = seg + Pos(0, 0, zw) * extrude(floor, S - zw)
+        else:
+            roof = extrude(Plane.XZ * Polygon((cx - wp - e, ze - e), (cx + wp + e, ze - e), (cx, ze + wp), align=None), -(yf + 1))
+            seg = seg + Pos(0, -1, 0) * roof
+            if notch:
+                seg = seg + notch_gable(dm, S, 0.0)
+        void = seg if void is None else void + seg
+    return void
+
+
+def hook_overlaps(body, hooks, lift=0.0, out=(0.0,)):
+    """Worst overlap (mm3) of body, raised `lift` and `out` from the panel (each
+    value tried), with any of the hooks."""
+    worst = 0.0
+    for dy in out:
+        b = Pos(0, dy, lift) * body
+        for h in hooks:
+            r = b & h
+            worst = max(worst, sum(s.volume for s in r.solids()) if r is not None else 0.0)
+    return worst
+
+
+def segmented_fit(dm, body, hooks):
+    """(worst overlap pushing the part straight on held segmented.push high, worst
+    overlap pushing it down to its seats, held heights it goes on straight at) for
+    a part (or a slice of its back) on its seated hooks."""
+    push = dm["segmented"]["push"]
+    sweep = [12, 9, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1, 0.5, 0.25, 0]
+    on = hook_overlaps(body, hooks, push, sweep)
+    down = max(hook_overlaps(body, hooks, push * i / 20) for i in range(21))
+    ok = [l / 2 for l in range(round(2 * (push - 4)), round(2 * (push + 6)) + 1)
+          if hook_overlaps(body, hooks, l / 2, sweep) < 1e-4]
+    return on, down, ok
 
 
 def keep_below_y(shape, y, h):
@@ -217,7 +325,17 @@ def slot_hook_1u(panel, root):
     # The dovetail front reaches down to the same bottom, keeping its top (and
     # so the snap) where it was.
     front, _ = hook_front(dm, H + d, hook["panel_front_y"], spine_start=y_c, pitch=panel["pitch"])
-    return body + Pos(0, 0, -d) * front
+    return body + Pos(0, 0, -d) * front + slot_tooth(hook)
+
+
+def slot_tooth(hook):
+    """Slot hook 1U's front tooth: over the slot's top edge in front of the steel,
+    `gap` off it, so a part's back can't tip the hook's top into the slot while
+    the part is fitted (Zeid, 2026-10-31). Profile in y-z across the hook's thickness."""
+    T, H, YP = hook["printed"]["tooth"], hook["height"], hook["panel_front_y"]
+    y0, y1, zt, c = YP + T["gap"], YP + T["depth"], H + T["height"], T["chamfer"]
+    prof = Polygon((y0, H - T["below"]), (y1, H - T["below"]), (y1, zt), (y0 + c, zt), (y0, zt - c), align=None)
+    return extrude(Plane.YZ * prof, hook["thickness"])
 
 
 def slot_hook_2u(panel, root, lower_foot=None):

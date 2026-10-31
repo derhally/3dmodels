@@ -27,7 +27,8 @@ meets the rounded corners (the cove fillet fails there).
 
 Hooks only, no screws: a Bridge hook 1U or a Slot hook 1U (`../hook/`) in every
 slot column inside the tray (2 for 3 cells, 5 for 6 cells), all in the same
-slot row.
+slot row. Each pocket has a 1 mm notch over its seat for Slot hook 1U's
+tooth.
 
 ## How it hangs
 

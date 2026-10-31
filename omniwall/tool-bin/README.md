@@ -29,8 +29,10 @@ as on the trays, and the grid sits under the front rim.
 ## Hardware
 
 Hooks only, no screws: a Bridge hook 1U or a Slot hook 1U (`../hook/`) in every
-slot column inside the bin, in every row it spans (a Slot hook 2U can take the
-place of two 1Us in a column).
+slot column inside the bin. A 2-row bin takes one in every row (a Slot hook 2U
+can take the place of two 1Us in a column). A bin 3 or more rows tall
+(tall-3x3x65, tall-3x4x65) takes one in its top row and one in its bottom row
+only (see "Tall parts" in `../README.md`).
 
 ## How it hangs
 
@@ -41,7 +43,10 @@ per slot column (`dovetail_mount` in `../panel.yaml`, built by `pocket_void()` i
 upright). Each pocket is open at the bottom and closed at the top with a 45°
 gable through the top hook's top corners, so the bin prints upright.
 There is a ridge pair in every row, so every hook clicks in. Slide the bin down
-onto the hooks until the ridges click into the hooks' notches.
+onto the hooks until the ridges click into the hooks' notches. A 1 mm notch over
+each seat clears Slot hook 1U's tooth. Bins 3 or more rows tall have two short
+pockets per column instead, seated on the top and bottom rows: hold the bin
+16.7 mm up, push it onto the panel, then push it down until it clicks.
 
 ## The grid
 

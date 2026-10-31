@@ -15,7 +15,7 @@ are still the defaults in this folder's `params.yaml`, but nothing builds it.)
 |---|---|---|---|---|---|---|
 | 2 × 2, 65 deep | [`2x2x65/`](2x2x65/), `arc_drawer_2x2x65_*` | 50.5 × 65 × 50.5 | 46.1 × 56.8 × 45.0 | 39.5 × 46.4 × 40 | 1 column on the centre line, 1 or 2 rows | 36.9 (68 %) |
 | 3 × 2, 65 deep | [`3x2x65/`](3x2x65/), `arc_drawer_3x2x65_*` | 75.9 × 65 × 50.5 | 71.5 × 56.8 × 45.0 | 64.9 × 46.4 × 40 | 2 columns, 1 or 2 rows | 36.9 (68 %) |
-| 3 × 3, 65 deep | [`3x3x65/`](3x3x65/), `arc_drawer_3x3x65_*` | 75.9 × 65 × 75.9 | 71.5 × 56.8 × 70.4 | 64.9 × 46.4 × 65.4 | 2 columns, 1 to 3 rows | 36.9 (68 %) |
+| 3 × 3, 65 deep | [`3x3x65/`](3x3x65/), `arc_drawer_3x3x65_*` | 75.9 × 65 × 75.9 | 71.5 × 56.8 × 70.4 | 64.9 × 46.4 × 65.4 | 2 columns, top and bottom rows | 36.9 (68 %) |
 | 4 × 2, 65 deep | [`4x2x65/`](4x2x65/), `arc_drawer_4x2x65_*` | 101.3 × 65 × 50.5 | 96.9 × 56.8 × 45.0 | 90.3 × 46.4 × 40 | 3 columns, 1 or 2 rows | 36.9 (68 %) |
 | 5 × 2, 65 deep | [`5x2x65/`](5x2x65/), `arc_drawer_5x2x65_*` | 126.7 × 65 × 50.5 | 122.3 × 56.8 × 45.0 | 115.7 × 46.4 × 40 | 4 columns, 1 or 2 rows | 36.9 (68 %) |
 | 3 × 2, 90 deep | [`3x2x90/`](3x2x90/), `arc_drawer_3x2x90_*` | 75.9 × 90 × 50.5 | 71.5 × 81.8 × 45.0 | 64.9 × 71.4 × 40 | 2 columns, 1 or 2 rows | 61.9 (78 %) |
@@ -61,9 +61,14 @@ held lightly squeezed.
   hooks pass through the lower ridges on the way down (they click through, as
   on the test plate).
 
-Two separate closed pockets in one column cannot work: the upper hook would have
-to pass through the lower pocket's closed top. So a lower hook never has its own
-seat; it only adds grip.
+A closed pocket above another in one column only works if the upper hook can
+get past the lower one's closed top. Since 2026-10-31 units 3 or more rows tall
+(3x3x65) do that: each column has a seat on the top row and one on the bottom
+row, with a window under the top seat's lips that the top hook goes in by, and
+no hooks in the rows between (see "Tall parts" in `../README.md`; printed on its
+back, the channel and floor keep their gables along their length). Hold the
+unit 16.7 mm up, push it onto the panel, then push it down until it clicks.
+Every seat also has a 1 mm notch above it for Slot hook 1U's tooth.
 
 The housing prints on its back (see Printing), so two faces of the pocket that
 would hang flat over the bed got 45° gables: the back of the lips (the lip is

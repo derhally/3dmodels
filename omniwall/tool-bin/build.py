@@ -61,7 +61,10 @@ hook_z0 = (pitch - panel["slot"]["length"] / 2) - hook["bar_bottom"] - edge   # 
 hook_rows = [hook_z0 + r * pitch for r in range(ROWS)]
 hook_cols = pocket_columns(BN["cells"], pitch, edge, BN.get("channels"))
 HH = hook["height"]
-seat_z = hook_rows[-1] + HH + pk["top_clearance"]
+SEAT_R = seat_rows(dm, ROWS, BN.get("hook_rows"))    # rows with a seat, from the bottom: top and bottom on 3+ rows (segmented)
+SEGMENTED = len(SEAT_R) > 1
+seats = [hook_z0 + r * pitch + HH + pk["top_clearance"] for r in SEAT_R]   # hook tops, the top one first
+seat_z = seats[0]
 cx = dv["block_width"] / 2
 hh = dv["head_width"] / 2 + pk["side_clearance"]
 yf = dv["block_depth"] + dv["depth"] + pk["depth_clearance"]
@@ -186,13 +189,15 @@ def pocket(xc):
     one pitch lower for every further row of hooks, and a 45 deg gable top through
     the hook's top corners at the seat height, so it prints upright without a flat
     bridge and the bin hangs where a flat seat would put it (as the trays)."""
+    if SEGMENTED:   # a seat on each of SEAT_R's rows, a window under each but the lowest (print-tested, 2026-10-31)
+        return Pos(xc - cx, 0, 0) * segmented_pocket_void(dm, seats, back=False, z_bottom=0.0)
     zl = -(seat_z - HH) - 1
     zt = HH + pk["top_clearance"]
     ze = zt - (w_pocket - w_hook)
     v = pocket_void(dm, HH, 0.0, zl)
     r = pk["ridge"]
     y_ridge_end = dv["block_depth"] + dv["depth"] - dv["notch"]["front_land"] - r["front_gap"]
-    for k in range(1, ROWS if PK["ridges_every_row"] else 1):
+    for k in range(1, SEAT_R[0] + 1 if PK["ridges_every_row"] else 1):
         zc = zt - r["below_top"] - k * pitch
         for x_face, inward in ((cx + hh, -1), (cx - hh, 1)):
             v = v - v_groove_prism(x_face, inward, zc, yb, y_ridge_end, r["height"], r["flank_angle"], r["tip_radius"])
@@ -200,6 +205,9 @@ def pocket(xc):
     e = 0.02    # gable starts a hair wider and lower than the walls, so no flat strip is left
     roof = extrude(face([(cx - w_pocket - e, ze - e, 0), (cx + w_pocket + e, ze - e, 0),
                          (cx, ze + w_pocket, 0)], XZ(-1)), yf + 1, dir=(0, 1, 0))
+    n = pk.get("tooth_notch", 0.0)    # the spine channel on up over the seat for Slot hook 1U's tooth, with its own gable
+    if n:
+        roof = roof + Pos(cx, (yb - 1) / 2, (ze + zt + n) / 2) * Box(2 * w_pocket, yb + 1, zt + n - ze) + notch_gable(dm, HH, 0.0)
     return Pos(xc - cx, 0, seat_z - HH) * solid(v + roof)
 
 
@@ -237,7 +245,7 @@ def round_tops(body, r, zmin):
     """Round the top edges of the walls: every edge of an upward face at or above
     zmin, except edges two such faces share (tangent seams) and the panel side (as the trays)."""
     tops = [f for f in body.faces() if f.center().Z > zmin - 1e-3 and f.normal_at(f.center()).Z > 0.3
-            and not (f.center().Y < yf + 1 and f.center().Z < seat_z + 0.01)]   # not the pockets' ridges
+            and not (f.center().Y < yf + 1 and f.center().Z < seat_z + pk.get("tooth_notch", 0.0) + 0.5)]   # not the pockets' ridges and notch slivers
     count = {}
     for f in tops:
         for e in f.edges():
@@ -433,15 +441,37 @@ def tolerance(s):
     return max(BRep_Tool.Tolerance_s(e.wrapped) for e in s.edges())
 
 
-def hooks():
-    hk = bridge_hook(panel, ROOT)
+def hooks(kind=None, cols=None):
+    """The hooks the bin hangs on: a Bridge hook 1U in every row of every column, or
+    on a segmented bin a (toothed) Slot hook 1U on each seat (kind "bridge" puts
+    Bridge hook 1Us on the seats instead)."""
+    if not SEGMENTED:
+        hk, tops = bridge_hook(panel, ROOT), [z + HH for z in hook_rows[:SEAT_R[0] + 1]]   # every row up to the seat
+    elif kind == "bridge":
+        hk, tops = bridge_hook(panel, ROOT), seats
+    else:
+        hk, tops = slot_hook_1u(panel, ROOT), seats
+    hy, ht = (hook, HH) if SEGMENTED is False or kind == "bridge" else (panel["slot_hook_1u"], panel["slot_hook_1u"]["height"])
     out = []
-    for xc in hook_cols:
-        for z in hook_rows:
-            h = Pos(xc - cx, -hook["panel_front_y"], z) * hk
+    for xc in (hook_cols if cols is None else cols):
+        for t in tops:
+            h = Pos(xc - cx, -hy["panel_front_y"], t - ht) * hk
             h.label = "hook"
             out.append(h)
     return out
+
+
+def segmented_note(body):
+    """How the segmented bin goes on, from the back wall round the first column on
+    its Slot hook 1Us (every column is the same), and Bridge hook 1Us in the same seats."""
+    xc = hook_cols[0]
+    back = body & Pos(xc, (yf + 3) / 2, H / 2) * Box(20, yf + 3, H + 2)
+    on, down, ok = segmented_fit(dm, back, hooks(cols=[xc]))
+    br = sum(overlap(back, k) for k in hooks("bridge", [xc]))
+    sg = dm["segmented"]
+    return (f"segmented fitting: held {sg['push']} high, pushed straight on: worst overlap {on:.4f} mm3; pushed down "
+            f"{sg['push']}: worst {down:.3f} mm3 per hook (the snap ridges riding over the heads); goes on straight held "
+            + (f"{min(ok):.1f} to {max(ok):.1f} high" if ok else "never") + f"; Bridge hook 1Us on the same seats: {br:.3f} mm3")
 
 
 def overlap(a, b):
@@ -527,8 +557,9 @@ if __name__ == "__main__":
     gr, nholes = grid() if WITH_GRID else (None, 0)
     parts = [body, gr] if WITH_GRID else [body]
     log(f"{NAME}: {W:.1f} wide, {D:g} deep, {H:.1f} tall" + (f" at the back, {HF:.1f} at the front" if HF < H else "")
-        + f"; back wall {B:.3f} thick; pockets at x {[round(x, 2) for x in hook_cols]}, hook bottoms z "
-        f"{[round(z, 2) for z in hook_rows]}, seat z {seat_z:.2f}, gable eaves z {eaves:.2f}"
+        + f"; back wall {B:.3f} thick; pockets at x {[round(x, 2) for x in hook_cols]}, "
+        + (f"segmented, seats (hook tops) z {[round(z, 2) for z in seats]}" if SEGMENTED else
+           f"hook bottoms z {[round(z, 2) for z in hook_rows]}, seat z {seat_z:.2f}, gable eaves z {eaves:.2f}")
         + (f"; ledge top z {ZL:.2f}, snap z {ZM:.2f}" if SEATS else "; no grid ledge or tab grooves")
         + ("" if WITH_GRID else "; no grid part"))
     for s in parts:
@@ -542,11 +573,14 @@ if __name__ == "__main__":
         log(f"grid: {U['pattern']} pattern, {nholes} holes")
 
     # Measured on the solids, not read from the code.
-    roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 1e-3
+    roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 0.01
             and abs(f.normal_at(f.center()).X) > 0.5]
     zs = [v.Z for f in roof for v in f.vertices()]
-    log(f"measured: {len(roof)} gable faces in the pockets (expect {2 * len(hook_cols)}), z {min(zs):.3f} to {max(zs):.3f} "
-        f"(eaves {eaves:.3f}, the hook's top corners at {seat_z:.3f})")
+    if SEGMENTED:
+        log(f"measured: {len(roof)} 45 deg faces in the pockets (seat and tooth-notch gables, lip lead-ins), z {min(zs):.3f} to {max(zs):.3f}")
+    else:
+        log(f"measured: {len(roof)} gable faces in the pockets (expect {(4 if pk.get('tooth_notch') else 2) * len(hook_cols)}: seat and tooth notch), "
+            f"z {min(zs):.3f} to {max(zs):.3f} (eaves {eaves:.3f}, the hook's top corners at {seat_z:.3f})")
     if SEATS:
         ledge = [f for f in body.faces() if abs(f.center().Z - ZL) < 1e-3 and f.normal_at(f.center()).Z > 0.99]
         log(f"measured: ledge faces at z {ZL:.2f}: {len(ledge)}, area {sum(f.area for f in ledge):.1f} mm2"
@@ -559,9 +593,14 @@ if __name__ == "__main__":
             f"{SN['ridge'] - GR['side_clearance']:.1f} into the walls: what each tab bends to get past")
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
-    log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {ROWS} rows; ridges "
-        f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
-        f"overlap only if taller)")
+    if SEGMENTED:
+        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Slot hook 1Us ({len(hook_cols)} columns x seats on rows "
+            f"{[ROWS - r for r in SEAT_R]} from the top; the snap ridges, if any)")
+        log(segmented_note(body))
+    else:
+        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {SEAT_R[0] + 1} rows; ridges "
+            f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
+            f"overlap only if taller)")
     if WITH_GRID:
         log(f"hooks vs grid: {sum(overlap(gr, k) for k in hks):.3f} mm3")
     export_step(Compound(children=[*parts, *hks], label=NAME), HERE / "step" / f"{NAME}_assembly.step")
@@ -593,4 +632,4 @@ if __name__ == "__main__":
         write_print(f"{NAME}_snap_test_band_print", rb, HERE / "test-prints")
         wd = plate([("snap test band", rb, "bin"), ("grid", pg, "grid")], HERE / "test-prints" / f"{NAME}_snap_test.3mf")
         log(f"snap test (test-prints): the bin from z {z0:.1f} to {min(zt, H):.1f} ({min(zt, H) - z0:.1f} tall band) and the whole grid, " + (f"one plate {wd:.1f} wide" if wd else "a plate each (too wide together for the bed)"))
-    (HERE / "report.txt").write_text("\n".join(lines) + "\n")
+    (HERE / "report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")

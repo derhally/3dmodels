@@ -19,6 +19,7 @@ bin:
   cells: 3                   # set by each folder
   rows: 3                    # set by each folder: housing rows tall at the back (a hook in every row of every column)
   channels: null             # pocket columns across the back: null = one at every seam (cells - 1); a number keeps both ends and works inward from the edges (Zeid, 2026-10-30; configurator)
+  hook_rows: null            # rows that take hooks, counted from the top (1 = top row): null = top and bottom on parts 3+ rows tall (segmented pockets, Zeid 2026-10-31), else one channel down every row; the configurator can pick others (at least 2 rows apart)
   gap: 0.3                   # as the drawers, trays and bins: width = cells x pitch - gap, so it tiles with them
   depth: 65                  # given (the drawers' and bins' 65): the nose, the front's furthest point from the panel
   front_lean: 42.0           # given (Zeid's sketch, 2026-10-27, measured 42.1): front face from vertical; tools lie back on it. Under 45, so it prints without supports

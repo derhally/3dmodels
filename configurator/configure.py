@@ -21,6 +21,8 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 OPTIONS = yaml.safe_load((HERE / "options.yaml").read_text(encoding="utf-8"))
+# Hook rows on tall parts: panel.yaml's rule, so the page and the builders agree
+SEGMENTED = yaml.safe_load((HERE.parent / "omniwall" / "panel.yaml").read_text(encoding="utf-8"))["dovetail_mount"]["segmented"]
 
 
 def _num(v):
@@ -55,6 +57,28 @@ def defaults(kind):
     return {f["id"]: f["default"] for f in OPTIONS["types"][kind]["fields"]}
 
 
+# kind "rows": which rows of the part take hooks, counted from the top (1 = top
+# row), written "1-3". The default is panel.yaml's: the top row only below
+# segmented.min_rows (one channel, a hook in every row), the top and the bottom
+# row from there up (Zeid, 2026-10-31); picked rows stay rows_apart apart.
+def rows_default(n):
+    return "1" if n < SEGMENTED["min_rows"] else f"1-{n}"
+
+
+def rows_list(x):
+    return [int(k) for k in str(x).split("-") if k.strip().isdigit()]
+
+
+def rows_clean(x, n):
+    """the picked rows inside 1..n, from the top down, each rows_apart below the
+    last one kept; none left: the default"""
+    keep = []
+    for k in sorted(set(rows_list(x))):
+        if 1 <= k <= n and (not keep or k - keep[-1] >= SEGMENTED["rows_apart"]):
+            keep.append(k)
+    return "-".join(map(str, keep)) or rows_default(n)
+
+
 def _value(x, values):
     """a number, or an "= expression" of the other fields worked out"""
     return _eval(x[1:], values) if isinstance(x, str) and x.startswith("=") else x
@@ -63,7 +87,8 @@ def _value(x, values):
 def at_default(kind, values):
     """the fields whose value is their (worked out) default"""
     return {f["id"] for f in OPTIONS["types"][kind]["fields"]
-            if f["kind"] != "choice" and values[f["id"]] == _num(float(_value(f["default"], values)))}
+            if (f["kind"] == "rows" and values[f["id"]] == rows_default(values[f["of"]]))
+            or (f["kind"] in ("int", "number") and values[f["id"]] == _num(float(_value(f["default"], values))))}
 
 
 def enabled(cond, values):
@@ -96,6 +121,8 @@ def normalise(kind, values):
             v[f["id"]] = int(round(x)) if f["kind"] == "int" else _num(round(x / f.get("step", 1)) * f.get("step", 1))
             if f.get("allowed") and not enabled(f["allowed"], v):
                 v[f["id"]] = _nearest_allowed(f, v)
+        elif f["kind"] == "rows":
+            v[f["id"]] = rows_clean(v[f["id"]] if v[f["id"]] != "auto" else "", v[f["of"]])
     for f in t["fields"]:
         if f["kind"] == "choice":
             ok = [c["id"] for c in f["choices"] if enabled(c.get("when"), v)]
@@ -109,15 +136,16 @@ def params(kind, values):
     t = OPTIONS["types"][kind]
     v = normalise(kind, values)
     out = {}
+    ev = {**v, **{f["id"]: rows_list(v[f["id"]]) for f in t["fields"] if f["kind"] == "rows"}}   # "1-3" -> [1, 3] for `set`
     for f in t["fields"]:
         if f["kind"] == "choice":
             c = next(c for c in f["choices"] if c["id"] == v[f["id"]])
-            _merge(out, _resolve(c.get("set", {}), v))
+            _merge(out, _resolve(c.get("set", {}), ev))
         else:
-            _merge(out, _resolve(f.get("set", {}), v))
+            _merge(out, _resolve(f.get("set", {}), ev))
     for a in t.get("always", []):
         if enabled(a.get("when"), v):
-            _merge(out, _resolve(a["set"], v))
+            _merge(out, _resolve(a["set"], ev))
     names = {k: str(_num(x)).replace("-", "_") for k, x in v.items()}
     dflt = at_default(kind, v)
     prefix = t["prefix"].format(**names) + "".join(f["in_name"].format(**names) for f in t["fields"]

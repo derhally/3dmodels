@@ -220,6 +220,38 @@ lead-in to the notch. Pushing the bottom of the hook in, the ramp rides over the
 rim, the foot flexes up into the cavity, and it drops with the rim in the notch.
 The notch's front edge has a 0.3 mm chamfer to guide the rim in.
 
+Since 2026-10-31 the printed hook also has a small tooth at the front of its top,
+in front of the steel and 0.2 mm off it (0.8 mm tall, 1.5 mm out from the panel,
+reaching 0.3 mm above the hook's top; `slot_hook_1u.printed.tooth` in
+panel.yaml). While a part is pushed on, its back can't tip the hook's top into
+the slot. Zeid print-tested three gaps and kept 0.2, which had the least play. The
+plain hook without the tooth is retired. Every pocket has a 1.0 mm notch over its seat
+(`dovetail_mount.pocket.tooth_notch`) for the tooth, with its own 45° gable.
+
+## Tall parts: seats on the top and bottom rows
+
+A part 3 or more rows tall (`dovetail_mount.segmented.min_rows`) hangs on two
+hooks per column, one in its top row and one in its bottom row, not on a
+hook in every row (Zeid, 2026-10-31). The rows between have no hooks. Each column of
+the part's back then has two short pockets (`segmented_pocket_void()` in
+`hook_geometry.py`):
+
+- Under each seat, 16.3 mm of dovetail lips with the snap ridges and the tooth
+  notch, and a 45° lead-in at their bottom.
+- Under the top seat's lips, a 22.6 mm window the full width of the hook front.
+  The top hook's head goes in there.
+- The bottom pocket is open at the part's bottom, as on the 1 and 2-row parts.
+
+To fit it, hold the part 16.7 mm above its seats, push it straight onto the
+panel (each head goes into a window or the open bottom), then push it down until
+the ridges click. The builders check this on the real hooks and log a
+`segmented fitting` line. A Slot hook 1U or a Bridge hook 1U fits each seat. A
+Slot hook 2U doesn't: its long front would hit the wall between the windows.
+Parts printed upright get a 45° gable over each seat. The arc drawer housing
+prints on its back, so its channels and floor get gables along their length.
+Zeid's test plate of this pocket printed and held fine (2026-10-31). The configurator can
+put the seats on other rows, at least 2 rows apart.
+
 ## Designing mounts for it
 
 - Size printed parts that go into the panel with a clearance and test-print the

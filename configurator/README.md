@@ -17,8 +17,8 @@ computer. Nothing is pre-built and no server is needed.
 - `configure.py` writes that size folder (`<builder>/configured/`, git-ignored)
   and runs the builder's `build.py` on it.
 - `checks.py` grades the build's `report.txt`: valid solids, no face flatter
-  than 45 degrees, hooks fit, the insert snaps in, the lean bin stands, the
-  drawer moves freely. A failed check says not to print it.
+  than 45 degrees, hooks fit, a tall part goes on its hooks, the insert snaps in,
+  the lean bin stands, the drawer moves freely. A failed check says not to print it.
 
 Back channels: every builder takes a `channels` count (`bin`, `tray` or `unit`
 in params.yaml; null = one pocket at every seam, as on main). `pocket_columns` in
@@ -26,6 +26,14 @@ in params.yaml; null = one pocket at every seam, as on main). `pocket_columns` i
 adding the middle seam for an odd count. 5, 7 and 9 cells have no middle seam,
 so they take even counts only (Zeid: no lopsided layouts). Fewer channels add
 `_<n>ch` to the file names.
+
+Hook rows: the tool bin, lean bin and arc drawer take `hook_rows`, the rows that
+get hooks counted from the top (null = panel.yaml's `dovetail_mount.segmented`
+rule: the top and bottom rows from 3 rows tall, else one channel with a hook in
+every row). The page shows a button per row. Picked rows stay 2 apart, and a
+different pick adds `_hooks<rows>` to the file names (`_hooks1_3_5`). With two
+or more seats, `checks.py` also checks that the part goes on its hooks (pushed
+straight on, then down).
 
 To offer a new choice, add it to `options.yaml`. When it needs geometry the
 builder can't make yet, add a switch to the builder's params (as

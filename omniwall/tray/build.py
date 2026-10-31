@@ -56,6 +56,7 @@ hook_cols = pocket_columns(TR["cells"], pitch, edge, TR.get("channels"))
 HH = hook["height"]
 seat_z = hook_z0 + (TR["rows"] - 1) * pitch + HH + pk["top_clearance"]
 cx = dv["block_width"] / 2
+yb = dv["block_depth"] + pk["spine_clearance"]                     # back of the lips
 hh = dv["head_width"] / 2 + pk["side_clearance"]
 yf = dv["block_depth"] + dv["depth"] + pk["depth_clearance"]
 B = yf + hh + TR["back_front_wall"]                  # back wall thickness, as the housing's back plate
@@ -163,6 +164,9 @@ def pocket(xc):
     e = 0.02    # gable starts a hair wider and lower than the walls, so no flat strip is left
     roof = extrude(face([(cx - w_pocket - e, ze - e, 0), (cx + w_pocket + e, ze - e, 0),
                          (cx, ze + w_pocket, 0)], XZ(-1)), yf + 1, dir=(0, 1, 0))
+    n = pk.get("tooth_notch", 0.0)    # the spine channel on up over the seat for Slot hook 1U's tooth, with its own gable
+    if n:
+        roof = roof + Pos(cx, (yb - 1) / 2, (ze + zt + n) / 2) * Box(2 * w_pocket, yb + 1, zt + n - ze) + notch_gable(dm, HH, 0.0)
     return Pos(xc - cx, 0, seat_z - HH) * solid(v + roof)
 
 
@@ -200,7 +204,7 @@ def round_tops(body, r, zmin):
     """Round the top edges of the walls: every edge of an upward face at or above
     zmin, except edges two such faces share (tangent seams) and the panel side."""
     tops = [f for f in body.faces() if f.center().Z > zmin - 1e-3 and f.normal_at(f.center()).Z > 0.3
-            and not (f.center().Y < yf + 1 and f.center().Z < seat_z + 0.01)]   # not the pockets' ridges
+            and not (f.center().Y < yf + 1 and f.center().Z < seat_z + pk.get("tooth_notch", 0.0) + 0.5)]   # not the pockets' ridges and notch slivers
     count = {}
     for f in tops:
         for e in f.edges():
@@ -362,10 +366,10 @@ for s in parts:
 
 # Measured on the solid, not read from the code: the pocket roofs.
 body = parts[0]
-roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 1e-3
+roof = [f for f in body.faces() if f.center().Y < yf + 0.5 and abs(f.normal_at(f.center()).Z + math.sqrt(0.5)) < 0.01
         and abs(f.normal_at(f.center()).X) > 0.5]
 zs = [v.Z for f in roof for v in f.vertices()]
-log(f"measured: {len(roof)} gable faces in the pockets (expect {2 * len(hook_cols)}), z {min(zs):.3f} to {max(zs):.3f} "
+log(f"measured: {len(roof)} gable faces in the pockets (expect {(4 if pk.get('tooth_notch') else 2) * len(hook_cols)}: seat and tooth notch), z {min(zs):.3f} to {max(zs):.3f} "
     f"(eaves {eaves:.3f}, the hook's top corners at {seat_z:.3f}, ridge {seat_z + w_hook:.3f})")
 
 hks = hooks()
@@ -414,5 +418,5 @@ export_stl(cpp, str(HERE / "test-prints" / f"{NAME}_pocket_coupon_print.stl"))
 write_3mf([("pocket coupon", *shape_mesh(cpp))], HERE / "test-prints" / f"{NAME}_pocket_coupon_print.3mf")
 log(f"pocket coupon (test-prints): {cpp.bounding_box().size.X:.1f} x {cpp.bounding_box().size.Y:.1f} x {cpp.bounding_box().size.Z:.1f}, "
     f"overhangs flatter than 45 deg: {len(bad_faces(cpp))}")
-(HERE / "report.txt").write_text("\n".join(lines) + "\n")
+(HERE / "report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 result = Compound(children=[*parts, *hks])

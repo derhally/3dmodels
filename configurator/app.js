@@ -12,6 +12,8 @@ const $ = (id) => document.getElementById(id);
 const E = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const OPT = yaml.load(await (await fetch('src/configurator/options.yaml')).text());
 const TYPES = OPT.types;
+// hook rows on tall parts: panel.yaml's rule, as configure.py reads it
+const SEG = yaml.load(await (await fetch('src/omniwall/panel.yaml')).text()).dovetail_mount.segmented;
 
 // small side views for the type buttons (back against the panel on the left)
 const ICONS = {
@@ -42,6 +44,21 @@ function stepFrom(f, v, by) {
   for (let y = v[f.id] + by; y >= lo(f, v) && y <= hi(f, v); y += by) if (allowedAt(f, v, y)) return y;
   return null;
 }
+// kind "rows": the rows that take hooks, from the top ("1-3"), as configure.py
+const rowsDefault = (n) => (n < SEG.min_rows ? '1' : `1-${n}`);
+const rowsList = (x) => String(x).split('-').filter((k) => /^\d+$/.test(k.trim())).map(Number);
+function rowsClean(x, n) {
+  const keep = [];
+  for (const k of [...new Set(rowsList(x))].sort((a, b) => a - b))
+    if (k >= 1 && k <= n && (!keep.length || k - keep[keep.length - 1] >= SEG.rows_apart)) keep.push(k);
+  return keep.join('-') || rowsDefault(n);
+}
+// a row button pressed: off if picked (not the last one), else on, dropping picked rows too close to it
+function rowsToggle(x, k) {
+  const on = rowsList(x);
+  if (on.includes(k)) return on.length > 1 ? on.filter((j) => j !== k).join('-') : x;
+  return [...on.filter((j) => Math.abs(j - k) >= SEG.rows_apart), k].sort((a, b) => a - b).join('-');
+}
 function normalise(kind, given) {
   const v = {};
   for (const f of TYPES[kind].fields) v[f.id] = f.id in (given || {}) ? given[f.id] : f.default;
@@ -52,6 +69,8 @@ function normalise(kind, given) {
       x = Math.min(Math.max(x, lo(f, v)), hi(f, v));
       v[f.id] = f.kind === 'int' ? Math.round(x) : Math.round(x / (f.step || 1)) * (f.step || 1);
       if (f.allowed && !cond(f.allowed, v)) v[f.id] = nearestAllowed(f, v);
+    } else if (f.kind === 'rows') {
+      v[f.id] = rowsClean(v[f.id] === 'auto' ? '' : v[f.id], v[f.of]);
     }
   }
   for (const f of TYPES[kind].fields) {
@@ -74,7 +93,7 @@ function toHash() {
   history.replaceState(null, '', '#' + [state.kind, ...Object.entries(v).map(([k, x]) => `${k}=${x}`)].join('&'));
 }
 const values = () => (state.values[state.kind] ||= normalise(state.kind, {}));
-const atDefault = (kind, v, f) => v[f.id] === num(f.default, v);
+const atDefault = (kind, v, f) => (f.kind === 'rows' ? v[f.id] === rowsDefault(v[f.of]) : v[f.id] === num(f.default, v));
 const isTested = (kind, v) => TYPES[kind].fields.every((f) => !f.in_name || atDefault(kind, v, f))   // main's folders use every channel
   && (TYPES[kind].tested || []).some((s) => Object.entries(s).every(([k, x]) => String(v[k]) === String(x)));
 
@@ -98,6 +117,12 @@ function renderFields() {
         <output>${v[f.id]} ${E(unitFor(f, v[f.id]))}</output>
         <button type="button" data-step="${f.id}" data-by="1" aria-label="more" ${stepFrom(f, v, 1) === null ? 'disabled' : ''}>+</button>
         <span class="cfg-range">${f.allowed ? range(a, b).filter((y) => allowedAt(f, v, y)).join(', ') : `${a}–${b}`}</span></div>`;
+    } else if (f.kind === 'rows') {
+      const n = v[f.of], on = rowsList(v[f.id]);
+      h += `<div class="cfg-rows"><div class="cfg-seg" role="group" aria-labelledby="l-${f.id}">` + range(1, n).map((k) =>
+        `<button type="button" data-rows="${f.id}" data-row="${k}" aria-pressed="${on.includes(k)}">${k === 1 ? '1 top' : k === n ? `${k} bottom` : k}</button>`).join('')
+        + `</div><span class="cfg-range">${on.length > 1 ? `a seat on rows ${on.slice(0, -1).join(', ')} and ${on[on.length - 1]}`
+          : on[0] === n ? 'one seat, on the bottom row' : `one channel, a hook in every row from ${on[0]} down`}</span></div>`;
     } else if (f.kind === 'number') {
       h += `<div class="cfg-step"><input id="f-${f.id}" type="number" inputmode="decimal" data-num="${f.id}" min="${f.min}" max="${f.max}" step="${f.step || 1}"
         value="${v[f.id]}" aria-labelledby="l-${f.id}"><span class="cfg-unit">${E(f.unit || '')}</span><span class="cfg-range">${f.min}–${f.max}</span></div>`;
@@ -116,8 +141,8 @@ function renderFields() {
 }
 function setValue(k, x) {
   const before = values(), next = { ...before, [k]: x };
-  for (const f of TYPES[state.kind].fields)           // a field at its maximum (every channel) follows it
-    if (f.follow_max && f.id !== k && before[f.id] === hi(f, before)) delete next[f.id];
+  for (const f of TYPES[state.kind].fields)           // a field at its maximum (every channel) or default (hook rows) follows it
+    if (f.id !== k && ((f.follow_max && before[f.id] === hi(f, before)) || (f.kind === 'rows' && atDefault(state.kind, before, f)))) delete next[f.id];
   state.values[state.kind] = normalise(state.kind, next);
   toHash();
   renderFields();
@@ -130,6 +155,7 @@ $('form').addEventListener('click', (e) => {
     const f = TYPES[state.kind].fields.find((g) => g.id === b.dataset.step), y = stepFrom(f, values(), Number(b.dataset.by));
     if (y !== null) setValue(f.id, y);
   }
+  else if (b.dataset.rows) setValue(b.dataset.rows, rowsToggle(values()[b.dataset.rows], Number(b.dataset.row)));
   else if (b.dataset.k) setValue(b.dataset.k, b.dataset.v);
 });
 $('form').addEventListener('change', (e) => { if (e.target.dataset.num) setValue(e.target.dataset.num, e.target.value); });
