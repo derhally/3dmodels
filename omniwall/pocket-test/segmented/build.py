@@ -102,8 +102,8 @@ def hook(D, gap=None, dots=0):
         y0, y1, zt, c = YP + g, YP + T["depth"], TOP + T["height"], T["chamfer"]
         prof = Polygon((y0, TOP - 0.5), (y1, TOP - 0.5), (y1, zt), (y0 + c, zt), (y0, zt - c), align=None)
         h = solid(h + extrude(Plane.YZ * prof, t))
-        for i in range(dots):                                    # dimples on the spine's top side (up when printed)
-            h = solid(h - Pos(t - 0.3, YP + dv["block_depth"] / 2, 3.0 + 2.2 * i) * Rot(0, 90, 0) * Cylinder(0.5, 1.0, align=(Align.CENTER, Align.CENTER, Align.MIN)))
+        for i in range(dots):                                    # dimples on the top side (up when printed), in the solid over the cavity
+            h = solid(h - Pos(t - 0.3, YP - 1.5 + 1.5 * i, 13.75) * Rot(0, 90, 0) * Cylinder(0.5, 1.0, align=(Align.CENTER, Align.CENTER, Align.MIN)))
     h = Pos(0, -YP, 0) * h
     h.label = ("toothed " if D.tooth else "") + ("short-head slot hook 1U" if D.short else "slot hook 1U")
     return h
