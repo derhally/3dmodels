@@ -18,7 +18,8 @@
 #             (Back channels: max "= cells - 1"). follow_max: a field left at
 #             its maximum follows it when another field changes. allowed: a
 #             condition the value must meet (the stepper skips the rest). in_name: added
-#             to the file names when the field isn't at its default.
+#             to the file names when the field isn't at its default; on a choice, added
+#             whenever that choice is picked (the hooks: _slot1u, _bridge1u, _slot2u).
 #             kind rows: a button for each row of the field named by `of`; the
 #             value lists the picked rows from the top ("1-3"), `set` gets them
 #             as a list, and default auto is panel.yaml's dovetail_mount.segmented
@@ -78,9 +79,9 @@ types:
         kind: choice
         default: slot_hook_1u
         choices:
-          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
-          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
-          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}}   # one channel, two rows
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}, in_name: _slot1u}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}, in_name: _bridge1u}
+          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}, in_name: _slot2u}   # one channel, two rows
           - {id: none, label: None}
         note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls). Slot hook 2U takes the place of two 1Us; it needs one channel 2 rows tall.
       - id: front
@@ -158,8 +159,8 @@ types:
         kind: choice
         default: slot_hook_1u
         choices:
-          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
-          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}, in_name: _slot1u}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}, in_name: _bridge1u}
           - {id: none, label: None}
         note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls).
       - id: seats
@@ -223,8 +224,8 @@ types:
         kind: choice
         default: slot_hook_1u
         choices:
-          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
-          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}, in_name: _slot1u}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}, in_name: _bridge1u}
           - {id: none, label: None}
         note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls).
       - id: style
@@ -277,9 +278,9 @@ types:
         kind: choice
         default: slot_hook_1u
         choices:
-          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
-          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
-          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}}   # one channel, two rows
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}, in_name: _slot1u}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}, in_name: _bridge1u}
+          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}, in_name: _slot2u}   # one channel, two rows
           - {id: none, label: None}
         note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls). Slot hook 2U takes the place of two 1Us; it needs one channel 2 rows tall.
     always:

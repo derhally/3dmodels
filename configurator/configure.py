@@ -150,6 +150,8 @@ def params(kind, values):
     dflt = at_default(kind, v)
     prefix = t["prefix"].format(**names) + "".join(f["in_name"].format(**names) for f in t["fields"]
                                                    if f.get("in_name") and f["id"] not in dflt)
+    prefix += "".join(c.get("in_name", "") for f in t["fields"] if f["kind"] == "choice"     # a choice's own in_name
+                      for c in f["choices"] if c["id"] == v[f["id"]])
     out.setdefault("unit", {})["file_prefix"] = prefix
     return out, prefix, v
 

@@ -58,11 +58,12 @@ def evaluate(kind, report, cfg=None, ok=True, error=""):
 
     # hooks: the builders model the Bridge hook 1U seated in every pocket
     for l in lines:
-        m = re.match(r"hooks vs (\w+): ([\d.]+) mm3(?: total)? over (\d+)", l)
+        m = re.match(r"hooks vs (\w+): ([\d.]+) mm3(?: total)? over (\d+) ?((?:Slot|Bridge) hook \dU)?", l)
         if m:
             per = float(m.group(2)) / max(1, int(m.group(3)))
+            what = f"{m.group(3)} {m.group(4)}s" if m.group(4) else f"{m.group(3)} hooks"
             add(f"Hooks fit the {m.group(1)}", "ok" if per <= 0.2 else "fail",
-                f"{m.group(3)} hooks, {per:.2f} mm³ overlap each (the snap ridges)" if per > 0.001 else f"{m.group(3)} hooks, no overlap")
+                f"{what}, {per:.2f} mm³ overlap each (the snap ridges)" if per > 0.001 else f"{what}, no overlap")
 
     # segmented pockets (hooks on chosen rows): the part goes straight on held up
     # by segmented.push, then pushes down onto its seats (ridges ride over the heads)
