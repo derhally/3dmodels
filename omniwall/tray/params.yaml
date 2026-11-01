@@ -70,3 +70,6 @@ dish:                      # a low cradle on the hooks, and a coved dish that li
 
 coupon:                    # pocket test print (test-prints/, git-ignored): the back wall round one pocket, printed upright like the tray
   half_width: 8.0          # assumed
+
+# hooks as parts in the 3MF (the configurator): null, or slot_hook_1u, bridge_hook_1u, slot_hook_2u: that many hooks as separate objects on a plate of their own, with ../hook/params.yaml's print settings
+hook_parts: null

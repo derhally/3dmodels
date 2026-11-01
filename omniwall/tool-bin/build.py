@@ -63,6 +63,7 @@ hook_cols = pocket_columns(BN["cells"], pitch, edge, BN.get("channels"))
 HH = hook["height"]
 SEAT_R = seat_rows(dm, ROWS, BN.get("hook_rows"))    # rows with a seat, from the bottom: top and bottom on 3+ rows (segmented)
 SEGMENTED = len(SEAT_R) > 1
+HOOK_KIND = P.get("hook_parts") or ("slot_hook_1u" if SEGMENTED else "bridge_hook_1u")   # the hooks it is checked on (and printed with, when hook_parts names one)
 seats = [hook_z0 + r * pitch + HH + pk["top_clearance"] for r in SEAT_R]   # hook tops, the top one first
 seat_z = seats[0]
 cx = dv["block_width"] / 2
@@ -442,36 +443,26 @@ def tolerance(s):
 
 
 def hooks(kind=None, cols=None):
-    """The hooks the bin hangs on: a Bridge hook 1U in every row of every column, or
-    on a segmented bin a (toothed) Slot hook 1U on each seat (kind "bridge" puts
-    Bridge hook 1Us on the seats instead)."""
-    if not SEGMENTED:
-        hk, tops = bridge_hook(panel, ROOT), [z + HH for z in hook_rows[:SEAT_R[0] + 1]]   # every row up to the seat
-    elif kind == "bridge":
-        hk, tops = bridge_hook(panel, ROOT), seats
-    else:
-        hk, tops = slot_hook_1u(panel, ROOT), seats
-    hy, ht = (hook, HH) if SEGMENTED is False or kind == "bridge" else (panel["slot_hook_1u"], panel["slot_hook_1u"]["height"])
-    out = []
-    for xc in (hook_cols if cols is None else cols):
-        for t in tops:
-            h = Pos(xc - cx, -hy["panel_front_y"], t - ht) * hk
-            h.label = "hook"
-            out.append(h)
-    return out
+    """The hooks the part hangs on: hook_parts' kind (when params.yaml names one),
+    else a Slot hook 1U on each seat of a segmented part and a Bridge hook 1U in
+    every row up to the seat on the others (as print-tested)."""
+    kind = kind or HOOK_KIND
+    return placed_hooks(panel, ROOT, kind, hook_cols if cols is None else cols,
+                        hook_tops(kind, seats, [z + HH for z in hook_rows[:SEAT_R[0] + 1]]), cx)
 
 
 def segmented_note(body):
-    """How the segmented bin goes on, from the back wall round the first column on
-    its Slot hook 1Us (every column is the same), and Bridge hook 1Us in the same seats."""
+    """How the segmented part goes on, from the back round the first column (every
+    column is the same): on its Slot hook 1Us and on Bridge hook 1Us in the same seats."""
     xc = hook_cols[0]
     back = body & Pos(xc, (yf + 3) / 2, H / 2) * Box(20, yf + 3, H + 2)
-    on, down, ok = segmented_fit(dm, back, hooks(cols=[xc]))
-    br = sum(overlap(back, k) for k in hooks("bridge", [xc]))
-    sg = dm["segmented"]
-    return (f"segmented fitting: held {sg['push']} high, pushed straight on: worst overlap {on:.4f} mm3; pushed down "
-            f"{sg['push']}: worst {down:.3f} mm3 per hook (the snap ridges riding over the heads); goes on straight held "
-            + (f"{min(ok):.1f} to {max(ok):.1f} high" if ok else "never") + f"; Bridge hook 1Us on the same seats: {br:.3f} mm3")
+    return segmented_lines(dm, back, [("Slot hook 1U", hooks("slot_hook_1u", [xc])), ("Bridge hook 1U", hooks("bridge_hook_1u", [xc]))])
+
+
+def hook_parts():
+    """hook_parts in params.yaml (a hook kind, or null): that many hooks as separate objects on a plate of their own in the 3MF"""
+    kind = P.get("hook_parts")
+    return [] if not kind else [hook_plate(panel, ROOT, kind, hook_count(kind, hook_cols, SEAT_R))]
 
 
 def overlap(a, b):
@@ -535,7 +526,7 @@ def write_print(stem, p, folder):
         log(f"    {b[0]:.1f} deg from vertical, area {b[1]} mm2, at ({b[2].X:.1f}, {b[2].Y:.1f}, {b[2].Z:.1f})")
 
 
-def plate(items, path):
+def plate(items, path, extra=()):
     """parts side by side on one plate, far enough apart to print by object (bambu_object_gap), centred on the plate: a Bambu
     Studio project with the template's settings, print.project on top and each
     part's own print.<kind> (items are (label, part, kind))"""
@@ -545,7 +536,7 @@ def plate(items, path):
     items = sorted(items, key=lambda it: it[1].bounding_box().size.Z)
     objs = [(label, p, P["print"].get(kind) or {}) for label, p, kind in items]
     plates, row = plates_in_a_row(NAME, objs, gap, bambu_bed(bambu_config(TEMPLATE))[0])  # too wide: a plate each
-    write_bambu_project(plates, path, template=TEMPLATE, settings=P["print"]["project"])
+    write_bambu_project(plates + list(extra), path, template=TEMPLATE, settings=P["print"]["project"])
     return row if len(plates) == 1 else None
 
 
@@ -554,6 +545,9 @@ if __name__ == "__main__":
     for sub in ("step", "print", "test-prints"):
         (HERE / sub).mkdir(exist_ok=True)
     body = bin_body()
+    HOOKS = hook_parts()                             # the hooks as parts, when params.yaml asks (the configurator)
+    if HOOKS:
+        log(f"{NAME}_all_parts.3mf: {HOOKS[0][0]} on a plate of their own, separate objects")
     gr, nholes = grid() if WITH_GRID else (None, 0)
     parts = [body, gr] if WITH_GRID else [body]
     log(f"{NAME}: {W:.1f} wide, {D:g} deep, {H:.1f} tall" + (f" at the back, {HF:.1f} at the front" if HF < H else "")
@@ -594,11 +588,12 @@ if __name__ == "__main__":
     hks = hooks()
     interf = sum(overlap(body, k) for k in hks)
     if SEGMENTED:
-        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Slot hook 1Us ({len(hook_cols)} columns x seats on rows "
+        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} {HOOK_NAMES[HOOK_KIND]}s ({len(hook_cols)} columns x seats on rows "
             f"{[ROWS - r for r in SEAT_R]} from the top; the snap ridges, if any)")
-        log(segmented_note(body))
+        for l in segmented_note(body):
+            log(l)
     else:
-        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us ({len(hook_cols)} columns x {SEAT_R[0] + 1} rows; ridges "
+        log(f"hooks vs bin: {interf:.3f} mm3 over {len(hks)} {HOOK_NAMES[HOOK_KIND]}s ({len(hook_cols)} columns x {SEAT_R[0] + 1} rows; ridges "
             f"{pk['ridge']['height']:.2f} tall, room for {dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: "
             f"overlap only if taller)")
     if WITH_GRID:
@@ -611,10 +606,10 @@ if __name__ == "__main__":
     if WITH_GRID:
         pg = to_bed(Rot(180, 0, 0) * gr)
         write_print(f"{NAME}_grid_print", pg, HERE / "print")
-        wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        wd = plate([("bin", pb, "bin"), ("grid", pg, "grid")], HERE / "print" / f"{NAME}_all_parts.3mf", HOOKS)
         log(f"{NAME}_all_parts.3mf: bin and grid " + (f"on one plate, {wd:.1f} wide" if wd else "on a plate each (too wide together for the bed)"))
     else:
-        wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf")
+        wd = plate([("bin", pb, "bin")], HERE / "print" / f"{NAME}_all_parts.3mf", HOOKS)
         log(f"{NAME}_all_parts.3mf: the bin, {wd:.1f} wide")
 
     # Test prints: the back wall round the first pocket; the bin's top band with the whole grid (snap test).

@@ -36,6 +36,7 @@ files:
   - omniwall/*.py
   - omniwall/panel.yaml
   - omniwall/hook/*_measured.step
+  - omniwall/hook/params.yaml       # the hooks' print settings, for the hooks added to a 3MF
   - bambu/*.py
   - bambu/project_settings.config
   - bambu/process/*.json
@@ -72,6 +73,16 @@ types:
         in_name: "_hooks{hooks}"
         set: {bin: {hook_rows: "= hooks"}}
         note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
+      - id: hook_parts
+        label: Hooks
+        kind: choice
+        default: slot_hook_1u
+        choices:
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}}   # one channel, two rows
+          - {id: none, label: None}
+        note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls). Slot hook 2U takes the place of two 1Us; it needs one channel 2 rows tall.
       - id: front
         label: Front
         kind: choice
@@ -142,6 +153,15 @@ types:
         in_name: "_hooks{hooks}"
         set: {bin: {hook_rows: "= hooks"}}
         note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
+      - id: hook_parts
+        label: Hooks
+        kind: choice
+        default: slot_hook_1u
+        choices:
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: none, label: None}
+        note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls).
       - id: seats
         label: Takes an insert
         kind: choice
@@ -198,6 +218,15 @@ types:
         in_name: "_{channels}ch"
         set: {tray: {channels: "= channels"}}
         note: Both end channels always stay; fewer work inward from the edges (an odd count adds the middle one, so 5, 7 and 9 cells wide take even counts only). Fewer channels means fewer hooks holding it.
+      - id: hook_parts
+        label: Hooks
+        kind: choice
+        default: slot_hook_1u
+        choices:
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: none, label: None}
+        note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls).
       - id: style
         label: Style
         kind: choice
@@ -243,6 +272,16 @@ types:
         in_name: "_hooks{hooks}"
         set: {unit: {hook_rows: "= hooks"}}
         note: Counted from the top. From 3 rows tall the hooks go on the top and bottom rows; the part goes in through windows in its back and pushes down onto a Slot hook 1U or Bridge hook 1U on each. Picked rows stay 2 apart. One row picked makes one channel down the back, with a hook in every row from there down.
+      - id: hook_parts
+        label: Hooks
+        kind: choice
+        default: slot_hook_1u
+        choices:
+          - {id: slot_hook_1u, label: Slot hook 1U, set: {hook_parts: slot_hook_1u}}
+          - {id: bridge_hook_1u, label: Bridge hook 1U, set: {hook_parts: bridge_hook_1u}}
+          - {id: slot_hook_2u, label: Slot hook 2U, when: "(rows == 2) & (hooks == '1')", set: {hook_parts: slot_hook_2u}}   # one channel, two rows
+          - {id: none, label: None}
+        note: The hooks it hangs on, added to the 3MF as separate parts on a plate of their own, with the hooks' print settings (0.12 mm layers, 5 walls). Slot hook 2U takes the place of two 1Us; it needs one channel 2 rows tall.
     always:
       - {when: "cells == 2", set: {scoop_pins: {width: 40.0, front_width: 20.0, boss_x: 11.75}}}   # as the 2x2x65 folder
     checks:

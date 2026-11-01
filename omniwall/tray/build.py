@@ -297,13 +297,8 @@ def tolerance(s):
 
 
 def hooks():
-    hk = bridge_hook(panel, ROOT)
-    out = []
-    for xc in hook_cols:
-        h = Pos(xc - cx, -hook["panel_front_y"], hook_z0) * hk
-        h.label = "hook"
-        out.append(h)
-    return out
+    """the hooks the tray hangs on: hook_parts' kind, else a Bridge hook 1U (as print-tested), in every column"""
+    return placed_hooks(panel, ROOT, P.get("hook_parts") or "bridge_hook_1u", hook_cols, [seat_z], cx)
 
 
 def overlap(a, b):
@@ -375,7 +370,7 @@ log(f"measured: {len(roof)} gable faces in the pockets (expect {(4 if pk.get('to
 hks = hooks()
 interf = sum(overlap(body, k) for k in hks)
 raised = sum(overlap(body, Pos(0, 0, 0.1) * k) for k in hks)
-log(f"hooks vs tray: {interf:.3f} mm3 over {len(hks)} Bridge hook 1Us (ridges {pk['ridge']['height']:.2f} tall, room for "
+log(f"hooks vs tray: {interf:.3f} mm3 over {len(hks)} {HOOK_NAMES[P.get('hook_parts') or 'bridge_hook_1u']}s (ridges {pk['ridge']['height']:.2f} tall, room for "
     f"{dv['notch']['depth'] + pk['side_clearance']:.2f} in a seated hook's notch: overlap only if taller); "
     f"with the hooks 0.1 higher {raised:.3f} mm3 (more: the hooks' tops bear on the gables)")
 if len(parts) == 2:
@@ -405,7 +400,10 @@ gap = bambu_object_gap(TEMPLATE)
 # print.<part> in params.yaml: that part's own Bambu Studio settings (such as the dish's finer layers)
 objs = [(label, p, {k: str(v) for k, v in P.get("print", {}).get(label, {}).items()}) for label, p in printed]
 plates, row = plates_in_a_row(NAME, objs, gap, bambu_bed(bambu_config(TEMPLATE))[0])
-write_bambu_project(plates, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
+HOOKS = [hook_plate(panel, ROOT, P["hook_parts"], hook_count(P["hook_parts"], hook_cols, [0]))] if P.get("hook_parts") else []
+if HOOKS:                                            # the hooks as parts, when params.yaml asks (the configurator)
+    log(f"{NAME}_all_parts.3mf: {HOOKS[0][0]} on a plate of their own, separate objects")
+write_bambu_project(plates + HOOKS, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts.3mf: {', '.join(l for l, _ in printed)} "
     + (f"on one plate, {row:.1f} wide" if len(plates) == 1 else "on a plate each (too wide together for the bed)"))
 

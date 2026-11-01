@@ -190,3 +190,6 @@ handle_test:               # handle_test.py: test print of the handle (handle: s
   # the strip is drawer.front_thickness (6.0) thick and prints standing up like the drawer face
   barbs: [6.0, 6.2, 6.4]   # assumed: pin variants A, B, C, across the barbs; the hole is 5.2. A has a plain head, B a notch at one end, C at both ends
   id_notch: 1.5            # assumed: depth of the V notches that mark pins B and C (the first test's 0.3 mm notches couldn't be seen)
+
+# hooks as parts in the 3MF (the configurator): null, or slot_hook_1u, bridge_hook_1u, slot_hook_2u: that many hooks as separate objects on a plate of their own, with ../hook/params.yaml's print settings
+hook_parts: null

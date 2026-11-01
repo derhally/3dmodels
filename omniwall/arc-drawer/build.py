@@ -75,6 +75,7 @@ hook_rows = [hook_z0 + r * pitch for r in range(U["rows"])]
 HH = hook["height"]
 SEAT_R = seat_rows(dm, U["rows"], U.get("hook_rows"))   # rows with a seat, from the bottom: top and bottom on 3+ rows (segmented)
 SEGMENTED = len(SEAT_R) > 1
+HOOK_KIND = P.get("hook_parts") or ("slot_hook_1u" if SEGMENTED else "bridge_hook_1u")   # the hooks it is checked on (and printed with, when hook_parts names one)
 seats = [hook_z0 + r * pitch + HH + pk["top_clearance"] for r in SEAT_R]   # hook tops, the top one first
 seat_z = seats[0]                                    # closed top of every pocket channel (the top seat)
 cx = dv["block_width"] / 2
@@ -507,36 +508,27 @@ def drawer_at(d, state, angle=None, y=None):
     raise ValueError(state)
 
 
-def hooks(rows=None, kind=None, cols=None):
-    """The hooks the unit hangs on: a Bridge hook 1U in every row of every column
-    (or the given rows' bottoms), or on a segmented housing a (toothed) Slot hook 1U
-    on each seat (kind "bridge" puts Bridge hook 1Us on the seats instead)."""
-    if not SEGMENTED or rows is not None:
-        hk, hy, tops = bridge_hook(panel, ROOT), hook, [z + HH for z in (hook_rows[:SEAT_R[0] + 1] if rows is None else rows)]
-    elif kind == "bridge":
-        hk, hy, tops = bridge_hook(panel, ROOT), hook, seats
-    else:
-        hk, hy, tops = slot_hook_1u(panel, ROOT), panel["slot_hook_1u"], seats
-    out = []
-    for xc in (hook_cols if cols is None else cols):
-        for t in tops:
-            h = Pos(xc - cx, -hy["panel_front_y"], t - hy["height"]) * hk
-            h.label = f"hook x{xc:.1f} z{t - hy['height']:.1f}"
-            out.append(h)
-    return out
+def hooks(kind=None, cols=None):
+    """The hooks the part hangs on: hook_parts' kind (when params.yaml names one),
+    else a Slot hook 1U on each seat of a segmented part and a Bridge hook 1U in
+    every row up to the seat on the others (as print-tested)."""
+    kind = kind or HOOK_KIND
+    return placed_hooks(panel, ROOT, kind, hook_cols if cols is None else cols,
+                        hook_tops(kind, seats, [z + HH for z in hook_rows[:SEAT_R[0] + 1]]), cx)
 
 
 def segmented_note(body):
-    """How the segmented housing goes on, from the back plate round the first column
-    on its Slot hook 1Us (every column is the same), and Bridge hook 1Us in the same seats."""
+    """How the segmented part goes on, from the back round the first column (every
+    column is the same): on its Slot hook 1Us and on Bridge hook 1Us in the same seats."""
     xc = hook_cols[0]
     back = body & Pos(xc, (yf + 3) / 2, H / 2) * Box(20, yf + 3, H + 2)
-    on, down, ok = segmented_fit(dm, back, hooks(cols=[xc]))
-    br = sum(overlap(back, k) for k in hooks(kind="bridge", cols=[xc]))
-    sg = dm["segmented"]
-    return (f"segmented fitting: held {sg['push']} high, pushed straight on: worst overlap {on:.4f} mm3; pushed down "
-            f"{sg['push']}: worst {down:.3f} mm3 per hook (the snap ridges riding over the heads); goes on straight held "
-            + (f"{min(ok):.1f} to {max(ok):.1f} high" if ok else "never") + f"; Bridge hook 1Us on the same seats: {br:.3f} mm3")
+    return segmented_lines(dm, back, [("Slot hook 1U", hooks("slot_hook_1u", [xc])), ("Bridge hook 1U", hooks("bridge_hook_1u", [xc]))])
+
+
+def hook_parts():
+    """hook_parts in params.yaml (a hook kind, or null): that many hooks as separate objects on a plate of their own in the 3MF"""
+    kind = P.get("hook_parts")
+    return [] if not kind else [hook_plate(panel, ROOT, kind, hook_count(kind, hook_cols, SEAT_R))]
 
 
 def overlap(a, b):
@@ -627,10 +619,11 @@ export_step(d, str(HERE / "step" / f"{NAME}_drawer.step"))
 
 hks = hooks()
 log(f"hooks vs housing: {sum(overlap(h, k) for k in hks):.3f} mm3 total over {len(hks)} "
-    + (f"Slot hook 1Us (seats on rows {[U['rows'] - r for r in SEAT_R]} from the top)" if SEGMENTED else "Bridge hook 1Us")
+    + f"{HOOK_NAMES[HOOK_KIND]}s" + (f" (seats on rows {[U['rows'] - r for r in SEAT_R]} from the top)" if SEGMENTED else "")
     + f" (ridges reach {pk['ridge']['height'] - pk['side_clearance']:.3f} past the hook flank into its {dv['notch']['depth']} notches: a small overlap is expected)")
 if SEGMENTED:
-    log(segmented_note(h))
+    for l in segmented_note(h):
+        log(l)
 cgv = da.center()
 
 
@@ -718,6 +711,7 @@ if SEP:
     plates.append(("handle and pins", [("handle", Pos(x0 + hw / 2, 0, 0) * centred(hdp)),
                                        ("pin 1", Pos(x0 + hw + gap + pw / 2, 0, 0) * centred(pnp)),
                                        ("pin 2", Pos(x0 + hw + 2 * gap + 1.5 * pw, 0, 0) * centred(pnp))]))
+plates += hook_parts()                               # the hooks as parts, when params.yaml asks (the configurator)
 write_bambu_project(plates, HERE / "print" / f"{NAME}_all_parts.3mf", template=TEMPLATE)
 log(f"{NAME}_all_parts: {', '.join(n for n, _ in plates)}, one plate each")
 (HERE / "report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")

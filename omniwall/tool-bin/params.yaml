@@ -102,3 +102,6 @@ print:                       # Bambu Studio settings written into every 3MF, so 
 coupon:                      # test prints (test-prints/, git-ignored)
   half_width: 8.0            # as the trays: pocket coupon, the back wall round one pocket, upright
   ring_below_ledge: 3.0      # snap test: the bin's top band, from this far under the ledge, with the full grid
+
+# hooks as parts in the 3MF (the configurator): null, or slot_hook_1u, bridge_hook_1u, slot_hook_2u: that many hooks as separate objects on a plate of their own, with ../hook/params.yaml's print settings
+hook_parts: null

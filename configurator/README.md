@@ -35,6 +35,14 @@ different pick adds `_hooks<rows>` to the file names (`_hooks1_3_5`). With two
 or more seats, `checks.py` also checks that the part goes on its hooks (pushed
 straight on, then down).
 
+Hooks: every builder takes `hook_parts` (null on main's folders). Set to
+`slot_hook_1u`, `bridge_hook_1u` or `slot_hook_2u`, it adds that many hooks to the
+3MF as separate objects on a plate of their own, with `omniwall/hook/params.yaml`'s
+print settings, and checks the part on that hook (`hook_count`, `hook_plate`,
+`placed_hooks` in `omniwall/hook_geometry.py`). Slot hook 2U is offered only on a
+2-row part with one channel; it doesn't fit top-and-bottom seats. The page
+defaults to Slot hook 1U.
+
 To offer a new choice, add it to `options.yaml`. When it needs geometry the
 builder can't make yet, add a switch to the builder's params (as
 `grid.seats` and `grid.include` were added to the tool and lean bins).

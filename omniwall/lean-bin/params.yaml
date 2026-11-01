@@ -89,3 +89,6 @@ snap:                        # as the tool bins' grid (spring tabs, Zeid picked 
   ridge: 0.9
   groove: 0.6
   groove_extra: 1.0
+
+# hooks as parts in the 3MF (the configurator): null, or slot_hook_1u, bridge_hook_1u, slot_hook_2u: that many hooks as separate objects on a plate of their own, with ../hook/params.yaml's print settings
+hook_parts: null

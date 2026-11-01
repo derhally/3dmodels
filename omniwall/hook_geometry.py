@@ -409,3 +409,87 @@ def slot_hook_2u(panel, root, lower_foot=None):
         out = out & mirror(out, Plane.YZ.offset(t / 2))
         out = out.solids()[0] if len(out.solids()) == 1 else out
     return out
+
+
+# ---------------------------------------------------------------- hooks in a part's 3MF
+HOOK_NAMES = {"slot_hook_1u": "Slot hook 1U", "bridge_hook_1u": "Bridge hook 1U", "slot_hook_2u": "Slot hook 2U"}
+
+
+def segmented_lines(dm, back, hook_sets):
+    """Report lines for a segmented part (or a slice of its back round one
+    column): for each (hook name, hooks on its seats), how it goes on: pushed
+    straight on held segmented.push high, then pushed down onto the seats."""
+    push = dm["segmented"]["push"]
+    out = []
+    for name, hks in hook_sets:
+        on, down, ok = segmented_fit(dm, back, hks)
+        out.append(f"segmented fitting, {name}s: held {push} high, pushed straight on: worst overlap {on:.4f} mm3; pushed down "
+                   f"{push}: worst {down:.3f} mm3 per hook (the snap ridges riding over the heads); goes on straight held "
+                   + (f"{min(ok):.1f} to {max(ok):.1f} high" if ok else "never"))
+    return out
+
+
+def hook_count(kind, cols, seat_r):
+    """How many `kind` hooks a part takes: in every pocket column, one per seat on a
+    segmented part (seat_r: seated rows from the bottom, see seat_rows), else one
+    in every row up to the seat; a Slot hook 2U takes two of those rows."""
+    n = len(seat_r) if len(seat_r) > 1 else seat_r[0] + 1
+    if kind == "slot_hook_2u":
+        assert len(seat_r) == 1 and n % 2 == 0, \
+            "a Slot hook 2U needs one channel with an even number of hook rows (it doesn't fit top-and-bottom seats)"
+        n //= 2
+    return len(cols) * n
+
+
+def hook_plate(panel, root, kind, count, gap=10.0, width=300.0):
+    """(plate name, objects) for write_bambu_project: `count` hooks of `kind`
+    lying on their flat side as hook/build_hooks.py prints them, as separate
+    objects in rows `gap` apart (under the nozzle's height, so close is fine
+    printing by object), each with the hooks' own print settings from
+    hook/params.yaml (0.12 layers, 5 walls; the print preset itself stays the part's)."""
+    import yaml
+    from pathlib import Path
+    pr = yaml.safe_load((Path(root) / "hook" / "params.yaml").read_text(encoding="utf-8"))["print"]
+    own = {k: str(v) for k, v in {**pr["project"], **(pr.get(kind) or {})}.items() if k != "print_settings_id"}
+    make = {"slot_hook_1u": slot_hook_1u, "bridge_hook_1u": bridge_hook, "slot_hook_2u": slot_hook_2u}[kind]
+    flat = Rot(Y=-90) * make(panel, root)
+    bb = flat.bounding_box()
+    flat = Pos(-bb.center().X, -bb.center().Y, -bb.min.Z) * flat
+    w, d = flat.bounding_box().size.X, flat.bounding_box().size.Y
+    per = max(1, int((width + gap) // (w + gap)))
+    rows = -(-count // per)
+    objs = []
+    for i in range(count):
+        r, c = divmod(i, per)
+        n_r = min(per, count - r * per)
+        x = (c - (n_r - 1) / 2) * (w + gap)
+        y = ((rows - 1) / 2 - r) * (d + gap)
+        objs.append((f"{HOOK_NAMES[kind]} {i + 1}", Pos(x, y, 0) * flat, own))
+    return (f"{count} {HOOK_NAMES[kind]}s", objs)
+
+
+def placed_hooks(panel, root, kind, cols, tops, cx):
+    """`kind` hooks (slot_hook_1u, bridge_hook_1u or slot_hook_2u) in each pocket
+    column x of `cols`, their tops at each z of `tops`, in a part's frame (panel
+    front at y = 0; cx: the hook's own centre across)."""
+    if kind == "bridge_hook_1u":
+        hk, hy = bridge_hook(panel, root), panel["bridge_hook"]
+    else:   # Slot hook 2U has Slot hook 1U's top and panel face
+        hk, hy = (slot_hook_2u if kind == "slot_hook_2u" else slot_hook_1u)(panel, root), panel["slot_hook_1u"]
+    out = []
+    for xc in cols:
+        for t in tops:
+            h = Pos(xc - cx, -hy["panel_front_y"], t - hy["height"]) * hk
+            h.label = f"{HOOK_NAMES[kind]} x{xc:.1f} top z{t:.1f}"
+            out.append(h)
+    return out
+
+
+def hook_tops(kind, seats, row_tops):
+    """Where the hooks' tops go: on a segmented part (2+ seats) the seats; else
+    every row up to the seat (row_tops), a Slot hook 2U in every other one from the top."""
+    if len(seats) > 1:
+        assert kind != "slot_hook_2u", "a Slot hook 2U doesn't fit top-and-bottom seats"
+        return list(seats)
+    tops = sorted(row_tops, reverse=True)
+    return tops[::2] if kind == "slot_hook_2u" else tops
