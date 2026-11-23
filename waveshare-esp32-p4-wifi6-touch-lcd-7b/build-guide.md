@@ -1,6 +1,6 @@
 # P4 desk enclosure build
 
-How to print and put together the 45° desk enclosure for the Waveshare
+How to print and put together the 55° desk enclosure for the Waveshare
 ESP32-P4-WIFI6-Touch-LCD-7B 7" touch display. It covers the parts to buy, the
 files to print, and the assembly order for each variant, including wiring the
 back-panel USB-C port.
@@ -13,21 +13,21 @@ Download it and open it in a browser.
 
 | | Chin speaker | Compact ducted |
 |---|---|---|
-| Size (W × D × H) | 186 × 136 × 137 mm | 188 × 95 × 111 mm |
-| Speaker | In the chin under the screen, aimed at you | At the back of the base; a duct carries the sound to a slot grille in the front lip |
+| Size (W × D × H) | 186 × 108 × 137 mm | 188 × 83 × 122 mm |
+| Speaker | In the chin under the screen, aimed at you | In the base behind the screen; a duct carries the sound to a slot grille in the front lip |
 | Printed parts | Front plate, body, 4 clamp tabs | Front plate, body, duct, 4 clamp tabs |
 | Folder | [chin-speaker/](chin-speaker/) | [compact-ducted/](compact-ducted/) |
 
 Both share the same front facade, display mounting, clamp tabs and back-panel
 USB-C socket. The chin speaker sounds best because it points at you. The
-compact one is about a third smaller in depth and height.
+compact one is about a quarter less deep and 15 mm lower.
 
 ## Before you start
 
 One thing hasn't been confirmed by a print yet:
 
-- **Speaker standoffs.** They're Ø7.5 mm and sit in the speaker's corner
-  notches. The notches need to be at least 8 mm across.
+- **Speaker ear screws.** The speaker's two ears take M2 × 6 self-tapping
+  screws into Ø1.6 mm pilot holes in the printed standoffs.
 
 The glass pocket and window are already confirmed with the facade test frame.
 If you're printing in a new material or on another printer, print
@@ -41,7 +41,7 @@ behind and check for an even sliver of black glass around the screen.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B (7" 1024 × 600, glass 164.28 × 99.17 mm) | The display |
-| 1 | Box speaker, 100 × 45 × 20.75 mm, two cones, four Ø6.2 mm corner ears 10 mm behind the cone face, centres 91.2 × 36.2 mm | Audio, into the board's PH2.0 `SPK` header |
+| 1 | Enclosed speaker, 28 × 31 × 15 mm, one cone with a Ø25 mm opening, two side ears 2.83 mm thick with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
 | 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with a flat ribbon (head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm) | Board's middle `USB` port, spliced to the socket's wires |
 
@@ -50,12 +50,12 @@ behind and check for an even sliver of black glass around the screen.
 | Chin | Compact | Part | Used for |
 |---|---|---|---|
 | 4 | 4 | M2.5 × 6 screw | Clamp tabs into the display's threaded standoffs |
-| 8 | 12 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 4 speaker ears; compact also 4 duct lugs into the floor bosses |
+| 4 | 8 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns; compact also 4 duct lugs into the floor bosses |
 | 4 | 4 | M3 × 8 countersunk screw, 90° head | Front plate to body, through the side walls |
-| 4 | 4 | M3 washer, 7 mm OD or larger (9 mm fender washer is better) | Under the speaker-ear screws, bridging the 6.2 mm ear holes |
+| 2 | 2 | M2 × 6 self-tapping screw | Speaker ears onto their standoffs |
 
 M3 × 8 is the only M3 pan-head length you need. All M3 screws self-tap into
-2.5 mm pilot holes in the plastic.
+2.5 mm pilot holes in the plastic, and the M2 × 6 into 1.6 mm pilots.
 
 ### Optional
 
@@ -78,9 +78,9 @@ Every part is already in its print orientation, and none need supports.
 
 | Part | Orientation | Why it prints cleanly |
 |---|---|---|
-| Front plate | Facade on the bed | Smooth front face. The top cap rises at 45°, and the sideways pilot holes are teardrops. |
+| Front plate | Facade on the bed | Smooth front face. The top cap rises at 55°, and the sideways pilot holes are teardrops. |
 | Body | Standing on its floor | Open-topped, so there's no roof to bridge. The side holes and countersinks are teardrops. |
-| Duct (compact only) | Mouth on the bed | The roof leans 35°. The standoffs and lugs grow from the bed or the duct wall. |
+| Duct (compact only) | Mouth on the bed | The roof leans 45°. The standoffs and lugs grow from the bed or the duct wall. |
 | Clamp tabs ×4 | Flat | Small flat parts. |
 
 Use PLA or PETG, 0.2 mm layers and 3+ walls. Print the front plate in black:
@@ -91,9 +91,9 @@ the 0.5 mm of black glass around the screen then blends into the frame.
 Work with the front plate lying face-down on a soft cloth.
 
 1. **Mount the speaker on the plate.** Set the speaker into the ring on the
-   back of the plate, cones toward the grille. Each corner ear drops over a
-   standoff spigot. Fix each ear with an M3 × 8 and a washer.
-   *Uses 4 × M3 × 8 pan, 4 × washer.*
+   back of the plate, cone toward the grille. Its two ears rest on the
+   standoffs. Fix each ear with an M2 × 6.
+   *Uses 2 × M2 × 6.*
 2. **Seat the display in the pocket.** Lower the display into the pocket from
    behind, glass first, until it rests against the facade. The wider black
    border goes to the bottom, toward the speaker chin.
@@ -104,7 +104,7 @@ Work with the front plate lying face-down on a soft cloth.
    glass sits flat.
    *Uses 4 × clamp tab, 4 × M2.5 × 6, 4 × M3 × 8 pan.*
 4. **Connect the speaker.** Plug the speaker lead into the PH2.0 `SPK` header
-   at the top edge of the board. The lead needs about 12 cm to get there.
+   at the top edge of the board.
 5. **Install the USB-C connector.** Set the connector's flange into the pocket on the inside of the back wall,
    socket through the opening, then fit its two screws from outside. The
    socket face ends flush with the wall. Splice its wires to the right-angle cable (see
@@ -121,10 +121,10 @@ Work with the front plate lying face-down on a soft cloth.
 
 ## Assembly: compact ducted
 
-1. **Mount the speaker on the duct.** Hold the speaker's cones against the
-   duct's rear rim. Each corner ear drops over a standoff spigot. Fix each ear
-   from behind with an M3 × 8 and a washer.
-   *Uses 4 × M3 × 8 pan, 4 × washer.*
+1. **Mount the speaker on the duct.** Hold the speaker's face against the
+   duct's rear rim. Its two ears rest on the standoffs beside the duct. Fix
+   each ear from behind with an M2 × 6.
+   *Uses 2 × M2 × 6.*
 2. **Fix the duct in the body.** Set the duct on the floor with its mouth
    pressed against the inside of the front lip, behind the slot grille. Screw
    its four lugs to the floor bosses.
@@ -187,7 +187,7 @@ power it, use a USB-A to USB-C cable.
 | **Power switch** | It ends up inside the case. Leave it on before closing up. |
 | **RESET / BOOT** | These are inside too. Flashing over USB normally works without them. |
 | **Microphones** | The two mics face into the case. A 7-hole cluster in the bezel under each one lets sound in. |
-| **Duct (compact)** | The speaker's sound stays inside the duct and comes out a 98 × 14 mm mouth, behind 17 slots in the front lip. That keeps the case from buzzing and keeps the speaker away from the mics. |
+| **Duct (compact)** | The speaker's sound stays inside the duct and comes out a 26 × 14 mm mouth, behind 5 slots in the front lip. That keeps the case from buzzing and keeps the speaker away from the mics. |
 | **Vents** | Vertical slots near the top of the back wall let warm air out. |
 
 Every dimension lives in `common/common.yaml` and each variant's `params.yaml`.

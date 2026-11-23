@@ -148,9 +148,9 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
     <header class="hero">
       <div class="eyebrow">Build guide · Waveshare ESP32-P4-WIFI6-Touch-LCD-7B</div>
       <h1>P4 desk enclosure build</h1>
-      <p class="lede">How to print and put together the 45° desk enclosure for the Waveshare 7" ESP32-P4 touch display: the parts to buy, the files to print, and the assembly order for each variant, including wiring the back-panel USB-C port.</p>
+      <p class="lede">How to print and put together the 55° desk enclosure for the Waveshare 7" ESP32-P4 touch display: the parts to buy, the files to print, and the assembly order for each variant, including wiring the back-panel USB-C port.</p>
       <div class="specline">
-        <span>Screen tilt 45°</span><span>Facade window: visible area + 0.5 mm</span><span>Printer: Bambu Lab H2C, 330 × 320 mm bed</span>
+        <span>Screen tilt 55°</span><span>Facade window: visible area + 0.5 mm</span><span>Printer: Bambu Lab H2C, 330 × 320 mm bed</span>
       </div>
     </header>
   </div>
@@ -161,8 +161,8 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
         <button type="button" id="btn-chin" data-set="chin" aria-pressed="true">Chin speaker</button>
         <button type="button" id="btn-compact" data-set="compact" aria-pressed="false">Compact ducted</button>
       </div>
-      <span class="switch-note only-chin">186 × 136 × 137 mm · speaker under the screen, aimed at you</span>
-      <span class="switch-note only-compact">188 × 95 × 111 mm · speaker at the back, duct to a front grille</span>
+      <span class="switch-note only-chin">186 × 108 × 137 mm · speaker under the screen, aimed at you</span>
+      <span class="switch-note only-compact">188 × 83 × 122 mm · speaker in the base, duct to a front grille</span>
     </div>
   </div>
 
@@ -171,10 +171,10 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
     <section id="variants" aria-labelledby="h-variants">
       <div class="eyebrow">The two variants</div>
       <h2 id="h-variants">Side sections, to scale</h2>
-      <p>Both share the same front facade, display mounting, clamp tabs and back-panel USB-C port. They differ in where the speaker goes. The chin speaker sounds best because it points at you. The compact one is about a third smaller in depth and height. Its duct carries the sound under the display to a slot grille in the front lip.</p>
+      <p>Both share the same front facade, display mounting, clamp tabs and back-panel USB-C port. They differ in where the speaker goes. The chin speaker sounds best because it points at you. The compact one is about a quarter less deep and 15 mm lower. Its duct carries the sound under the display to a slot grille in the front lip. Both sections are cut through the middle. The clamp tabs sit at the display's corners, to either side of the speaker and duct, and are drawn in projection.</p>
       <div class="drawings">
-        <figure id="fig-chin"><div id="svg-chin"></div><figcaption><b>Chin speaker</b><span>186 W × 136 D × 137 H mm</span></figcaption></figure>
-        <figure id="fig-compact"><div id="svg-compact"></div><figcaption><b>Compact ducted</b><span>188 W × 95 D × 111 H mm</span></figcaption></figure>
+        <figure id="fig-chin"><div id="svg-chin"></div><figcaption><b>Chin speaker</b><span>186 W × 108 D × 137 H mm</span></figcaption></figure>
+        <figure id="fig-compact"><div id="svg-compact"></div><figcaption><b>Compact ducted</b><span>188 W × 83 D × 122 H mm</span></figcaption></figure>
       </div>
       <div class="legend" aria-label="Drawing key">
         <span><i style="background:var(--part-plate)"></i>Front plate + top cap</span>
@@ -192,7 +192,7 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
       <h2 id="h-before">Check one thing</h2>
       <div class="note">
         <b>Not yet confirmed by a print</b>
-        <p><b style="color:inherit">Speaker standoffs.</b> They're Ø7.5 mm and sit in the speaker's corner notches. The notches need to be at least 8 mm across.</p>
+        <p><b style="color:inherit">Speaker ear screws.</b> The speaker's two ears take M2 × 6 self-tapping screws into Ø1.6 mm pilot holes in the printed standoffs.</p>
       </div>
       <p>The glass pocket and window are already confirmed with the facade test frame. If you're printing in a new material or on another printer, print <code>p4_7b_facade_test_frame</code> first. It takes a few minutes. Press the glass in from behind and check for an even sliver of black glass around the screen.</p>
     </section>
@@ -206,22 +206,22 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
           <tbody>
             <tr class="group"><td colspan="3">Electronics</td></tr>
             <tr><td class="qty">1</td><td>Waveshare ESP32-P4-WIFI6-Touch-LCD-7B<span class="sub">7" 1024 × 600 touch display, glass 164.28 × 99.17 mm</span></td><td>The display</td></tr>
-            <tr><td class="qty">1</td><td>Box speaker, 100 × 45 × 20.75 mm<span class="sub">Two cones, four Ø6.2 mm corner ears 10 mm behind the cone face, centres 91.2 × 36.2 mm</span></td><td>Audio, into the board's PH2.0 <code>SPK</code> header</td></tr>
+            <tr><td class="qty">1</td><td>Enclosed speaker, 28 × 31 × 15 mm<span class="sub">One cone with a Ø25 mm opening, two side ears 2.83 mm thick with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face</span></td><td>Audio, into the board's PH2.0 <code>SPK</code> header</td></tr>
             <tr><td class="qty">1</td><td>Flanged panel-mount USB-C connector<span class="sub">25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange</span></td><td>Power and data port in the back wall, two screws from outside</td></tr>
             <tr><td class="qty">1</td><td>Right-angle USB-C cable with a flat ribbon<span class="sub">Head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm</span></td><td>Board's middle <code>USB</code> port, spliced to the socket's wires</td></tr>
 
             <tr class="group"><td colspan="3">Screws</td></tr>
             <tr><td class="qty">4</td><td>M2.5 × 6 screw</td><td>Clamp tabs into the display's threaded standoffs</td></tr>
-            <tr><td class="qty"><span class="only-chin">8</span><span class="only-compact">12</span></td><td>M3 × 8 pan-head screw<span class="sub">The only M3 pan-head length you need</span></td><td>4 for the clamp tabs into the plate's columns, 4 for the speaker ears<span class="only-compact"><span class="sub">+ 4 for the duct lugs into the floor bosses</span></span></td></tr>
+            <tr><td class="qty"><span class="only-chin">4</span><span class="only-compact">8</span></td><td>M3 × 8 pan-head screw<span class="sub">The only M3 pan-head length you need</span></td><td>4 for the clamp tabs into the plate's columns<span class="only-compact"><span class="sub">+ 4 for the duct lugs into the floor bosses</span></span></td></tr>
             <tr><td class="qty">4</td><td>M3 × 8 countersunk screw, 90° head</td><td>Front plate to body, through the side walls</td></tr>
-            <tr><td class="qty">4</td><td>M3 washer, 7 mm OD or larger<span class="sub">A 9 mm fender washer is better; it has to bridge the 6.2 mm ear hole</span></td><td>Clamping the speaker ears</td></tr>
+            <tr><td class="qty">2</td><td>M2 × 6 self-tapping screw</td><td>Speaker ears onto their standoffs</td></tr>
 
             <tr class="group"><td colspan="3">Optional</td></tr>
             <tr><td class="qty">4</td><td>Rubber foot, 10 mm diameter</td><td>1 mm recesses under the base</td></tr>
           </tbody>
         </table>
       </div>
-      <p>All M3 screws self-tap into 2.5 mm pilot holes in the plastic. You'll also need a screwdriver to match, a soldering iron and heat-shrink for splicing the USB-C wires, and flush cutters.</p>
+      <p>All M3 screws self-tap into 2.5 mm pilot holes in the plastic, and the M2 × 6 into 1.6 mm pilots. You'll also need a screwdriver to match, a soldering iron and heat-shrink for splicing the USB-C wires, and flush cutters.</p>
     </section>
 
     <section id="printing" aria-labelledby="h-printing">
@@ -232,9 +232,9 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
         <table>
           <thead><tr><th>Part</th><th>Orientation</th><th>Why it prints cleanly</th></tr></thead>
           <tbody>
-            <tr><td>Front plate<span class="sub mono only-chin">p4_7b_front_plate_print</span><span class="sub mono only-compact">p4_7b_compact_front_plate_print</span></td><td>Facade on the bed</td><td>Smooth front face. The top cap rises at 45°, and the sideways pilot holes are teardrops.</td></tr>
+            <tr><td>Front plate<span class="sub mono only-chin">p4_7b_front_plate_print</span><span class="sub mono only-compact">p4_7b_compact_front_plate_print</span></td><td>Facade on the bed</td><td>Smooth front face. The top cap rises at 55°, and the sideways pilot holes are teardrops.</td></tr>
             <tr><td>Body<span class="sub mono only-chin">p4_7b_body_print</span><span class="sub mono only-compact">p4_7b_compact_body_print</span></td><td>Standing on its floor</td><td>Open-topped, so there's no roof to bridge. The side holes and countersinks are teardrops.</td></tr>
-            <tr class="only-compact"><td>Duct<span class="sub mono">p4_7b_compact_duct_print</span></td><td>Mouth on the bed</td><td>The roof leans 35°. The standoffs and lugs grow from the bed or the duct wall.</td></tr>
+            <tr class="only-compact"><td>Duct<span class="sub mono">p4_7b_compact_duct_print</span></td><td>Mouth on the bed</td><td>The roof leans 45°. The standoffs and lugs grow from the bed or the duct wall.</td></tr>
             <tr><td>Clamp tabs ×4<span class="sub mono only-chin">p4_7b_clamp_tabs_print</span><span class="sub mono only-compact">p4_7b_compact_clamp_tabs_print</span></td><td>Flat</td><td>Small flat parts.</td></tr>
           </tbody>
         </table>
@@ -253,8 +253,8 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
       <ol class="steps only-chin" id="steps-chin">
         <li class="step" data-step="chin-1"><div class="num"><input type="checkbox" id="chin-1" aria-label="Step done"></div><div class="body">
           <h3>Mount the speaker on the plate</h3>
-          <p>Set the speaker into the ring on the back of the plate, cones toward the grille. Each corner ear drops over a standoff spigot. Fix each ear with an M3 × 8 and a washer.</p>
-          <div class="parts"><span>4 × M3 × 8 pan</span><span>4 × washer</span></div></div></li>
+          <p>Set the speaker into the ring on the back of the plate, cone toward the grille. Its two ears rest on the standoffs. Fix each ear with an M2 × 6.</p>
+          <div class="parts"><span>2 × M2 × 6</span></div></div></li>
         <li class="step" data-step="chin-2"><div class="num"><input type="checkbox" id="chin-2" aria-label="Step done"></div><div class="body">
           <h3>Seat the display in the pocket</h3>
           <p>Lower the display into the pocket from behind, glass first, until it rests against the facade. The wider black border goes to the bottom, toward the speaker chin.</p></div></li>
@@ -264,7 +264,7 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
           <div class="parts"><span>4 × clamp tab</span><span>4 × M2.5 × 6</span><span>4 × M3 × 8 pan</span></div></div></li>
         <li class="step" data-step="chin-4"><div class="num"><input type="checkbox" id="chin-4" aria-label="Step done"></div><div class="body">
           <h3>Connect the speaker</h3>
-          <p>Plug the speaker lead into the PH2.0 <code>SPK</code> header at the top edge of the board. The lead needs about 12 cm to get there.</p></div></li>
+          <p>Plug the speaker lead into the PH2.0 <code>SPK</code> header at the top edge of the board.</p></div></li>
         <li class="step" data-step="chin-5"><div class="num"><input type="checkbox" id="chin-5" aria-label="Step done"></div><div class="body">
           <h3>Install the USB-C connector</h3>
           <p>Set the connector's flange into the pocket on the inside of the back wall, socket through the opening, then fit its two screws from outside. The socket face ends flush with the wall. Splice its wires to the right-angle cable (see <a href="#wiring">Wiring the USB-C port</a>).</p>
@@ -285,8 +285,8 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
       <ol class="steps only-compact" id="steps-compact">
         <li class="step" data-step="cmp-1"><div class="num"><input type="checkbox" id="cmp-1" aria-label="Step done"></div><div class="body">
           <h3>Mount the speaker on the duct</h3>
-          <p>Hold the speaker's cones against the duct's rear rim. Each corner ear drops over a standoff spigot. Fix each ear from behind with an M3 × 8 and a washer.</p>
-          <div class="parts"><span>4 × M3 × 8 pan</span><span>4 × washer</span></div></div></li>
+          <p>Hold the speaker's face against the duct's rear rim. Its two ears rest on the standoffs beside the duct. Fix each ear from behind with an M2 × 6.</p>
+          <div class="parts"><span>2 × M2 × 6</span></div></div></li>
         <li class="step" data-step="cmp-2"><div class="num"><input type="checkbox" id="cmp-2" aria-label="Step done"></div><div class="body">
           <h3>Fix the duct in the body</h3>
           <p>Set the duct on the floor with its mouth pressed against the inside of the front lip, behind the slot grille. Screw its four lugs to the floor bosses.</p>
@@ -346,7 +346,7 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
             <tr><td><b>Power switch</b></td><td>It ends up inside the case. Leave it on before closing up.</td></tr>
             <tr><td><b>RESET / BOOT</b></td><td>These are inside too. Flashing over USB normally works without them.</td></tr>
             <tr><td><b>Microphones</b></td><td>The two mics face into the case. A 7-hole cluster in the bezel under each one lets sound in.</td></tr>
-            <tr class="only-compact"><td><b>Duct</b></td><td>The speaker's sound stays inside the duct and comes out a 98 × 14 mm mouth, behind 17 slots in the front lip. That keeps the case from buzzing and keeps the speaker away from the mics.</td></tr>
+            <tr class="only-compact"><td><b>Duct</b></td><td>The speaker's sound stays inside the duct and comes out a 26 × 14 mm mouth, behind 5 slots in the front lip. That keeps the case from buzzing and keeps the speaker away from the mics.</td></tr>
             <tr><td><b>Vents</b></td><td>Vertical slots near the top of the back wall let warm air out.</td></tr>
           </tbody>
         </table>
@@ -363,33 +363,35 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
 <script>
 (function () {
   // ---- to-scale side sections, built from the model's own dimensions (mm) ----
-  const c45 = Math.SQRT1_2;
+  const tilt = 55 * Math.PI / 180;            // enclosure.angle: screen tilt from the desk
+  const co = Math.cos(tilt), si = Math.sin(tilt);
   const variants = {
     chin: {
-      h0: 18.57, L: 167.8, D: 135.83, Zc: 137.22,
-      glass: [57.05, 156.22], pcb: [58.63, 155.65], holes: [62.63, 151.65],
-      speakerPlate: [5.9, 50.9],
+      h0: 10.96, L: 153.8, D: 108.41, Zc: 136.94,
+      glass: [43.05, 142.22], pcb: [44.65, 141.65], holes: [48.65, 137.65],
+      speakerPlate: [5.9, 36.9],
     },
     compact: {
-      h0: 25.7, L: 120.02, D: 95.1, Zc: 110.6,
-      glass: [8.07, 107.24], pcb: [9.65, 106.67], holes: [13.65, 102.67],
-      duct: [[2.4, 2.4], [61.7, 2.4], [61.7, 49.6], [18.8, 19.6], [2.4, 19.6]],
-      speakerBack: { y: [61.7, 82.45], z: [3.0, 48.0] },
+      h0: 23.31, L: 120.02, D: 83.4, Zc: 121.63,
+      glass: [8.07, 107.24], pcb: [9.67, 106.67], holes: [13.67, 102.67],
+      duct: [[2.4, 2.4], [35.11, 2.4], [35.11, 34.6], [33.45, 34.6], [18.45, 19.6], [2.4, 19.6]],
+      speakerBack: { y: [35.11, 50.11], z: [3.0, 34.0] },
       mouth: [4.0, 18.0],
     },
   };
   const t = 5.6, f = 1.6, wall = 2.4;
-  const VB = { w: 150, h: 150, pad: 6 };
+  const spkDepth = 15;                        // speaker: 28 wide × 31 tall × 15 deep
+  const VB = { w: 122, h: 150, pad: 6 };
 
   function build(v) {
-    const pw = (s, d) => [s * c45 + d * c45, v.h0 + s * c45 - d * c45];
+    const pw = (s, d) => [s * co + d * si, v.h0 + s * si - d * co];
     const X = (y) => VB.pad + y;
     const Y = (z) => VB.h - VB.pad - z;
     const pts = (arr) => arr.map(([y, z]) => `${X(y).toFixed(2)},${Y(z).toFixed(2)}`).join(" ");
     const slab = (s0, s1, d0, d1) => pts([pw(s0, d0), pw(s1, d0), pw(s1, d1), pw(s0, d1)]);
     const poly = (p, fill, extra = "") => `<polygon points="${p}" fill="var(${fill})" ${extra}/>`;
     const rect = (y0, y1, z0, z1, fill, extra = "") => poly(pts([[y0, z0], [y1, z0], [y1, z1], [y0, z1]]), fill, extra);
-    const Yc = v.L * c45;
+    const Yc = v.L * co;
     let g = "";
     // body: floor, front lip, back wall (section through the middle)
     g += rect(0, v.D, 0, wall, "--part-body");
@@ -402,7 +404,7 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
     g += rect(v.D - wall, v.D, 0, v.Zc - wall, "--part-body");
     // front plate along the slope, plus its top cap
     g += poly(slab(0, v.L, 0, t), "--part-plate", 'opacity="0.9"');
-    g += poly(pts([[Yc, v.Zc], [v.D, v.Zc], [v.D, v.Zc - wall], [Yc + wall, v.Zc - wall]]), "--part-plate", 'opacity="0.9"');
+    g += poly(pts([[Yc, v.Zc], [v.D, v.Zc], [v.D, v.Zc - wall], [Yc + wall * si / co, v.Zc - wall]]), "--part-plate", 'opacity="0.9"');
     // display: glass+LCD, PCB, rear components
     g += poly(slab(v.glass[0], v.glass[1], f, f + 5.7), "--part-display");
     g += poly(slab(v.pcb[0], v.pcb[1], f + 7.2, f + 8.8), "--part-display");
@@ -410,13 +412,13 @@ footer { font-size: 0.86rem; color: var(--ink-soft); border-top: 1px solid var(-
     // clamp tabs on the standoffs
     for (const h of v.holes) g += poly(slab(h - 3.5, h + 3.5, f + 15, f + 18), "--part-tab");
     // speaker
-    if (v.speakerPlate) g += poly(slab(v.speakerPlate[0], v.speakerPlate[1], t, t + 20.75), "--part-speaker");
+    if (v.speakerPlate) g += poly(slab(v.speakerPlate[0], v.speakerPlate[1], t, t + spkDepth), "--part-speaker");
     if (v.duct) g += poly(pts(v.duct), "--part-duct", 'opacity="0.85"');
     if (v.speakerBack) g += rect(v.speakerBack.y[0], v.speakerBack.y[1], v.speakerBack.z[0], v.speakerBack.z[1], "--part-speaker");
     // flanged USB-C connector: flange in its pocket inside the back wall, socket flush, body behind
     g += rect(v.D - 2.4, v.D - 1.3, 3.9, 12.1, "--part-port");
     g += rect(v.D - 1.3, v.D, 6.3, 9.7, "--part-port");
-    g += rect(v.D - 17.4, v.D - 2.4, 5, 11, "--part-port");
+    g += rect(v.D - 21.9, v.D - 2.4, 4.5, 11.5, "--part-port");
     // desk line
     g += `<line x1="0" x2="${VB.w}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink-soft)" stroke-width="0.5" stroke-dasharray="2 2"/>`;
     return `<svg viewBox="0 0 ${VB.w} ${VB.h}" role="img" aria-label="Side section of the enclosure, drawn to scale">${g}</svg>`;

@@ -1,4 +1,4 @@
-"""Compact 45-degree desk enclosure: speaker standing at the back of the base,
+"""Compact 55-degree desk enclosure: speaker standing at the back of the base,
 with a printed duct carrying its sound forward to a slot grille in the front lip.
 
     pip install build123d pyyaml
@@ -46,10 +46,13 @@ sw, sh = sp["width"], sp["height"]
 z_fi = wall + dt                                   # duct interior floor
 # lowest point of the display: bottom edge of the PCB at the rear component depth
 s_pb, d_back = s_g + g.pcb_bot, g.f + dp["depth"]
+# the plate's lower back edge is the other low point: it dips below the PCB at steep angles
+plate_clear = du["plate_clear"]
 g.h0 = max(en["min_front_lip"],
-           du["mouth_h"] + z_fi + clear + dt - s_pb * si + d_back * co)
+           du["mouth_h"] + z_fi + clear + dt - s_pb * si + d_back * co,
+           du["mouth_h"] + z_fi + plate_clear + dt + t * co)
 Y_v, Z_v = g.Pw(s_pb, d_back)
-z_mt = Z_v - clear - dt                             # mouth interior top
+z_mt = min(Z_v - clear, g.h0 - t * co - plate_clear) - dt   # mouth interior top
 z_rt = z_fi + sh - 2 * inset                        # rear interior top (speaker face less rim)
 # The roof rises from just under the display's lowest point at roof_angle. At or
 # below the screen angle it never meets the display, and it is also the lean of
@@ -96,16 +99,25 @@ duct = envelope - extrude(interior, amount=xi, both=True)
 
 ears = speaker_ears(sp)
 ear_y = Yf + sp["ear_front"]
-keep = envelope + Pos(0, Yf - 0.01, 0) * Box(4 * xo, sp["ear_front"] + 0.02, 400, align=(CENTER, MIN, CENTER))
+x_keep = max(xo, max(abs(ex) for ex, _ in ears) + sp["standoff_d"]) + 1
+side = extrude(offset(interior, amount=dt, kind=Kind.INTERSECTION), amount=x_keep, both=True)
+side &= Pos(0, (wall + Yf) / 2, 0) * Box(2 * x_keep, Yf - wall, 400)
+keep = side + Pos(0, Yf - 0.01, 0) * Box(2 * x_keep, sp["ear_front"] + 0.02, 400, align=(CENTER, MIN, CENTER))
 for ex, ey in ears:
     at_x, at_z = ex, sp_cz + ey
     # run each standoff the full length of the duct so it grows from the bed when
     # printed mouth-down; the roof clips the upper pair where it slopes away
     column = Pos(at_x, ear_y, at_z) * Cylinder(
         sp["standoff_d"] / 2, ear_y - wall, rotation=(90, 0, 0), align=(CENTER, CENTER, MIN))
+    if abs(at_x) > xo - sp["standoff_d"] / 2:
+        # ears beyond the duct's side walls: a web joins each standoff to its wall
+        x_in = math.copysign(xo - 0.5, at_x)
+        column += Pos((x_in + at_x) / 2, ear_y, at_z) * Box(
+            abs(at_x - x_in), ear_y - wall, sp["standoff_d"], align=(CENTER, MAX, CENTER))
     duct += column & keep
-    duct += Pos(at_x, ear_y - 0.01, at_z) * Cylinder(
-        sp["spigot_d"] / 2, sp["spigot_h"] + 0.01, rotation=(-90, 0, 0), align=(CENTER, CENTER, MIN))
+    if sp["spigot_d"]:
+        duct += Pos(at_x, ear_y - 0.01, at_z) * Cylinder(
+            sp["spigot_d"] / 2, sp["spigot_h"] + 0.01, rotation=(-90, 0, 0), align=(CENTER, CENTER, MIN))
     duct -= Pos(at_x, ear_y + sp["spigot_h"] + 0.01, at_z) * Cylinder(
         sp["pilot"] / 2, 10, rotation=(90, 0, 0), align=(CENTER, CENTER, MIN))
 

@@ -8,8 +8,8 @@ collection:
   tagline: Stands with a speaker and USB-C for the Waveshare ESP32-P4 7" touch display.
   intro: >-
     Enclosures for the Waveshare ESP32-P4-WIFI6-Touch-LCD-7B 7" touch display,
-    each with a 100 × 45 mm speaker and a panel-mount USB-C port in the back. All
-    three share the same front plate: the display drops into a pocket from
+    each with a small enclosed speaker (28 × 31 × 15 mm) and a panel-mount USB-C
+    port in the back. All three share the same front plate: the display drops into a pocket from
     behind, glass against a 1.6 mm facade with a window 0.5 mm larger than the
     visible area, held by four printed clamp tabs.
   cover: chin-speaker
@@ -43,7 +43,7 @@ categories:
   - id: stands
     name: Stands
     blurb: >-
-      Two 45° desk stands and a bedside stand that tilts. The display, speaker
+      Two 55° desk stands and a bedside stand that tilts. The display, speaker
       and port in the renders are stand-ins for the bought parts.
 
 parts:
@@ -55,20 +55,20 @@ parts:
     assembly: step/p4_7b_enclosure_assembly.step
     status: ready to print
     summary: >-
-      A 45° desk stand with the speaker in the chin under the screen, firing up
+      A 55° desk stand with the speaker in the chin under the screen, firing up
       and forward through a slotted grille. The best sounding of the three.
     how: >-
-      The speaker sits in a ring on the back of the front plate, its ears on
-      standoff spigots. The plate, with the display clamped into it, drops into
+      The speaker sits in a ring on the back of the front plate, its two ears
+      screwed to standoffs. The plate, with the display clamped into it, drops into
       the open-topped body; the roof over the back is part of the plate, printed
       face down, so neither part needs supports. Four countersunk M3 screws
       through the side walls hold the two together.
     specs:
-      Size (W × D × H): 186 × 136 × 137 mm
-      Screen angle: 45°
-      Speaker: in the chin, slotted grille in the 45° face
+      Size (W × D × H): 186 × 108 × 137 mm
+      Screen angle: 55°
+      Speaker: in the chin, 6-slot grille in the 55° face
       Printed parts: front plate, body, 4 clamp tabs
-      Screws: M3 × 8 throughout, M2.5 × 6 into the display
+      Screws: M3 × 8 throughout, M2.5 × 6 into the display, M2 × 6 into the speaker ears
     print: >-
       Front plate facade down, body on its floor, clamp tabs flat. PLA or PETG,
       0.2 mm layers, 3+ walls, no supports. Black plate filament hides the 0.5 mm
@@ -87,24 +87,26 @@ parts:
     assembly: step/p4_7b_compact_assembly.step
     status: ready to print
     summary: >-
-      A smaller 45° desk stand: the speaker stands at the back and a printed duct
-      carries its sound forward to a slot grille in the front lip.
+      A smaller 55° desk stand: the speaker stands in the base behind the screen
+      and a printed duct carries its sound forward to a slot grille in the front
+      lip.
     how: >-
-      The speaker's face seals against the duct's rear rim. The duct runs forward
-      along the floor, its roof sloping down at 35° to pass under the display,
-      and ends in a 98 × 14 mm mouth behind 17 slots in the front lip. Sound
+      The speaker's face seals against the duct's rear rim, its two ears screwed
+      to standoffs beside the duct. The duct runs forward along the floor, its
+      roof sloping down at 45° to pass under the display, and ends in a
+      26 × 14 mm mouth behind 5 slots in the front lip. Sound
       never enters the rest of the case, so it doesn't buzz and the speaker stays
       away from the mics. With no chin, the frame is an even 16.3 mm all round.
     specs:
-      Size (W × D × H): 188 × 95 × 111 mm
-      Screen angle: 45°
-      Speaker: at the back, ducted to the front lip
-      Duct mouth: 98 × 14 mm
+      Size (W × D × H): 188 × 83 × 122 mm
+      Screen angle: 55°
+      Speaker: in the base, ducted to the front lip
+      Duct mouth: 26 × 14 mm, behind 5 slots
       Printed parts: front plate, body, duct, 4 clamp tabs
-      Screws: M3 × 8 throughout, M2.5 × 6 into the display
+      Screws: M3 × 8 throughout, M2.5 × 6 into the display, M2 × 6 into the speaker ears
     print: >-
       Front plate facade down, body on its floor, duct mouth down (its widest
-      wall leans 35°), clamp tabs flat. PLA or PETG, 0.2 mm layers, 3+ walls,
+      wall leans 45°), clamp tabs flat. PLA or PETG, 0.2 mm layers, 3+ walls,
       no supports.
     downloads:
       - waveshare-esp32-p4-wifi6-touch-lcd-7b/compact-ducted/step/p4_7b_compact_assembly.step
@@ -129,15 +131,16 @@ parts:
     how: >-
       The case's knuckle and the tower lid's knuckle sit side by side on an M4
       bolt with 36 radial teeth between them, so it locks in 10° steps: loosen
-      the knob about 1.5 turns, tilt, tighten. The speaker lies face up under an
-      11-slot grille in the tower lid, on a foam gasket. One flat USB-C cable
+      the knob about 1.5 turns, tilt, tighten. The speaker lies face up on two
+      posts, an M2 × 6 screw through each ear, under a 3-slot grille in the
+      tower lid, which presses on it through a foam gasket. One flat USB-C cable
       runs from a socket in the tower's back wall up through wire passes into
       the case. The front plate and deck lid snap on.
     specs:
       Size (W × D × H): 188 × 101 × 141 mm upright
       Tilt: 0 to 30° in 10° steps
       Hinge: 36 teeth, M4 × 30 bolt in a printed knob
-      Speaker: face up under an 11-slot grille
+      Speaker: face up under a 3-slot grille
       Printed parts: front plate, back shell, case hinge, knob, base, deck lid, tower lid, 4 clamp tabs
     print: >-
       Every part prints as exported, without supports: front plate facade down,

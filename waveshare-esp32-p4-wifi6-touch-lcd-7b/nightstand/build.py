@@ -53,7 +53,7 @@ Y_sc = Y_g0 + gr["length"] / 2                      # speaker centre, under the 
 z_tl = ba["tower_h"]                                # tower lid underside
 z_tt = z_tl + ba["tower_lid_t"]
 z_sf = z_tl - ba["speaker_gasket"]                  # speaker face, up
-x_ti = sw / 2 + ba["tower_side_room"]               # tower interior half-width
+x_ti = max(sw, sp["ear_span"]) / 2 + ba["tower_side_room"]   # tower interior half-width
 x_to = x_ti + bw
 Y_back = Y_sc + sh / 2 + ba["tower_rear_room"] + bw  # back of the base
 X_b = ba["width"] / 2
@@ -407,12 +407,15 @@ def build_base():
                    ba["tower_corner_r"])
     base += tower
     base -= Pos(0, Y_tw, z_fi) * Box(2 * x_ti, Y_back - bw - Y_tw, z_tl, align=(CENTER, MIN, MIN))
-    # speaker posts from the floor to its ears, a spigot into each ear hole
+    # speaker posts from the floor to its ears, a pilot for the ear screw in each
     for ex, ey in ears:
         base += Pos(ex, Y_sc + ey, z_fi - 0.01) * Cylinder(sp["standoff_d"] / 2, z_ear - z_fi + 0.01,
                                                           align=(CENTER, CENTER, MIN))
-        base += Pos(ex, Y_sc + ey, z_ear - 0.01) * Cylinder(sp["spigot_d"] / 2, sp["spigot_h"] + 0.01,
-                                                           align=(CENTER, CENTER, MIN))
+        if sp["spigot_d"]:
+            base += Pos(ex, Y_sc + ey, z_ear - 0.01) * Cylinder(sp["spigot_d"] / 2, sp["spigot_h"] + 0.01,
+                                                               align=(CENTER, CENTER, MIN))
+        base -= Pos(ex, Y_sc + ey, z_ear + 0.01) * Cylinder(sp["pilot"] / 2, ba["speaker_pilot_depth"] + 0.01,
+                                                           align=(CENTER, CENTER, MAX))
     # tower lid screw bosses in the four corners
     for sx in (-1, 1):
         for y_ in tb_ys:
@@ -464,9 +467,14 @@ def build_tower_lid():
             tl -= countersink_up(sx * tb_x, y_, z_tt, z_tt - z_tl)
     pitch, n = gr["slot"] + gr["bar"], gr["slots"]
     assert (n - 1) * pitch + gr["slot"] <= sw - 2, "grille wider than the speaker face"
+    r_o = sp["opening_d"] / 2 - gr["opening_margin"]
     with BuildSketch(Plane.XY.offset(z_tl - 0.01)) as sk:
-        with Locations(*[((i - (n - 1) / 2) * pitch, Y_sc) for i in range(n)]):
-            SlotOverall(gr["length"], gr["slot"], rotation=90)
+        for i in range(n):
+            x = (i - (n - 1) / 2) * pitch
+            x_edge = abs(x) + gr["slot"] / 2        # each slot stays over the cone opening
+            length = min(gr["length"], 2 * math.sqrt(r_o ** 2 - x_edge ** 2))
+            with Locations((x, Y_sc)):
+                SlotOverall(length, gr["slot"], rotation=90)
     tl -= extrude(sk.sketch, amount=z_tt - z_tl + 0.02)
     return labelled(tl, "tower_lid")
 
@@ -509,8 +517,8 @@ def cable_routes():
     y_d = Y_tw + t_ / 2 + 2.0                         # down the inside of the tower front
     y_sock = usb_port_stand_in(P, Y_back).bounding_box().min.Y   # the connector's back end
     in_base = [(wr["x"], Y_tf + t_, z_w), (wr["x"], y_d, z_w), (wr["x"], y_d, z_f),
-               (up["x"], y_d + 12, z_f), (up["x"], y_sock - 3, z_f)]
-    base_n = [(0, 0, 1), (0, 1, 0), (0, 0, 1), (0, 0, 1)]
+               (wr["x"], y_d + 6, z_f), (up["x"], y_d + 18, z_f), (up["x"], y_sock - 3, z_f)]
+    base_n = [(0, 0, 1), (0, 1, 0), (0, 0, 1), (0, 0, 1), (0, 0, 1)]
     return (in_case, case_n), (in_base, base_n)
 
 
@@ -527,7 +535,7 @@ def gasket():
     """Foam tape on the speaker face's rim, compressed under the tower lid."""
     t_ = ba["speaker_gasket"]
     ring = Pos(0, Y_sc, z_sf) * Box(sw, sh, t_, align=(CENTER, CENTER, MIN))
-    ring -= Pos(0, Y_sc, z_sf) * Box(sw - 6, sh - 6, 3 * t_)
+    ring -= Pos(0, Y_sc, z_sf) * Cylinder(sp["opening_d"] / 2, 3 * t_)   # the face outside the cone opening
     return labelled(ring, "speaker_gasket")
 
 

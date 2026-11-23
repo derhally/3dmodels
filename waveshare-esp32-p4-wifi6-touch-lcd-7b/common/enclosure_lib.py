@@ -194,9 +194,14 @@ def top_cap(g, W, L, D):
     Yc, Zc = L * g.co, g.h0 + L * g.si
     cap = extrude(Plane.YZ * Polygon((Yc, Zc), (D, Zc), (D, Zc - wall), (Yc + wall * tan, Zc - wall),
                                      align=None), amount=W / 2, both=True)
-    rib_y = D - wall - 0.2
-    cap += Pos(0, rib_y, Zc - wall + 0.01) * Box(W - 2 * wall - 0.4 - 2 * 8, 1.2, 2.0,
-                                                 align=(CENTER, MAX, MAX))
+    rib_y, rib_t, rib_h = D - wall - 0.2, 1.2, 2.0
+    # printed face-down the rib's front face overhangs at the plate angle: above
+    # 45 deg, lean it back so it never exceeds 45
+    lean = rib_h * math.tan(math.radians(max(0.0, g.angle - 45)))
+    z_top = Zc - wall + 0.01
+    rib = Plane.YZ * Polygon((rib_y - rib_t, z_top), (rib_y, z_top), (rib_y, z_top - rib_h),
+                             (rib_y - rib_t + lean, z_top - rib_h), align=None)
+    cap += extrude(rib, amount=(W - 2 * wall - 0.4 - 2 * 8) / 2, both=True)
     return cap
 
 
@@ -329,19 +334,23 @@ def display_stand_ins(g, s_g):
 
 
 def speaker_stand_in(sp, ears):
-    """Speaker box, cone face at z = 0 and back toward -z, with notched corner ears."""
+    """Speaker box, cone face at z = 0 and back toward -z, with a screw ear each side:
+    a tab from the body out to a round end round the hole."""
     spk = Box(sp["width"], sp["height"], sp["depth"], align=(CENTER, CENTER, MAX))
+    z_e = -sp["ear_front"]
     for ex, ey in ears:
-        spk -= Pos(ex, ey, 0.01) * Cylinder(sp["notch_r"], sp["ear_front"] + 0.01, align=(CENTER, CENTER, MAX))
-        spk -= Pos(ex, ey, -(sp["ear_front"] + sp["ear_t"])) * Cylinder(
-            sp["notch_r"], sp["depth"], align=(CENTER, CENTER, MAX))
-        spk -= Pos(ex, ey, 0) * Cylinder(sp["hole_d"] / 2, 3 * sp["depth"])
+        sx = math.copysign(1, ex)
+        tab = Pos((sp["width"] / 2 - 1 + abs(ex)) / 2 * sx, ey, z_e) * Box(
+            abs(ex) - sp["width"] / 2 + 1, sp["ear_w"], sp["ear_t"], align=(CENTER, CENTER, MAX))
+        tab += Pos(ex, ey, z_e) * Cylinder(sp["ear_tip_r"], sp["ear_t"], align=(CENTER, CENTER, MAX))
+        spk += tab - Pos(ex, ey, z_e) * Cylinder(sp["hole_d"] / 2, 3 * sp["ear_t"])
     spk.label = "speaker"
     return spk
 
 
 def speaker_ears(sp):
-    return [(px * sp["hole_dx"] / 2, py * sp["hole_dy"] / 2) for px in (-1, 1) for py in (-1, 1)]
+    ys = (-1, 1) if sp["hole_dy"] else (0,)
+    return [(px * sp["hole_dx"] / 2, py * sp["hole_dy"] / 2) for px in (-1, 1) for py in ys]
 
 
 def usb_port_stand_in(P, D):

@@ -1,9 +1,9 @@
 # Compact ducted variant
 
-The speaker stands upright at the back of the base, cones facing forward. A
+The speaker stands upright in the base behind the screen, cone facing forward. A
 printed duct carries its sound forward under the display to a slot grille in
 the front lip. With no chin, the screen sits low and the frame is an even
-16.3 mm all round. 188 W × 95 D × 111 H mm.
+16.3 mm all round. 188 W × 83 D × 122 H mm.
 
 See the [device README](../README.md) for the shared facade, display mounting,
 USB-C port and how the files were made.
@@ -24,13 +24,19 @@ USB-C port and how the files were made.
 ## How the duct works
 
 - The speaker's face seals against the duct's rear rim, which overlaps the edge
-  of the speaker face by 1 mm. Its corner ears sit on four standoffs at the
-  duct's rear corners, located by spigots in the ear holes.
-- The duct runs forward along the floor. Its roof slopes down at 35° to pass
-  1 mm under the display's lowest point, then levels out to a 98 × 14 mm mouth.
-  35° is gentler than the 45° screen, so the roof stays clear of the display and
-  leans only 35° when printed. `duct.roof_angle` in `params.yaml` sets it.
-- The mouth butts against the inside of the front lip, behind 17 vertical slots.
+  of the speaker face by 1 mm. Its two ears sit on two standoffs beside the
+  duct, each joined to the duct's side wall by a web. The standoffs run the
+  full length of the duct, so they grow from the bed when it is printed
+  mouth-down.
+- The duct is 26 mm wide inside and runs forward along the floor. Its roof
+  slopes down at 45° to pass 1 mm under the display's lowest point and 0.5 mm
+  under the front plate's lower back edge, then levels out to a 26 × 14 mm
+  mouth. 45° is gentler than the 55° screen, so the roof stays clear of the
+  display, and it is the lean of the duct's widest wall when printed. It also
+  keeps the duct short: the speaker sits forward and leaves 11 mm between its
+  back and the USB-C connector in the middle of the back wall, for the
+  connector's ribbon to bend. `duct.roof_angle` in `params.yaml` sets it.
+- The mouth butts against the inside of the front lip, behind 5 vertical slots.
 - Sound never enters the rest of the enclosure. That keeps the case from
   buzzing and keeps the speaker away from the mics.
 
@@ -39,13 +45,13 @@ USB-C port and how the files were made.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
-| 1 | Box speaker 100 × 45 × 20.75 mm, four Ø6.2 mm corner ears 10 mm behind the cone face | Audio, into the board's PH2.0 `SPK` header (lead ~10 cm) |
+| 1 | Enclosed speaker 28 × 31 × 15 mm, one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
 | 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with flat ribbon | Board's middle `USB` port, spliced to the socket's four wires |
 | 4 | M2.5 × 6 screw | Clamp tabs into the display's standoffs |
-| 12 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 4 speaker ears onto the duct's standoffs, 4 duct lugs into the floor bosses |
+| 8 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 4 duct lugs into the floor bosses |
 | 4 | M3 × 8 countersunk (90°) screw | Front plate to body, through the side walls |
-| 4 | M3 washer, 7 mm OD or larger (9 mm fender washer preferred) | Under the speaker-ear screws, bridging the 6.2 mm ear holes |
+| 2 | M2 × 6 self-tapping screw | Speaker ears onto the duct's standoffs, from behind |
 | 4 | Rubber foot, 10 mm (optional) | Recesses in the base |
 
 ## Printing
@@ -54,15 +60,15 @@ USB-C port and how the files were made.
 |---|---|---|
 | Front plate | Facade on the bed | None |
 | Body | On its floor | None |
-| Duct | Mouth on the bed (as exported) | None. The widest wall leans 35°, and the standoffs and lugs grow from the bed or the duct wall |
+| Duct | Mouth on the bed (as exported) | None. The widest wall leans 45°, and the standoffs and lugs grow from the bed or the duct wall |
 | Clamp tabs | Flat | None |
 
 PLA or PETG, 0.2 mm layers, 3+ walls.
 
 ## Assembly
 
-1. Screw the speaker onto the duct: cones against the rim, each ear over a
-   standoff spigot, M3 × 8 and washer from behind.
+1. Screw the speaker onto the duct: face against the rim, each ear on its
+   standoff, an M2 × 6 through each ear from behind.
 2. Set the duct in the body with its mouth against the front lip and screw its
    four lugs to the floor bosses (M3 × 8).
 3. Set the USB-C connector's flange into the pocket inside the back wall and fit
@@ -78,6 +84,8 @@ PLA or PETG, 0.2 mm layers, 3+ walls.
 
 ## Notes
 
-- The front lip is 25.7 mm tall to fit the 14 mm duct mouth under the display.
-  `duct.mouth_h` in `params.yaml` trades mouth size against overall height:
-  roughly 1 mm of height per 1 mm of mouth.
+- The front lip is 23.3 mm tall to fit the 14 mm duct mouth under the front
+  plate's lower edge. `duct.mouth_h` in `params.yaml` trades mouth size against
+  overall height: roughly 1 mm of height per 1 mm of mouth.
+- The speaker ears take M2 × 6 self-tapping screws into Ø1.6 mm pilots in the
+  standoffs. This fit hasn't been confirmed by a print yet.

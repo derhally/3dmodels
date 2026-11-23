@@ -88,24 +88,28 @@ base:
   tower_gap: 1.5         # upright case back to the tower front face
   tower_h: 50.0          # tower walls' top = tower lid underside (the lid stays 3 below the
                          # hinge knuckles)
-  tower_side_room: 6.0   # each side of the speaker: the lid screw bosses, and keeps the
+  tower_side_room: 6.0   # each side of the speaker's ears: the lid screw bosses, and keeps the
                          # countersinks inside the lid's rounded top edge
-  tower_rear_room: 1.0   # behind the speaker
+  tower_rear_room: 11.0  # behind the speaker: keeps the base 100.9 deep as with the old
+                         # 100 x 45 speaker, so the stand doesn't tip more easily
   tower_lid_t: 2.4
   lid_snaps_y: [8.0, 60.0]   # deck lid snaps on each side wall (Y)
   lid_snaps_x: [-65.0, 65.0] # and on the front wall (X)
   speaker_gasket: 1.0    # speaker face below the tower lid: foam tape on the face's rim,
                          # compressed to this, seals it to the grille and stops rattles
   tower_boss_d: 5.5      # tower lid screw bosses in the tower's four corners
+  speaker_pilot_depth: 4.5  # M2 x 6 through the 2.83 ear: 3.2 into the post, 1.3 spare
   pilot: 2.5             # M3 self-tapping
   pilot_depth: 6.5
 
 grille:                  # slots through the tower lid over the speaker, running front to
-                         # back: the deck grille Zeid picked (11 x 4 mm, 4.4 mm bars) turned up
-  slots: 11
+                         # back: Zeid's grille style (4 mm slots, 4.4 mm bars) over the cone
+  slots: 3               # as many as fit across the 25 mm cone opening
   slot: 4.0
   bar: 4.4
-  length: 28.0           # slot length (Y); the speaker is centred under the slots
+  length: 22.0           # longest slot (Y); each slot is cut short to stay over the opening.
+                         # The speaker is centred under the slots
+  opening_margin: 0.5    # slot ends inside the cone opening's edge
   clear: 2.0             # slots start this far behind the knob and the knuckles, so the
                          # hinge never sits over them at any tilt
 
@@ -113,7 +117,8 @@ wire:                    # USB-C cable and speaker lead from the tower into the 
                          # facing holes in the tower front and the case back, across the
                          # 1.5 mm gap; tilting to 30 deg opens it to ~16 mm, so leave ~20 mm
                          # of slack inside the case
-  x: -36.0               # hole centre, seen from the front
+  x: -14.0               # hole centre, seen from the front: inside the tower, clear of the
+                         # lid screw bosses
   z0: 29.0               # hole bottom above the table, upright
   plug: [11.0, 11.0, 6.0]  # the cable's 90 deg USB-C plug head: width along the metal x depth
                          # (seller drawing, 11 x 11) x height under the metal (ASSUMED); the
@@ -141,7 +146,7 @@ snap:                    # cantilever snaps with 45 deg barbs and ridges: every 
 
 usb_port:                # the cable's own screw-on USB-C socket in the tower's back wall, under
                          # the speaker
-  x: -30.0               # clear of the speaker posts
+  x: 0.0                 # centred, between the speaker posts
   z: 9.4                 # centre height
   screw_body: [13.0, 7.0, 19.5]  # body behind the flange, stand-in only: depth from the seller
                          # drawing (19.5 front face to the ribbon's strain relief, taken from the
@@ -158,5 +163,5 @@ mass:                    # for the tip check; PLA parts from their volume
   pla_density: 1.24      # g/cm3
   pla_fill: 0.85         # thin-walled parts at 3 walls print close to solid
   display: 230           # g, ASSUMED: please weigh the display and board
-  speaker: 70            # g, ASSUMED: please weigh the speaker
+  speaker: 25            # g, ASSUMED for the 28 x 31 speaker: please weigh it
   hardware: 15           # g, screws, bolt, nut, port (estimate)

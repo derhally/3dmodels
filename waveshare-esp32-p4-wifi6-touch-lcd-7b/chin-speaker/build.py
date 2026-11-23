@@ -1,4 +1,4 @@
-"""45-degree desk enclosure with the speaker in the chin under the screen.
+"""55-degree desk enclosure with the speaker in the chin under the screen.
 
     pip install build123d pyyaml
     python build.py [params.yaml] [output_dir]
@@ -61,8 +61,9 @@ ear_z = -(t + sp["ear_front"])
 for ex, ey in ears:
     at = (ex, s_sp + ey)
     plate += Pos(*at, -t + 0.5) * Cylinder(so_r, sp["ear_front"] + 0.5, align=(CENTER, CENTER, MAX))
-    plate += Pos(*at, ear_z + 0.01) * Cylinder(
-        sp["spigot_d"] / 2, sp["spigot_h"] + 0.01, align=(CENTER, CENTER, MAX))
+    if sp["spigot_d"]:
+        plate += Pos(*at, ear_z + 0.01) * Cylinder(
+            sp["spigot_d"] / 2, sp["spigot_h"] + 0.01, align=(CENTER, CENTER, MAX))
     plate -= Pos(*at, ear_z - sp["spigot_h"] - 0.01) * Cylinder(
         sp["pilot"] / 2, t + sp["ear_front"] + sp["spigot_h"] - 1.2, align=(CENTER, CENTER, MIN))
 n_slots = int((sh - 8) // 4.5) + 1

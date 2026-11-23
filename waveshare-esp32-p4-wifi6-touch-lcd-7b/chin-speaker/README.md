@@ -1,7 +1,9 @@
 # Chin-speaker variant
 
-The speaker sits in the chin under the screen, behind a slotted grille on the
-45° face, so it fires up and forward at you. 186 W × 136 D × 137 H mm.
+The speaker sits in the chin under the screen, in a ring on the back of the
+front plate, behind six slots (18.4 mm long, 2.4 mm wide) in the 55° face, so
+it fires up and forward at you. Its two ears sit on two Ø5 mm standoffs.
+186 W × 108 D × 137 H mm.
 
 See the [device README](../README.md) for the shared facade, display mounting,
 USB-C port and how the files were made.
@@ -23,13 +25,13 @@ USB-C port and how the files were made.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
-| 1 | Box speaker 100 × 45 × 20.75 mm, four Ø6.2 mm corner ears 10 mm behind the cone face | Audio, into the board's PH2.0 `SPK` header (lead ~12 cm) |
+| 1 | Enclosed speaker 28 × 31 × 15 mm, one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
 | 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with flat ribbon | Board's middle `USB` port, spliced to the socket's four wires |
 | 4 | M2.5 × 6 screw | Clamp tabs into the display's standoffs |
-| 8 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 4 speaker ears onto their standoffs |
+| 4 | M3 × 8 pan-head screw | Clamp tabs into the plate's columns |
 | 4 | M3 × 8 countersunk (90°) screw | Front plate to body, through the side walls |
-| 4 | M3 washer, 7 mm OD or larger (9 mm fender washer preferred) | Under the speaker-ear screws, bridging the 6.2 mm ear holes |
+| 2 | M2 × 6 self-tapping screw | Speaker ears onto their standoffs |
 | 4 | Rubber foot, 10 mm (optional) | Recesses in the base |
 
 ## Printing
@@ -45,8 +47,8 @@ black glass that shows around the screen.
 
 ## Assembly
 
-1. Fit the speaker into the ring on the back of the plate, cones toward the
-   grille. Each ear drops over a standoff spigot; fix it with an M3 × 8 and washer.
+1. Fit the speaker into the ring on the back of the plate, cone toward the
+   grille. Its two ears rest on the standoffs; fix each with an M2 × 6.
 2. Lay the plate face-down and set the display into the pocket from behind. At
    each corner, a clamp tab goes across the standoff and the column next to it:
    M2.5 × 6 into the standoff, M3 × 8 through the slot into the column.
@@ -61,5 +63,7 @@ black glass that shows around the screen.
 ## Notes
 
 - The power switch and the RESET/BOOT buttons end up inside. Leave the switch on.
+- The speaker ears take M2 × 6 self-tapping screws into Ø1.6 mm pilots in the
+  standoffs. This fit hasn't been confirmed by a print yet.
 - For a cable pass-through instead of the port, set `usb_port.enabled: false`
   and `usb_notch.enabled: true` in `params.yaml`.
