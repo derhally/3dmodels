@@ -30,7 +30,7 @@ they're weighed. Print the hinge test and the snap test first.
 
 | Part | What it does |
 |---|---|
-| Front plate | The shared facade and display pocket, as the desk stands; snaps into the back shell |
+| Front plate | The shared facade and display pocket, as the desk stands; a light-sealing lip round its back; snaps into the back shell |
 | Back shell | Closed box behind the plate: vents and a wire pass in its back panel |
 | Case hinge | Bracket screwed to the shell's back from inside: carries the case knuckle and its teeth |
 | Knob | Knurled thumb knob holding the M4 bolt's head |
@@ -71,10 +71,17 @@ they're weighed. Print the hinge test and the snap test first.
   to the `SPK` header. The route uses about 200 mm of the cable, including the
   loop across the gap: leave about 25 mm of slack there for the 30° tilt and
   coil the spare inside the tower, under the speaker.
-- **Snaps.** The front plate clips into the back shell (8 snaps) and the deck lid
-  onto the base (6). The arms have 45° barbs that hook behind 45° ridges, so a
-  firm pull releases them for service. The tower lid keeps screws because it
-  carries the hinge; the hinge bracket and the clamp tabs keep theirs too.
+- **Snaps.** The front plate clips into the back shell (12 snaps, arms 2 mm thick,
+  12 mm wide and 15 mm long with a 1 mm catch) and the deck lid onto the base (6).
+  Each plate arm grows out of the light-seal lip, which holds its first 3 mm, so
+  12 mm still bends. The arms have 45° barbs that hook behind 45° ridges, so a
+  firm pull releases them for service. To open the case, take it off the hinge
+  (or tilt it back) and lever the plate off with a coin or flat screwdriver in
+  the two slots in the shell's bottom rim, 65 mm either side of centre. The tower lid keeps screws because it carries the hinge; the hinge
+  bracket and the clamp tabs keep theirs too.
+- **Light seal.** A 0.8 mm lip runs round the back of the front plate, 3 mm deep,
+  just inside the back shell's walls. It covers the seam so the backlight doesn't
+  show at the sides, and lines the two parts up as they close.
 - **No supports.** Every part is split so its roofs print face-down or as walls.
   `check.py` checks every face in print orientation: the only faces flatter than
   45° are the tops of the USB-C connector's opening and flange pocket, short

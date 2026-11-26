@@ -26,9 +26,13 @@ case:
   rear_clearance: 2.0    # behind the clamp-tab screw heads (deepest part in the case)
   bottom_gap: 3.0        # case bottom above the deck top when upright (design choice)
   vent_slots: 9          # vertical slots near the top of the back panel, as compact
-  snaps_s: [25.0, 95.0]  # plate-to-shell snaps on each side wall, up the case (between the
-                         # clamp columns)
-  snaps_x: [-45.0, 45.0] # and on the bottom and top walls, across (clear of the mic holes)
+  snaps_s: [25.0, 60.0, 92.0]  # plate-to-shell snaps on each side wall, up the case (between
+                         # the clamp columns); 12 in all, firmer than the first print's 8
+  snaps_x: [-40.0, 0.0, 40.0] # and on the bottom and top walls, across (clear of the mic holes)
+  pry_notch: {x: [-65.0, 65.0], w: 10.0, depth: 2.0}  # slots in the shell's bottom rim at the
+                         # seam: a coin or flat screwdriver levers the plate off (lip still covers)
+  lip: {t: 0.8, clear: 0.2, depth: 3.0}  # wall round the plate's back just inside the shell's
+                         # walls: covers the seam so no light leaks out, and lines the parts up
   corner_r: 8.0          # case corners seen from the front (design choice)
   soft_edge: [1.2, 2.5]  # front and back perimeter: 45 deg chamfer on the bed side, then this
                          # fillet radius between it and the sides, so it prints without overhang
@@ -143,6 +147,16 @@ snap:                    # cantilever snaps with 45 deg barbs and ridges: every 
   ridge: 1.0             # ridge height off the wall
   gap: 1.2               # arm to wall: the arm clears the ridge by 0.2; barb and ridge
                          # overlap 0.6 (barb + ridge - gap)
+
+case_snap:               # front plate to back shell: firmer than `snap` (the first print's
+                         # 1.6 x 8 x 10 arms with a 0.6 catch held too lightly). About 2.8x per snap
+  arm_t: 2.0
+  arm_w: 12.0
+  arm_l: 15.0            # root joined to the lip for its 3 mm depth, so 12 mm bends:
+                         # 2.1 % strain at the 1.0 mm deflection
+  barb: 1.3
+  ridge: 1.2
+  gap: 1.5               # arm to wall: the lip fills 1.0 of it; clears the ridge by 0.3; catch 1.0
 
 usb_port:                # the cable's own screw-on USB-C socket in the tower's back wall, under
                          # the speaker

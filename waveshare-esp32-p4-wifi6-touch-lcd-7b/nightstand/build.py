@@ -134,6 +134,7 @@ def soft_edges(part, edges, n, level, c, r):
 
 sn = P["snap"]
 SNAP_E = sn["barb"] + sn["ridge"] - sn["gap"]       # barb / ridge overlap = insertion deflection
+cs = {**sn, **P["case_snap"]}                       # front plate to back shell: firmer
 
 
 def snap_frame(root, out, along):
@@ -141,25 +142,25 @@ def snap_frame(root, out, along):
     return Plane(origin=root, x_dir=out, z_dir=along)
 
 
-def snap_arm(frame, w=None, length=None, barb=None):
+def snap_arm(frame, w=None, length=None, barb=None, spec=sn):
     """Cantilever arm from the root plane along +z, outer face at x = 0, with a 45 deg
     barb toward +x whose tip-most point is `length` from the root."""
-    w = w or sn["arm_w"]
-    length = length or sn["arm_l"]
-    b = barb or sn["barb"]
-    arm = Pos(-sn["arm_t"] / 2, 0, length / 2) * Box(sn["arm_t"], w, length + 0.02)
+    w = w or spec["arm_w"]
+    length = length or spec["arm_l"]
+    b = barb or spec["barb"]
+    arm = Pos(-spec["arm_t"] / 2, 0, length / 2) * Box(spec["arm_t"], w, length + 0.02)
     tooth = extrude(Plane.XZ * Polygon((0, length - 2 * b), (b, length - b), (0, length), align=None),
                     amount=w / 2, both=True)
     return frame.location * (arm + tooth)
 
 
-def snap_ridge(frame, w=None, length=None):
+def snap_ridge(frame, w=None, length=None, spec=sn):
     """The wall ridge an arm built on the same frame snaps behind: 45 deg flanks,
     its tip-side flank flush against the barb's root-side flank."""
-    w = (w or sn["arm_w"]) + 2
-    length = length or sn["arm_l"]
-    g, h = sn["gap"], sn["ridge"]
-    z = length - sn["barb"] - SNAP_E                  # ridge apex along the arm
+    w = (w or spec["arm_w"]) + 2
+    length = length or spec["arm_l"]
+    g, h = spec["gap"], spec["ridge"]
+    z = length - spec["barb"] - (spec["barb"] + h - g)   # ridge apex along the arm
     tri = Polygon((g + 0.3, z - h - 0.3), (g, z - h), (g - h, z), (g, z + h), (g + 0.3, z + h + 0.3), align=None)
     return frame.location * extrude(Plane.XZ * tri, amount=w / 2, both=True)
 
@@ -172,10 +173,10 @@ def plate_snaps():
     frames = []
     for sx in (-1, 1):
         for s_ in ca["snaps_s"]:
-            frames.append(snap_frame((sx * (xw - sn["gap"]), s_, z0), (sx, 0, 0), back))
+            frames.append(snap_frame((sx * (xw - cs["gap"]), s_, z0), (sx, 0, 0), back))
     for x_ in ca["snaps_x"]:
-        frames.append(snap_frame((x_, s0 + sn["gap"], z0), (0, -1, 0), back))
-        frames.append(snap_frame((x_, s1 - sn["gap"], z0), (0, 1, 0), back))
+        frames.append(snap_frame((x_, s0 + cs["gap"], z0), (0, -1, 0), back))
+        frames.append(snap_frame((x_, s1 - cs["gap"], z0), (0, 1, 0), back))
     return frames
 
 
@@ -220,7 +221,19 @@ def build_plate():
     plate = facade_plate(g, W, L, s_g)
     plate = add_clamp_columns(plate, g, [(cx, cs) for _, _, cx, cs in columns], (col_x, col_s))
     for fr in plate_snaps():
-        plate += snap_arm(fr)
+        plate += snap_arm(fr, spec=cs)
+    # light-blocking lip round the plate's back, just inside the shell's walls
+    lp = ca["lip"]
+
+    def ring(inset):
+        with BuildSketch(Plane.XY.offset(-t + 0.01)) as sk:
+            with Locations((0, L / 2)):
+                RectangleRounded(W - 2 * inset, L - 2 * inset, ca["corner_r"] - inset)
+        return extrude(sk.sketch, amount=-(lp["depth"] + 0.01))
+    plate += ring(wall + lp["clear"]) - ring(wall + lp["clear"] + lp["t"])
+    fill = cs["gap"] - lp["clear"] - lp["t"]        # each arm's root joined to the lip over its depth
+    for fr in plate_snaps():
+        plate += fr.location * Pos(fill / 2, 0, lp["depth"] / 2) * Box(fill + 0.1, cs["arm_w"], lp["depth"])
     with BuildSketch() as outline:                  # rounded corners seen from the front
         with Locations((0, L / 2)):
             RectangleRounded(W, L, ca["corner_r"])
@@ -246,7 +259,10 @@ def build_shell():
     shell = soft_edges(shell, outer_face(shell, "Y", D_case).edges(), (0, 1, 0), D_case, c, r)
     shell -= prism(t - 1, D_case - wall, wall)
     for fr in plate_snaps():                         # ridges the front plate snaps behind
-        shell += g.to_world(snap_ridge(fr))
+        shell += g.to_world(snap_ridge(fr, spec=cs))
+    pn = ca["pry_notch"]                             # slots in the bottom rim for prying the plate off
+    for x_ in pn["x"]:
+        shell -= Pos(x_, t - 1, z0 - 1) * Box(pn["w"], pn["depth"] + 1, wall + 1.1, align=(CENTER, MIN, MIN))
     n = ca["vent_slots"]
     for i in range(n):                               # vent slots near the top of the back panel
         shell -= Pos((i - (n - 1) / 2) * 8, D_case - wall / 2, z1 - 22) * Box(3, 3 * wall, 24)
@@ -585,7 +601,7 @@ def snap_test():
     orientation. Checks how firmly the snap holds and that it releases."""
     s_ = ca["snaps_s"][0]
     plate_pf, _ = build_plate()
-    keep = Pos(W / 2, s_, 0) * Box(24, 20, 60, align=(MAX, CENTER, MAX))
+    keep = Pos(W / 2, s_, 0) * Box(24, 16, 60, align=(MAX, CENTER, MAX))   # stops short of the clamp column
     piece = on_bed(Rot(X=180) * (plate_pf & keep))
     z = Z_cb + s_
     wall_piece = build_shell() & Pos(W / 2, 0, z) * Box(14, 200, 20, align=(MAX, CENTER, CENTER))

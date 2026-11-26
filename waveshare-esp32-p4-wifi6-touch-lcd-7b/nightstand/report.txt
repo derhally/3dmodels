@@ -7,8 +7,8 @@ tilt 20 deg: no clashes; case bottom 29.0 above the table
 tilt 30 deg: no clashes; case bottom 34.5 above the table
 
 == Print orientation: overhangs flatter than 45 deg from vertical, bed fit ==
-front_plate (face down): 188.2 x 120.0 x 16.6, 1 solid, vol 40.6 cm3, fits, overhangs: 0
-back_shell (back panel down): 188.2 x 120.0 x 20.9, 1 solid, vol 78.0 cm3, fits, overhangs: 0
+front_plate (face down): 188.2 x 120.0 x 20.6, 1 solid, vol 45.7 cm3, fits, overhangs: 0
+back_shell (back panel down): 188.2 x 120.0 x 20.9, 1 solid, vol 78.1 cm3, fits, overhangs: 0
 case_hinge (outer face down, teeth up): 30.5 x 23.5 x 27.1, 1 solid, vol 7.2 cm3, fits, overhangs: 0
 knob (flat face down, pocket up): 23.9 x 24.0 x 9.0, 1 solid, vol 3.4 cm3, fits, overhangs: 0
 base (upright): 160.0 x 100.9 x 50.0, 1 solid, vol 85.7 cm3, fits, overhangs: 6
@@ -23,8 +23,8 @@ tower_lid (underside down, knuckle up): 59.8 x 64.9 x 27.4, 1 solid, vol 15.2 cm
 clamp_tab (flat): 7.0 x 15.2 x 3.0, 1 solid, vol 0.2 cm3, fits, overhangs: 0
 
 == Mass and tip stability (display and speaker masses ASSUMED) ==
-tilt  0: total 540 g, centre of mass Y 23.7 Z 62.8 (feet Y 2.0..82.9); screen top at Y 0.0 Z 141.4; tips back with 2.22 N at the top, forward with 0.81 N; case 367 g, hinge holds 0.096 N m (forward)
-tilt 30: total 540 g, centre of mass Y 30.8 Z 70.6 (feet Y 2.0..82.9); screen top at Y 42.7 Z 150.9; tips back with 1.83 N at the top, forward with 1.01 N; case 367 g, hinge holds 0.059 N m (forward)
+tilt  0: total 545 g, centre of mass Y 23.6 Z 63.0 (feet Y 2.0..82.9); screen top at Y 0.0 Z 141.4; tips back with 2.24 N at the top, forward with 0.82 N; case 373 g, hinge holds 0.098 N m (forward)
+tilt 30: total 545 g, centre of mass Y 30.7 Z 70.8 (feet Y 2.0..82.9); screen top at Y 42.7 Z 150.9; tips back with 1.85 N at the top, forward with 1.02 N; case 373 g, hinge holds 0.060 N m (forward)
 
 == USB-C cable length ==
 route: 84 mm in the case, 72 mm in the base, 4.5 mm across the gap upright, 24 mm at 30 deg; with 20 mm for the bends it needs 200 mm of the 300 mm cable
