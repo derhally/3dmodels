@@ -2,6 +2,7 @@
 # a page per part. Styles and scripts are in web/assets.
 import html
 import json
+import re
 from pathlib import Path
 
 from core import REPO, SITE
@@ -22,6 +23,31 @@ ICON = {  # inline SVG icons (stroke = currentColor)
 # Set the theme before the page draws, so a dark-mode visitor never sees a white flash.
 THEME_JS = ("<script>try{var t=localStorage.getItem('catalog-theme');"
             "if(t)document.documentElement.dataset.theme=t}catch(e){}</script>")
+
+
+def inline_md(md):
+    """Escaped text with markdown links, code and emphasis made into HTML."""
+    out = E(md)
+    out = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2" rel="noopener">\1</a>', out)
+    out = re.sub(r"`([^`]+)`", r"<code>\1</code>", out)
+    return re.sub(r"\*\*([^*]+)\*\*", r"\1", out)
+
+
+def hardware(folder):
+    """The `## Hardware` table (Qty | Part | Used for) of a model's README, as a list."""
+    readme = REPO / folder / "README.md" if folder else None
+    if not readme or not readme.exists():
+        return ""
+    m = re.search(r"^## Hardware\s*$(.*?)(?=^## |\Z)", readme.read_text(encoding="utf-8"), re.M | re.S)
+    rows = []
+    for line in (m.group(1).splitlines() if m else []):
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 2 or not cells[0] or set(cells[0]) <= set("-: ") or cells[0].lower() == "qty":
+            continue
+        use = cells[2] if len(cells) > 2 else ""
+        rows.append(f'<li><span class="qty">{E(cells[0])} ×</span><span>{inline_md(cells[1])}'
+                    + (f'<span class="note">{inline_md(use)}</span>' if use else "") + "</span></li>")
+    return f'<ul class="hw">{"".join(rows)}</ul>' if rows else ""
 
 
 def buy_list(items):
@@ -235,6 +261,7 @@ class Site:
 {sec("How it works", (f"<p>{E(how)}</p>" if how else "") + was)}
 {sec("Specs", f"<dl>{specs}</dl>" if specs else "")}
 {sec("Printing", f'<p>{E(part["print"])}</p>' if part.get("print") else "")}
+{sec("Hardware", hardware(part.get("folder")))}
 {sec("Parts to buy", buy)}
 {sec("Files", f'<ul class="files">{files}</ul>' if files else "")}
 {f'<p class="note">Source: <a href="{self.repo}/tree/{self.branch}/{src}">{E(src)}/</a></p>' if src else ""}
