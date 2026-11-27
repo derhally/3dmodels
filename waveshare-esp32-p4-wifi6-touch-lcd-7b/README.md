@@ -1,7 +1,7 @@
 # Waveshare ESP32-P4-WIFI6-Touch-LCD-7B desk enclosures
 
 55° desk stands for the [Waveshare ESP32-P4-WIFI6-Touch-LCD-7B](https://docs.waveshare.com/ESP32-P4-WIFI6-Touch-LCD-7B)
-7" touch display, with a small enclosed speaker (28 × 31 × 15 mm) and a
+7" touch display, with a small enclosed 4 Ω 3 W speaker (28 × 31 × 15 mm, [Amazon](https://www.amazon.com/dp/B0FN7G4ZMC)) and a
 panel-mount USB-C port in the back. Two variants share the same front facade,
 display mounting and port.
 

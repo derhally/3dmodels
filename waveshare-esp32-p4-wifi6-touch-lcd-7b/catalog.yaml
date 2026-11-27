@@ -12,6 +12,10 @@ collection:
     port in the back. All three share the same front plate: the display drops into a pocket from
     behind, glass against a 1.6 mm facade with a window 0.5 mm larger than the
     visible area, held by four printed clamp tabs.
+  buy:                   # shown as links on the collection and every part page
+    - name: 4 Ω 3 W mini speaker, JST-PH2.0 plug, 28 × 31 × 15 mm
+      note: Amazon, pack of 4
+      url: https://www.amazon.com/dp/B0FN7G4ZMC
   cover: chin-speaker
   covers: [waveshare-esp32-p4-wifi6-touch-lcd-7b]
 

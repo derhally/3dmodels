@@ -25,7 +25,7 @@ USB-C port and how the files were made.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
-| 1 | Enclosed speaker 28 × 31 × 15 mm, one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
+| 1 | Enclosed speaker 28 × 31 × 15 mm, 4 Ω 3 W, JST-PH2.0 plug ([Amazon, pack of 4](https://www.amazon.com/dp/B0FN7G4ZMC)), one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
 | 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with flat ribbon | Board's middle `USB` port, spliced to the socket's four wires |
 | 4 | M2.5 × 6 screw | Clamp tabs into the display's standoffs |

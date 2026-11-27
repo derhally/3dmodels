@@ -92,7 +92,7 @@ they're weighed. Print the hinge test and the snap test first.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B | The display |
-| 1 | Enclosed speaker 28 × 31 × 15 mm, one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's `SPK` header at the top edge of the board, through the wire passes |
+| 1 | Enclosed speaker 28 × 31 × 15 mm, 4 Ω 3 W, JST-PH2.0 plug ([Amazon, pack of 4](https://www.amazon.com/dp/B0FN7G4ZMC)), one cone, two side ears with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's `SPK` header at the top edge of the board, through the wire passes |
 | 1 | Foam tape, about 1.5 mm thick and 3 mm wide | Gasket round the cone opening on the speaker's face, squeezed to 1 mm by the tower lid |
 | 1 | Flat USB-C extension cable, 30 cm: screw-on panel socket (25.2 × 8.2 mm flange, screws 17 mm apart) to a 90° plug (11 × 11 mm head), ribbon 7.9 × 1.5 mm | Power and data: socket in the tower's back wall (two screws from outside), plug in the board's middle `USB` port |
 | 1 | M4 × 30 hex-head bolt (DIN 933) | Hinge, head in the knob |

@@ -24,6 +24,15 @@ THEME_JS = ("<script>try{var t=localStorage.getItem('catalog-theme');"
             "if(t)document.documentElement.dataset.theme=t}catch(e){}</script>")
 
 
+def buy_list(items):
+    """Bought parts as links: catalog.yaml `buy:` entries {name, url, note?}."""
+    if not items:
+        return ""
+    rows = "".join(f'<li><a href="{E(b["url"])}" rel="noopener">{E(b["name"])}</a>'
+                   + (f' <span class="note">{E(b["note"])}</span>' if b.get("note") else "") + "</li>" for b in items)
+    return f'<ul class="buy">{rows}</ul>'
+
+
 def slug(s):
     return s.replace(" ", "-")
 
@@ -171,6 +180,7 @@ class Site:
 <div class="crumbs"><a href="../index.html">{E(self.cfg["title"])}</a><span>/</span>{E(coll["name"])}</div>
 <h1>{E(coll["name"])}</h1>
 <p class="lede">{E(coll.get("intro", ""))}</p>
+{f'<div class="buyline"><span>Parts to buy</span>{buy_list(coll["buy"])}</div>' if coll.get("buy") else ""}
 <div class="jump"><span class="count">{count} models</span>{jump}</div>
 </div></section>
 <div class="wrap">{"".join(out)}</div>"""
@@ -199,6 +209,7 @@ class Site:
                     f'<span class="fname">{E(label)}</span><span class="size">{size}</span>{ICON["download"]}</a></li>')
 
         files = "".join(file_row(f) for f in dl)
+        buy = buy_list(part.get("buy", coll.get("buy", [])))
         src = part.get("folder")
         cat = next((c for c in coll["categories"] if c["id"] == part["category"]), None)
         sec = lambda t, b: f'<section class="fact"><h3>{t}</h3>{b}</section>' if b else ""
@@ -224,6 +235,7 @@ class Site:
 {sec("How it works", (f"<p>{E(how)}</p>" if how else "") + was)}
 {sec("Specs", f"<dl>{specs}</dl>" if specs else "")}
 {sec("Printing", f'<p>{E(part["print"])}</p>' if part.get("print") else "")}
+{sec("Parts to buy", buy)}
 {sec("Files", f'<ul class="files">{files}</ul>' if files else "")}
 {f'<p class="note">Source: <a href="{self.repo}/tree/{self.branch}/{src}">{E(src)}/</a></p>' if src else ""}
 </aside>

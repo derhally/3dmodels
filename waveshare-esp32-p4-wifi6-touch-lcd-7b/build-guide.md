@@ -41,7 +41,7 @@ behind and check for an even sliver of black glass around the screen.
 | Qty | Part | Used for |
 |---|---|---|
 | 1 | Waveshare ESP32-P4-WIFI6-Touch-LCD-7B (7" 1024 × 600, glass 164.28 × 99.17 mm) | The display |
-| 1 | Enclosed speaker, 28 × 31 × 15 mm, one cone with a Ø25 mm opening, two side ears 2.83 mm thick with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
+| 1 | Enclosed speaker, 28 × 31 × 15 mm, 4 Ω 3 W, JST-PH2.0 plug ([Amazon, pack of 4](https://www.amazon.com/dp/B0FN7G4ZMC)), one cone with a Ø25 mm opening, two side ears 2.83 mm thick with Ø2.2 mm holes 36.75 mm apart, 6.65 mm behind the speaker face | Audio, into the board's PH2.0 `SPK` header |
 | 1 | Flanged panel-mount USB-C connector: 25.2 × 8.2 mm flange, two Ø2.5 mm holes at 17 mm, socket 1.3 mm proud of the flange | Power and data port in the back wall, two screws from outside |
 | 1 | Right-angle USB-C cable with a flat ribbon (head 11.2 × 7.8 × 3.5 mm, ribbon 5 × 1 mm) | Board's middle `USB` port, spliced to the socket's wires |
 
