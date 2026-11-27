@@ -33,7 +33,8 @@ uv run --no-project python bambu/save_process.py "0.12mm High Quality @BBL H2C"
 The current template was saved by Bambu Studio 02.08.04.57 for Zeid's **Bambu
 Lab H2C 0.4 nozzle**, 0.20mm Standard, with Bambu PETG Basic in five AMS slots
 (grey, black, white, red, orange), from `h2c.3mf` (2026-10-21). Changed from
-the preset: Arachne walls, seam at the back, zig-zag sparse infill, arc fitting
+the preset: Arachne walls, inner/outer/inner wall order
+(`wall_sequence: inner-outer-inner wall`, set 2026-11-27 for every model), seam at the back, zig-zag sparse infill, arc fitting
 off, print sequence by object, slice gap closing radius 0.02 and resolution
 0.004. Walls stay at the preset's 2; a design that needs more sets them in its
 `params.yaml`.
@@ -53,4 +54,6 @@ want, save it, then from the repo root:
 uv run --no-project python bambu/update_template.py path/to/saved.3mf
 ```
 
-and rebuild the designs. The settings in each `params.yaml` stay on top.
+and rebuild the designs. The settings in each `params.yaml` stay on top. Set
+"Order of walls" to inner wall/outer wall/inner wall in that project before saving,
+or the new template drops it.
