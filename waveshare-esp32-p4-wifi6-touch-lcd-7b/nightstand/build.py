@@ -416,6 +416,11 @@ def build_base():
     c, r = ba["floor_edge"]                         # soft bottom edge (on the bed)
     base = soft_edges(base, outer_face(base, "Z", 0).outer_wire().edges(), (0, 0, -1), 0, c, r)
     base -= footprint(z_fi, z_lid + 1, bw)
+    ft = P["feet"]                                  # rubber-foot recesses in the bottom, as the
+    if ft["depth"] > 0:                             # desk stands' body (enclosure_lib.body_shell)
+        for fx in (-1, 1):
+            for fy in (Y_fr + ft["inset"], Y_back - ft["inset"]):
+                base -= Pos(fx * (X_b - ft["inset"]), fy, 0) * Cylinder(ft["diameter"] / 2, 2 * ft["depth"])
     # tower: front, side and back walls from the floor up to the tower lid
     tower = Pos(0, Y_tf, z_fi - 0.01) * Box(2 * x_to, Y_back - Y_tf, z_tl - z_fi + 0.01,
                                             align=(CENTER, MIN, MIN))

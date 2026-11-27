@@ -167,11 +167,12 @@ usb_port:                # the cable's own screw-on USB-C socket in the tower's 
                          # wall's inside to stay safe), width and height ASSUMED from its photo
   panel_t: 2.5
 
-feet:
-  diameter: 10.0
-  depth: 0.0             # no recesses (their roofs would bridge): stick-on bumpers on the
-                         # flat floor
-  inset: 10.0
+feet:                    # recesses for stick-on rubber feet in the base bottom, as the desk
+                         # stands (common.yaml): 1 mm deep, so each roof is a short 10 mm bridge
+  diameter: 10.0         # 10 mm bumpers
+  depth: 1.0             # as the desk stands; leaves 1.4 of the 2.4 floor
+  inset: 10.0            # centre in from the sides, front and back (the desk stands use 14;
+                         # 10 keeps the feet's span for the tip check)
 
 mass:                    # for the tip check; PLA parts from their volume
   pla_density: 1.24      # g/cm3

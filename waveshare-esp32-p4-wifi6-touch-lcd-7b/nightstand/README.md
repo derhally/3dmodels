@@ -101,7 +101,7 @@ they're weighed. Print the hinge test and the snap test first.
 | 7 | M3 × 8 pan-head screw | 4 clamp tabs into the plate's columns, 3 case hinge bracket from inside the case |
 | 4 | M3 × 8 countersunk (90°) screw | Tower lid into the base |
 | 2 | M2 × 6 self-tapping screw | Speaker ears onto their posts |
-| 4 | Stick-on rubber foot, 10 mm | Under the base, 10 mm in from the corners |
+| 4 | Stick-on rubber foot, 10 mm | In the 1 mm recesses under the base, 10 mm in from the corners |
 
 ## Printing
 
